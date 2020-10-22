@@ -1251,7 +1251,7 @@ process DIFFBIND {
   
   input: 
   tuple val(antibody), val(replicatesExist), val(multipleGroups), path(peaks) from ch_diffbind
-  tuple val(antibody2), val(replicatesExist2), val(multipleGroups2), path(bams), path(saf) from ch_group_bam_diffbind
+  tuple val(antibody2), val(replicatesExist2), val(multipleGroups2), path(bams) from ch_group_bam_diffbind
   
   output:
   path 'samples.txt'
