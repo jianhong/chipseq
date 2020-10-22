@@ -1235,7 +1235,7 @@ ch_macs_consensus
     .map { it ->  [ it[0], it[1], it[2], it[-1] ] }
     .groupTuple()
     .map { it ->  [ it[0], it[1][0], it[2][0], it[3].sort() ] }
-    .set { ch_macs_consensus; ch_diffbind }
+    .into { ch_macs_consensus; ch_diffbind }
 
 /*
  * Replace STEP 6.3 by ChIPpeakAnno and Run DiffBind
