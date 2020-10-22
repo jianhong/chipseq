@@ -947,10 +947,13 @@ process BIGWIG {
     tuple val(name), path('*.bigWig') into ch_bigwig_plotprofile
     path '*igv.txt' into ch_bigwig_igv
     path '*scale_factor.txt'
+    path '*.bw'
 
     script:
     pe_fragment = params.single_end ? '' : '-pc'
     extend = (params.single_end && params.fragment_size > 0) ? "-fs ${params.fragment_size}" : ''
+    singleExt = (params.single_end && params.fragment_size > 0) ? "--extendReads ${params.fragment_size}" : ''
+    extendReads = params.single_end ? "${singleExt}" : '--extendReads'
     """
     SCALE_FACTOR=\$(grep 'mapped (' $flagstat | awk '{print 1000000/\$1}')
     echo \$SCALE_FACTOR > ${name}.scale_factor.txt
@@ -959,6 +962,18 @@ process BIGWIG {
     bedGraphToBigWig ${name}.bedGraph $sizes ${name}.bigWig
 
     find * -type f -name "*.bigWig" -exec echo -e "bwa/mergedLibrary/bigwig/"{}"\\t0,0,178" \\; > ${name}.bigWig.igv.txt
+    
+    bamCoverage -b ${bam[0]} \\
+       -o ${name}.norm.CPM.bw \\
+       --binSize 10  --normalizeUsing CPM ${extendReads}
+
+    if [ "$params.macs_gsize" -ne "" ]
+    then
+    bamCoverage -b ${bam[0]} \\
+       -o ${name}.norm.${method}.bw \\
+       --effectiveGenomeSize $params.macs_gsize \\
+       --binSize 10  --normalizeUsing RPGC ${extendReads}
+    fi
     """
 }
 
@@ -1449,7 +1464,7 @@ process DIFFBIND {
   echo multipleGroups=${multipleGroups} >> samples.txt
   echo peaks=${peaks.collect{it.toString()}.sort().join(' ')} >> samples.txt
   
-  echo antibody2=${antibody2} > samples.txt
+  echo antibody2=${antibody2} >> samples.txt
   echo replicatesExist2=${replicatesExist2} >> samples.txt
   echo multipleGroups2=${multipleGroups2} >> samples.txt
   echo bams=${bams.findAll { it.toString().endsWith('.bam') }.sort().join(' ')} >> samples.txt
