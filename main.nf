@@ -1059,7 +1059,8 @@ ch_design_controls_csv
     .map { it ->  it[2..-1] }
     .into { ch_group_bam_macs;
             ch_group_bam_plotfingerprint;
-            ch_group_bam_counts }
+            ch_group_bam_counts;
+            ch_group_bam_diffbind}
 
 /*
  * STEP 6.1: deepTools plotFingerprint
@@ -1234,7 +1235,40 @@ ch_macs_consensus
     .map { it ->  [ it[0], it[1], it[2], it[-1] ] }
     .groupTuple()
     .map { it ->  [ it[0], it[1][0], it[2][0], it[3].sort() ] }
-    .set { ch_macs_consensus }
+    .set { ch_macs_consensus; ch_diffbind }
+
+/*
+ * Replace STEP 6.3 by ChIPpeakAnno and Run DiffBind
+ */
+// Group by ip from this point and carry forward boolean variables
+// need bam file, peaks
+process DIFFBIND {
+  tag "${antibody}"
+    label 'process_medium'
+    publishDir "${params.outdir}/bwa/mergedLibrary/macs/${PEAK_TYPE}/consensus/${antibody}", mode: params.publish_dir_mode
+  when:
+  params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
+  
+  input: 
+  tuple val(antibody), val(replicatesExist), val(multipleGroups), path(peaks) from ch_diffbind
+  tuple val(antibody2), val(replicatesExist2), val(multipleGroups2), path(bams), path(saf) from ch_group_bam_diffbind
+  
+  output:
+  path 'samples.txt'
+  
+  script:
+  """
+  echo antibody=${antibody} > samples.txt
+  echo replicatesExist=${replicatesExist} >> samples.txt
+  echo multipleGroups=${multipleGroups} >> samples.txt
+  echo peaks=${peaks.collect{it.toString()}.sort().join(' ')} >> samples.txt
+  
+  echo antibody2=${antibody2} > samples.txt
+  echo replicatesExist2=${replicatesExist2} >> samples.txt
+  echo multipleGroups2=${multipleGroups2} >> samples.txt
+  echo bams=${bams.findAll { it.toString().endsWith('.bam') }.sort().join(' ')} >> samples.txt
+  """
+}
 
 /*
  * STEP 7.1: Consensus peaks across samples, create boolean filtering file, SAF file for featureCounts and UpSetR plot for intersection
@@ -1421,6 +1455,8 @@ process CONSENSUS_PEAKS_DESEQ2 {
     find * -type f -name "*.FDR0.05.results.bed" -exec echo -e "bwa/mergedLibrary/macs/${PEAK_TYPE}/consensus/${antibody}/deseq2/"{}"\\t255,0,0" \\; > ${prefix}.igv.txt
     """
 }
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

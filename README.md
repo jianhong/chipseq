@@ -15,6 +15,8 @@
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
+
+
 ## Pipeline summary
 
 1. Raw read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
@@ -46,6 +48,36 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     12. Differential binding analysis, PCA and clustering ([`R`](https://www.r-project.org/), [`DESeq2`](https://bioconductor.org/packages/release/bioc/html/DESeq2.html))
 6. Create IGV session file containing bigWig tracks, peaks and differential sites for data visualisation ([`IGV`](https://software.broadinstitute.org/software/igv/)).
 7. Present QC for raw read, alignment, peak-calling and differential binding results ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
+
+
+## Installation by conda
+
+```bash
+conda update conda
+wget https://raw.githubusercontent.com/jianhong/chipseq/master/environment.yml
+conda env create -n chipflow -f environment.yml
+rm environment.yml
+conda activate chipflow
+srun --mem 60G -c 2 nextflow run jianhong/chipseq -profile test
+```
+
+## Update
+
+```bash
+conda activate chipflow
+nextflow pull jianhong/chipseq
+```
+
+## Remove
+
+```bash
+conda activate chipflow
+nextflow drop jianhong/chipseq
+conda deactivate
+conda remove --name chipflow --all
+conda info --envs
+```
+
 
 ## Quick Start
 
