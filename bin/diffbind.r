@@ -3,6 +3,7 @@ library(DiffBind)
 library(ChIPpeakAnno)
 library(rtracklayer)
 library(ggplot2)
+library(GenomicFeatures)
 library(optparse)
 
 option_list <- list(make_option(c("-d", "--design"), type="character", default=NULL, help="filename of design table", metavar="path"),
@@ -33,7 +34,8 @@ bamReads <- unlist(strsplit(opt$bams, "___"))
 names(bamReads) <- sub(".mLb.clN.*.bam", "", bamReads)
 Peaks <- unlist(strsplit(opt$peaks, "___"))
 SampleID <- sub("_peaks.*?Peak", "", Peaks)
-stopifnot(identical(names(bamReads), SampleID))
+stopifnot(all(names(bamReads) %in% SampleID))
+bamReads <- bamReads[SampleID]
 names(Peaks) <- SampleID
 rownames(sampleDesign) <- paste(sampleDesign$group, sampleDesign$replicate, sep="_R")
 Condition <- sampleDesign[SampleID, "group"]
@@ -47,6 +49,7 @@ samples <- data.frame(SampleID=SampleID,
                       Replicate=Replicate,
                       Factor=Factor,
                       bamReads=bamReads,
+                      Peaks=Peaks,
                       Peakcaller=Peakcaller,
                       PeakFormat=PeakFormat,
                       ScoreCol=5)
@@ -63,8 +66,8 @@ chip <- dba.count(chip, bLog=TRUE)
 saveRDS(chip, file.path(pf, "chip.rds"))
 chip.bk <- chip
 
-txdb <- makeTxDbFromGFF(gtf)
-gtf <- import(gtf)
+txdb <- makeTxDbFromGFF(opt$gtf)
+gtf <- import(opt$gtf)
 id2symbol <- function(gtf){
   if(is.null(gtf$gene_name)) return(NULL)
   x <- data.frame(id=gtf$gene_id, symbol=gtf$gene_name)
@@ -76,7 +79,7 @@ id2symbol <- function(gtf){
   names(y) <- x$id
   y
 }
-
+id2symbol <- id2symbol(gtf)
 anno <- toGRanges(txdb)
 contrasts <- combn(unique(Condition), m = 2, simplify = FALSE)
 names(contrasts) <- sapply(contrasts, function(.ele) paste(.ele[2], .ele[1], sep="-"))
@@ -101,9 +104,9 @@ for(i in seq_along(contrasts)){
   if(length(id2symbol)>0) chip.anno$symbol[!is.na(chip.anno$feature)] <- id2symbol[chip.anno$feature[!is.na(chip.anno$feature)]]
   chip.m <- as.data.frame(unname(chip.anno),
                           stringsAsFactor=FALSE)
-  write.csv(chip.m, paste0(file.path(pf, "DiffBind.res.", names(contrasts)[i], ".all.csv")))
+  write.csv(chip.m, file.path(pf, paste0("DiffBind.res.", names(contrasts)[i], ".all.csv")))
   chip.m <- chip.m[chip.m$FDR<0.05, ]
-  resList[names(contrasts)[i]] <- chip.m
+  resList[[names(contrasts)[i]]] <- chip.m
   write.csv(chip.m, file.path(pf, paste0("DiffBind.res.", names(contrasts)[i], ".FDR.05.xls")))
   chip.anno.b <- chip.anno[chip.anno$FDR<0.05]
   mcols(chip.anno.b) <- DataFrame(score=chip.anno.b$Fold)
@@ -125,7 +128,7 @@ for(i in seq_along(contrasts)){
   counts <- dba.peakset(chip, bRetrieve=TRUE, DataType=DBA_DATA_FRAME)
   write.csv(counts, file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".counts.csv")))
 }
-
+resList <- GRangesList(resList)
 if(packageVersion("ChIPpeakAnno")>="	3.23.12"){
   out <- genomicElementDistribution(resList, 
                                     TxDb = txdb,
@@ -148,7 +151,7 @@ if(packageVersion("ChIPpeakAnno")>="	3.23.12"){
                   FUN=function(.ele, .format) toGRanges(.ele, format=.format), 
                   SIMPLIFY = FALSE)
   names(peaks) <- SampleID
-  
+  peaks <- GRangesList(peaks)
   out <- genomicElementDistribution(peaks, 
                                     TxDb = txdb,
                                     promoterRegion=c(upstream=2000, downstream=500),
