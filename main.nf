@@ -939,7 +939,7 @@ process BIGWIG {
         saveAs: { filename ->
                       if (filename.endsWith('scale_factor.txt')) "scale/$filename"
                       else if (filename.endsWith('.bigWig')) filename
-                      else if (filename.endsWidth('.bw')) "deepTools/$filename"
+                      else if (filename.endsWith('.bw')) "deepTools/$filename"
                       else null
                 }
 
