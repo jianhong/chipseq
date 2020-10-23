@@ -22,9 +22,9 @@ if (is.null(opt$bams)||is.null(opt$peaks)){
 out <- "sample.csv"
 ## create a csv file with SampleID, Condition, Replicate, bamReads Peaks Peakcaller PeakFormat, ScoreCol, Factor, Tissue
 sampleDesign <- read.csv(opt$design)
-bamReads <- unlist(strsplit(opt$bams, ";;"))
+bamReads <- unlist(strsplit(opt$bams, "___"))
 names(bamReads) <- sub(".mLb.clN.*.bam", "", bamReads)
-Peaks <- unlist(strsplit(opt$peaks, ";;"))
+Peaks <- unlist(strsplit(opt$peaks, "___"))
 SampleID <- sub("_peaks.*?Peak", "", Peaks)
 stopifnot(identical(names(bamReads), SampleID))
 names(Peaks) <- SampleID

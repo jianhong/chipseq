@@ -1465,8 +1465,8 @@ process DIFFBIND {
   script:
   """
   diffbind.r -d ${designtab} \\
-  -p peaks=${peaks.collect{it.toString()}.sort().join(';;')} \\
-  -b ${bams.findAll { it.toString().endsWith('.bam') }.sort().join(';;')} \\
+  -p ${peaks.collect{it.toString()}.sort().join('___')} \\
+  -b ${bams.findAll { it.toString().endsWith('.bam') }.sort().join('___')} \\
   -c $task.cpus
   """
 }
