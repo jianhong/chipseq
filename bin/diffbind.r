@@ -3,6 +3,7 @@ library(DiffBind)
 library(ChIPpeakAnno)
 library(rtracklayer)
 library(ggplot2)
+library(optparse)
 
 option_list <- list(make_option(c("-d", "--design"), type="character", default=NULL, help="filename of design table", metavar="path"),
                     make_option(c("-b", "--bams"), type="character", default=NULL, help="filename after sample name in featurecount file header e.g. '.rmDup.bam' if 'DRUG_R1.rmDup.bam'", metavar="string"),
