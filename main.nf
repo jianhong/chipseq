@@ -417,7 +417,6 @@ if (MAKE_BED) {
 
         output:
         path '*.bed' into ch_gene_bed
-        path '*.gtf'
 
         script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
         """

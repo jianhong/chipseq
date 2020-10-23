@@ -2,6 +2,7 @@
 library(DiffBind)
 library(ChIPpeakAnno)
 library(rtracklayer)
+library(ggplot2)
 
 option_list <- list(make_option(c("-d", "--design"), type="character", default=NULL, help="filename of design table", metavar="path"),
                     make_option(c("-b", "--bams"), type="character", default=NULL, help="filename after sample name in featurecount file header e.g. '.rmDup.bam' if 'DRUG_R1.rmDup.bam'", metavar="string"),
@@ -78,6 +79,7 @@ id2symbol <- function(gtf){
 anno <- toGRanges(txdb)
 contrasts <- combn(unique(Condition), m = 2, simplify = FALSE)
 names(contrasts) <- sapply(contrasts, function(.ele) paste(.ele[2], .ele[1], sep="-"))
+resList <- list()
 for(i in seq_along(contrasts)){
   gp1 <- contrasts[[i]][1]
   gp2 <- contrasts[[i]][2]
@@ -100,6 +102,7 @@ for(i in seq_along(contrasts)){
                           stringsAsFactor=FALSE)
   write.csv(chip.m, paste0(file.path(pf, "DiffBind.res.", names(contrasts)[i], ".all.csv")))
   chip.m <- chip.m[chip.m$FDR<0.05, ]
+  resList[names(contrasts)[i]] <- chip.m
   write.csv(chip.m, file.path(pf, paste0("DiffBind.res.", names(contrasts)[i], ".FDR.05.xls")))
   chip.anno.b <- chip.anno[chip.anno$FDR<0.05]
   mcols(chip.anno.b) <- DataFrame(score=chip.anno.b$Fold)
@@ -122,10 +125,46 @@ for(i in seq_along(contrasts)){
   write.csv(counts, file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".counts.csv")))
 }
 
-
-
-
-
-
+if(packageVersion("ChIPpeakAnno")>="	3.23.12"){
+  out <- genomicElementDistribution(resList, 
+                                    TxDb = txdb,
+                                    promoterRegion=c(upstream=2000, downstream=500),
+                                    geneDownstream=c(upstream=0, downstream=2000),
+                                    promoterLevel=list(
+                                      # from 5' -> 3', fixed precedence 3' -> 5'
+                                      breaks = c(-2000, -1000, -500, 0, 500),
+                                      labels = c("upstream 1-2Kb", "upstream 0.5-1Kb", 
+                                                 "upstream <500b", "TSS - 500b"),
+                                      colors = c("#FFE5CC", "#FFCA99", 
+                                                 "#FFAD65", "#FF8E32")),
+                                    plot = FALSE)
+  
+  ggsave(file.path(pf, "genomicElementDistribuitonOfDiffBind.pdf"), plot=out$plot, width=9, height=9)
+  out <- metagenePlot(resList, txdb)
+  ggsave(file.path(pf, "metagenePlotToTSSofDiffBind.pdf"), plot=out, width=9, height=9)
+  
+  peaks <- mapply(Peaks, PeakFormat, 
+                  FUN=function(.ele, .format) toGRanges(.ele, format=.format), 
+                  SIMPLIFY = FALSE)
+  names(peaks) <- SampleID
+  
+  out <- genomicElementDistribution(peaks, 
+                                    TxDb = txdb,
+                                    promoterRegion=c(upstream=2000, downstream=500),
+                                    geneDownstream=c(upstream=0, downstream=2000),
+                                    promoterLevel=list(
+                                      # from 5' -> 3', fixed precedence 3' -> 5'
+                                      breaks = c(-2000, -1000, -500, 0, 500),
+                                      labels = c("upstream 1-2Kb", "upstream 0.5-1Kb", 
+                                                 "upstream <500b", "TSS - 500b"),
+                                      colors = c("#FFE5CC", "#FFCA99", 
+                                                 "#FFAD65", "#FF8E32")),
+                                    plot = FALSE)
+  
+  ggsave(file.path(pf, "genomicElementDistribuitonOfEachPeakList.pdf"), plot=out$plot, width=9, height=9)
+  
+  out <- metagenePlot(peaks, txdb)
+  ggsave(file.path(pf, "metagenePlotToTSSOfEachPeakList.pdf"), plot=out, width=9, height=9)
+}
 
 
