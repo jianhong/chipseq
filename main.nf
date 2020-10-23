@@ -939,6 +939,7 @@ process BIGWIG {
         saveAs: { filename ->
                       if (filename.endsWith('scale_factor.txt')) "scale/$filename"
                       else if (filename.endsWith('.bigWig')) filename
+                      else if (filename.endsWidth('.bw')) "deepTools/$filename"
                       else null
                 }
 
@@ -1449,7 +1450,7 @@ process CONSENSUS_PEAKS_DESEQ2 {
 process DIFFBIND {
   tag "${antibody}"
     label 'process_medium'
-    publishDir "${params.outdir}/bwa/mergedLibrary/macs/${PEAK_TYPE}/consensus/${antibody}", mode: params.publish_dir_mode
+    publishDir "${params.outdir}/bwa/mergedLibrary/diffbind", mode: params.publish_dir_mode
   when:
   params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
   
@@ -1459,21 +1460,14 @@ process DIFFBIND {
   path designtab from input_file
   
   output:
-  path 'samples.txt'
+  path 'samples.csv'
   
   script:
   """
-  echo antibody=${antibody} > samples.txt
-  echo replicatesExist=${replicatesExist} >> samples.txt
-  echo multipleGroups=${multipleGroups} >> samples.txt
-  echo peaks=${peaks.collect{it.toString()}.sort().join(' ')} >> samples.txt
-  
-  echo antibody2=${antibody2} >> samples.txt
-  echo replicatesExist2=${replicatesExist2} >> samples.txt
-  echo multipleGroups2=${multipleGroups2} >> samples.txt
-  echo bams=${bams.findAll { it.toString().endsWith('.bam') }.sort().join(' ')} >> samples.txt
-  ## create a csv file with SampleID, Condition, Replicate, bamReads Peaks Peakcaller PeakFormat, ScoreCol, Factor, Tissue
-  #diffbind.r ${designtab} 
+  diffbind.r -d ${designtab} \\
+  -p peaks=${peaks.collect{it.toString()}.sort().join(';;')} \\
+  -b ${bams.findAll { it.toString().endsWith('.bam') }.sort().join(';;')} \\
+  -c $task.cpus
   """
 }
 
