@@ -145,6 +145,7 @@ ch_multiqc_config = file("$baseDir/assets/multiqc_config.yaml", checkIfExists: t
 ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
 ch_output_docs = file("$baseDir/docs/output.md", checkIfExists: true)
 ch_output_docs_images = file("$baseDir/docs/images/", checkIfExists: true)
+ch_index_docs = file("$baseDir/docs/index.Rmd", checkIfExists: true)
 
 // JSON files required by BAMTools for alignment filtering
 if (params.single_end) {
@@ -1451,7 +1452,7 @@ process CONSENSUS_PEAKS_DESEQ2 {
 process DIFFBIND {
   tag "${antibody}"
     label 'process_medium'
-    publishDir "${params.outdir}/bwa/mergedLibrary/diffbind", mode: params.publish_dir_mode
+    publishDir "${params.outdir}/bwa/mergedLibrary", mode: params.publish_dir_mode
   when:
   params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
   
@@ -1462,7 +1463,7 @@ process DIFFBIND {
   path gtf from ch_gtf
   
   output:
-  path 'DiffBind/*'
+  path 'DiffBind/*' into ch_diffbind_res
   
   script:
   """
@@ -1550,6 +1551,9 @@ process get_software_versions {
     echo \$(featureCounts -v 2>&1) > v_featurecounts.txt
     preseq &> v_preseq.txt
     multiqc --version > v_multiqc.txt
+    Rscript -e 'cat(as.character(packageVersion("ChIPpeakAnno")))' > v_ChIPpeakAnno.txt
+    Rscript -e 'cat(as.character(packageVersion("DiffBind")))' > v_DiffBind.txt
+    Rscript -e 'cat(as.character(packageVersion("DESeq2")))' > v_DESeq2.txt
     scrape_software_versions.py &> software_versions_mqc.yaml
     """
 }
@@ -1607,17 +1611,23 @@ process MULTIQC {
     path ('deeptools/*') from ch_plotprofile_mqc.collect().ifEmpty([])
     path ('phantompeakqualtools/*') from ch_spp_out_mqc.collect().ifEmpty([])
     path ('phantompeakqualtools/*') from ch_spp_csv_mqc.collect().ifEmpty([])
+    
+    path ('DiffBind/*') from ch_diffbind_res.collect().ifEmpty([])
+    path index_docs from ch_index_docs
+    path images from ch_output_docs_images
 
     output:
     path '*multiqc_report.html' into ch_multiqc_report
     path '*_data'
+    path 'index.html'
 
     script:
     rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
     rfilename = custom_runName ? "--filename " + custom_runName.replaceAll('\\W','_').replaceAll('_+','_') + "_multiqc_report" : ''
     custom_config_file = params.multiqc_config ? "--config $mqc_custom_config" : ''
     """
-    multiqc . -f $rtitle $rfilename $custom_config_file
+    multiqc . -f $rtitle $rfilename $custom_config_file -p
+    Rscript -e "knit2html('${index_docs}', output='index.html')"
     """
 }
 

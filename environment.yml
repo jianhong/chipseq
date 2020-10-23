@@ -48,3 +48,4 @@ dependencies:
   - bioconda::bioconductor-vsn
   - bioconda::bioconductor-chippeakanno
   - bioconda::bioconductor-diffbind
+  - bioconda::r-knitr

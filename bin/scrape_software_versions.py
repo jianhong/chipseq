@@ -21,6 +21,9 @@ regexes = {
     'featureCounts': ['v_featurecounts.txt', r"featureCounts v(\S+)"],
     'Preseq': ['v_preseq.txt', r"Version: (\S+)"],
     'MultiQC': ['v_multiqc.txt', r"multiqc, version (\S+)"],
+    'ChIPpeakAnno': ['v_ChIPpeakAnno.txt', r"(\S+)\(.*?\)"],
+    'DiffBind': ['v_DiffBind.txt', r"(\S+)\(.*?\)"],
+    'DESeq2': ['v_DESeq2.txt', r"(\S+)\(.*?\)"],
 }
 
 results = OrderedDict()
@@ -41,6 +44,9 @@ results['HOMER'] = False
 results['featureCounts'] = '<span style="color:#999999;\">N/A</span>'
 results['Preseq'] = '<span style="color:#999999;\">N/A</span>'
 results['MultiQC'] = '<span style="color:#999999;\">N/A</span>'
+results['ChIPpeakAnno'] = '<span style="color:#999999;\">N/A</span>'
+results['DiffBind'] = '<span style="color:#999999;\">N/A</span>'
+results['DESeq2'] = '<span style="color:#999999;\">N/A</span>'
 
 # Search each file using its regex
 for k, v in regexes.items():
