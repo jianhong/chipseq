@@ -129,7 +129,7 @@ for(i in seq_along(contrasts)){
   write.csv(counts, file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".counts.csv")))
 }
 resList <- GRangesList(resList)
-if(packageVersion("ChIPpeakAnno")>="	3.23.12"){
+if(packageVersion("ChIPpeakAnno")>="3.23.12"){
   out <- genomicElementDistribution(resList, 
                                     TxDb = txdb,
                                     promoterRegion=c(upstream=2000, downstream=500),
