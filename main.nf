@@ -1462,7 +1462,6 @@ process DIFFBIND {
   path gtf from ch_gtf
   
   output:
-  path 'samples.csv'
   path 'DiffBind/*'
   
   script:
