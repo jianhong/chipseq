@@ -167,7 +167,10 @@ ch_spp_rsc_header = file("$baseDir/assets/multiqc/spp_rsc_header.txt", checkIfEx
 /* --          VALIDATE INPUTS                 -- */
 ////////////////////////////////////////////////////
 
-if (params.input)     { ch_input = file(params.input, checkIfExists: true) } else { exit 1, 'Samples design file not specified!' }
+if (params.input)     { 
+  ch_input = file(params.input, checkIfExists: true)
+  input_file = file(params.input, checkIfExists: true)
+} else { exit 1, 'Samples design file not specified!' }
 if (params.gtf)       { ch_gtf = file(params.gtf, checkIfExists: true) } else { exit 1, 'GTF annotation file not specified!' }
 if (params.gene_bed)  { ch_gene_bed = file(params.gene_bed, checkIfExists: true) }
 if (params.blacklist) { ch_blacklist = Channel.fromPath(params.blacklist, checkIfExists: true) } else { ch_blacklist = Channel.empty() }
@@ -970,7 +973,7 @@ process BIGWIG {
     if [ "$params.macs_gsize" -ne "" ]
     then
     bamCoverage -b ${bam[0]} \\
-       -o ${name}.norm.${method}.bw \\
+       -o ${name}.norm.RPGC.bw \\
        --effectiveGenomeSize $params.macs_gsize \\
        --binSize 10  --normalizeUsing RPGC ${extendReads}
     fi
@@ -1453,6 +1456,7 @@ process DIFFBIND {
   input: 
   tuple val(antibody), val(replicatesExist), val(multipleGroups), path(peaks) from ch_diffbind
   tuple val(antibody2), val(replicatesExist2), val(multipleGroups2), path(bams), path(saf) from ch_group_bam_diffbind
+  path designtab from input_file
   
   output:
   path 'samples.txt'
@@ -1468,6 +1472,8 @@ process DIFFBIND {
   echo replicatesExist2=${replicatesExist2} >> samples.txt
   echo multipleGroups2=${multipleGroups2} >> samples.txt
   echo bams=${bams.findAll { it.toString().endsWith('.bam') }.sort().join(' ')} >> samples.txt
+  ## create a csv file with SampleID, Condition, Replicate, bamReads Peaks Peakcaller PeakFormat, ScoreCol, Factor, Tissue
+  #diffbind.r ${designtab} 
   """
 }
 
