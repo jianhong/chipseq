@@ -169,9 +169,10 @@ ch_spp_rsc_header = file("$baseDir/assets/multiqc/spp_rsc_header.txt", checkIfEx
 
 if (params.input)     { 
   ch_input = file(params.input, checkIfExists: true)
-  input_file = file(params.input, checkIfExists: true)
 } else { exit 1, 'Samples design file not specified!' }
-if (params.gtf)       { ch_gtf = file(params.gtf, checkIfExists: true) } else { exit 1, 'GTF annotation file not specified!' }
+if (params.gtf)       { 
+  ch_gtf = file(params.gtf, checkIfExists: true) 
+} else { exit 1, 'GTF annotation file not specified!' }
 if (params.gene_bed)  { ch_gene_bed = file(params.gene_bed, checkIfExists: true) }
 if (params.blacklist) { ch_blacklist = Channel.fromPath(params.blacklist, checkIfExists: true) } else { ch_blacklist = Channel.empty() }
 
@@ -416,6 +417,7 @@ if (MAKE_BED) {
 
         output:
         path '*.bed' into ch_gene_bed
+        path '*.gtf'
 
         script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
         """
@@ -1457,16 +1459,19 @@ process DIFFBIND {
   input: 
   tuple val(antibody), val(replicatesExist), val(multipleGroups), path(peaks) from ch_diffbind
   tuple val(antibody2), val(replicatesExist2), val(multipleGroups2), path(bams), path(saf) from ch_group_bam_diffbind
-  path designtab from input_file
+  path designtab from ch_input
+  path gtf from ch_gtf
   
   output:
   path 'samples.csv'
+  path 'DiffBind/*'
   
   script:
   """
   diffbind.r -d ${designtab} \\
   -p ${peaks.collect{it.toString()}.sort().join('___')} \\
   -b ${bams.findAll { it.toString().endsWith('.bam') }.sort().join('___')} \\
+  -g ${gtf} \\
   -c $task.cpus
   """
 }
