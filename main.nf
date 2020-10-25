@@ -1666,7 +1666,7 @@ process index_documentation {
     
     input:
     path ('DiffBind/*') from ch_diffbind_res.collect().ifEmpty([])
-    path index_docs from ch_index_docs
+    path index_docs from ch_index_docs.collect()
     path images from ch_multiqc_plots
     path doc_img from ch_output_docs_images
     path designtab from ch_input
