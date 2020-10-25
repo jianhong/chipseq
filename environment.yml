@@ -30,14 +30,14 @@ dependencies:
   - bioconda::fastqc=0.11.9
   - bioconda::trim-galore=0.6.6
   - bioconda::bwa=0.7.17
-  - bioconda::samtools=1.11
+  - bioconda::samtools=1.4.1
   - bioconda::picard=2.23.8
   - bioconda::bamtools=2.5.1
   - bioconda::pysam=0.15.3
   - bioconda::bedtools=2.29.2
-  - bioconda::ucsc-bedgraphtobigwig=377
+  - bioconda::ucsc-bedgraphtobigwig=357
   - bioconda::deeptools=3.5.0
-  - bioconda::macs2=2.2.7.1
+  - bioconda::macs2=2.2.6
   - bioconda::homer=4.10
   - bioconda::subread=2.0.1
   - bioconda::phantompeakqualtools=1.2.2

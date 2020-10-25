@@ -1627,7 +1627,7 @@ process MULTIQC {
     custom_config_file = params.multiqc_config ? "--config $mqc_custom_config" : ''
     """
     multiqc . -f $rtitle $rfilename $custom_config_file -p
-    Rscript -e "knit2html('${index_docs}', output='index.html')"
+    Rscript -e "knitr::knit2html('${index_docs}', output='index.html')"
     """
 }
 
