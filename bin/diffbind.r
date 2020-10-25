@@ -61,6 +61,15 @@ chip <- dba(sampleSheet = file.path(pf, "sample.csv"))
 pdf(file.path(pf, "DiffBind.sample.correlation.pdf"), width = 9, height = 9)
 plot(chip)
 dev.off()
+pdf(file.path(pf, "DiffBind.PCA.plot.pdf"))
+dba.plotPCA(chip, DBA_CONDITION, label=DBA_ID)
+dev.off()
+png(file.path(pf, "DiffBind.sample.correlation.png"))
+plot(chip)
+dev.off()
+png(file.path(pf, "DiffBind.PCA.plot.png"))
+dba.plotPCA(chip, DBA_CONDITION, label=DBA_ID)
+dev.off()
 
 chip <- dba.count(chip, bLog=TRUE)
 saveRDS(chip, file.path(pf, "chip.rds"))
@@ -112,10 +121,6 @@ for(i in seq_along(contrasts)){
   mcols(chip.anno.b) <- DataFrame(score=chip.anno.b$Fold)
   export(chip.anno.b, file.path(pf, paste0("DiffBind.chip.res.", names(contrasts)[i], ".FDR.05.bedGraph")))
   # plots
-  pdf(file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".PCA.plot.pdf")))
-  dba.plotPCA(chip, DBA_CONDITION, label=DBA_ID)
-  dev.off()
-  
   pdf(file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".MA.plot.pdf")))
   dba.plotMA(chip)
   dev.off()
@@ -123,12 +128,20 @@ for(i in seq_along(contrasts)){
   pdf(file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".Volcano.plot.pdf")))
   dba.plotVolcano(chip, bUsePval = TRUE)
   dev.off()
+
+  png(file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".MA.plot.png")))
+  dba.plotMA(chip)
+  dev.off()
+  
+  png(file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".Volcano.plot.png")))
+  dba.plotVolcano(chip, bUsePval = TRUE)
+  dev.off()
   
   # export counts table
   counts <- dba.peakset(chip, bRetrieve=TRUE, DataType=DBA_DATA_FRAME)
   write.csv(counts, file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".counts.csv")))
 }
-resList <- GRangesList(resList)
+resList <- if(length(resList)>1) GRangesList(resList) else resList[[1]]
 if(packageVersion("ChIPpeakAnno")>="3.23.12"){
   out <- genomicElementDistribution(resList, 
                                     TxDb = txdb,
@@ -144,8 +157,10 @@ if(packageVersion("ChIPpeakAnno")>="3.23.12"){
                                     plot = FALSE)
   
   ggsave(file.path(pf, "genomicElementDistribuitonOfDiffBind.pdf"), plot=out$plot, width=9, height=9)
+  ggsave(file.path(pf, "genomicElementDistribuitonOfDiffBind.png"), plot=out$plot)
   out <- metagenePlot(resList, txdb)
   ggsave(file.path(pf, "metagenePlotToTSSofDiffBind.pdf"), plot=out, width=9, height=9)
+  ggsave(file.path(pf, "metagenePlotToTSSofDiffBind.png"), plot=out)
   
   peaks <- mapply(Peaks, PeakFormat, 
                   FUN=function(.ele, .format) toGRanges(.ele, format=.format), 
@@ -166,9 +181,11 @@ if(packageVersion("ChIPpeakAnno")>="3.23.12"){
                                     plot = FALSE)
   
   ggsave(file.path(pf, "genomicElementDistribuitonOfEachPeakList.pdf"), plot=out$plot, width=9, height=9)
+  ggsave(file.path(pf, "genomicElementDistribuitonOfEachPeakList.png"), plot=out$plot)
   
   out <- metagenePlot(peaks, txdb)
   ggsave(file.path(pf, "metagenePlotToTSSOfEachPeakList.pdf"), plot=out, width=9, height=9)
+  ggsave(file.path(pf, "metagenePlotToTSSOfEachPeakList.png"), plot=out)
 }
 
 
