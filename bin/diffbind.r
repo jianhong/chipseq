@@ -111,11 +111,11 @@ for(i in seq_along(contrasts)){
                                    FeatureLocForDistance = "TSS",
                                    ignore.strand = TRUE)
   if(length(id2symbol)>0) chip.anno$symbol[!is.na(chip.anno$feature)] <- id2symbol[chip.anno$feature[!is.na(chip.anno$feature)]]
+  resList[[names(contrasts)[i]]] <- chip.anno[chip.anno$FDR<0.05]
   chip.m <- as.data.frame(unname(chip.anno),
                           stringsAsFactor=FALSE)
   write.csv(chip.m, file.path(pf, paste0("DiffBind.res.", names(contrasts)[i], ".all.csv")))
   chip.m <- chip.m[chip.m$FDR<0.05, ]
-  resList[[names(contrasts)[i]]] <- chip.m
   write.csv(chip.m, file.path(pf, paste0("DiffBind.res.", names(contrasts)[i], ".FDR.05.xls")))
   chip.anno.b <- chip.anno[chip.anno$FDR<0.05]
   mcols(chip.anno.b) <- DataFrame(score=chip.anno.b$Fold)
