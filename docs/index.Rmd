@@ -18,7 +18,7 @@ This document describes the output produced by the pipeline. Most of the plots a
 ## Experiment design
 
 ```{r, results = 'asis', include=FALSE}
-data <- yaml::yaml.load_file(param$summary)
+data <- yaml::yaml.load_file(params$summary)
 cat(data$data, sep = "\n")
 ```
 
