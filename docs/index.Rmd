@@ -23,15 +23,17 @@ This document describes the output produced by the pipeline. Most of the plots a
 ## Experiment design
 
 ```{r, results = 'asis', echo=FALSE}
-params
-data <- yaml::yaml.load_file(params$summary)
-cat(data$data, sep = "\n")
+#data <- yaml::yaml.load_file(params$summary)
+#cat(data$data, sep = "\n")
 ```
 
 Design table:
 ```{r}
-data <- read.csv(params$design)
-datatable(data)
+params
+print(dir())
+print(getwd())
+#data <- read.csv(params$design)
+#datatable(data)
 ```
 
 
