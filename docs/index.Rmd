@@ -3,6 +3,11 @@ title: "Index"
 author: "Jianhong Ou"
 date: "`r date()`"
 output: html_document
+params:
+  peaktype: "narrowPeak"
+  design: "designtable"
+  genome: "genome"
+  summary: "summary"
 ---
 
 ```{r setup, include=FALSE, message=FALSE}
