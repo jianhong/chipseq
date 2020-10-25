@@ -1627,7 +1627,7 @@ process MULTIQC {
     custom_config_file = params.multiqc_config ? "--config $mqc_custom_config" : ''
     """
     multiqc . -f $rtitle $rfilename $custom_config_file -p
-    Rscript -e "rmarkdown::render('${index_docs}', output_file='index.html', params = list(peaktype=${PEAK_TYPE}))"
+    #Rscript -e "rmarkdown::render('${index_docs}', output_file='index.html', params = list(peaktype=${PEAK_TYPE}))"
     """
 }
 
