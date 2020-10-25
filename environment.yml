@@ -2,6 +2,7 @@
 #   conda env create -f environment.yml
 name: chipflow-0.0.1
 channels:
+  - r
   - conda-forge
   - bioconda
   - defaults
@@ -25,6 +26,8 @@ dependencies:
   - conda-forge::r-xfun=0.15
   - conda-forge::gawk=5.1.0
   - conda-forge::pigz=2.3.4               ## Required for TrimGalore multi-threading
+  - conda-forge::pandoc=2.11.0.4  ## Required for rmarkdown
+  - r::r-dt=0.16
 
   ## bioconda packages
   - bioconda::fastqc=0.11.9
@@ -48,4 +51,4 @@ dependencies:
   - bioconda::bioconductor-vsn
   - bioconda::bioconductor-chippeakanno
   - bioconda::bioconductor-diffbind
-  - bioconda::r-knitr
+  - bioconda::r-rmarkdown

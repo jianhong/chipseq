@@ -1611,15 +1611,11 @@ process MULTIQC {
     path ('deeptools/*') from ch_plotprofile_mqc.collect().ifEmpty([])
     path ('phantompeakqualtools/*') from ch_spp_out_mqc.collect().ifEmpty([])
     path ('phantompeakqualtools/*') from ch_spp_csv_mqc.collect().ifEmpty([])
-    
-    path ('DiffBind/*') from ch_diffbind_res.collect().ifEmpty([])
-    path index_docs from ch_index_docs
-    path images from ch_output_docs_images
 
     output:
     path '*multiqc_report.html' into ch_multiqc_report
+    path '*_plots' into ch_multiqc_plots
     path '*_data'
-    path 'index.html'
 
     script:
     rtitle = custom_runName ? "--title \"$custom_runName\"" : ''
@@ -1627,9 +1623,10 @@ process MULTIQC {
     custom_config_file = params.multiqc_config ? "--config $mqc_custom_config" : ''
     """
     multiqc . -f $rtitle $rfilename $custom_config_file -p
-    #Rscript -e "rmarkdown::render('${index_docs}', output_file='index.html', params = list(peaktype=${PEAK_TYPE}))"
     """
 }
+
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -1657,6 +1654,33 @@ process output_documentation {
     markdown_to_html.py $output_docs -o results_description.html
     """
 }
+
+/*
+ * STEP 11: Output index HTML
+ */
+process output_documentation {
+    publishDir "${params.outdir}", mode: params.publish_dir_mode
+    
+    when:
+    !params.skip_multiqc
+    
+    input:
+    path ('DiffBind/*') from ch_diffbind_res.collect().ifEmpty([])
+    path index_docs from ch_index_docs
+    path images from ch_multiqc_plots
+    path doc_img from ch_output_docs_images
+    path designtab from ch_input
+    path workflow_summary from ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml')
+    
+    output:
+    path 'index.html'
+
+    script:
+    """
+    Rscript -e "rmarkdown::render('${index_docs}', output_file='index.html', params = list(peaktype='${PEAK_TYPE}', design='${designtab}', genome='${params.genome}', summary='${workflow_summary}'))"
+    """
+}
+
 
 /*
  * Completion e-mail notification
