@@ -380,7 +380,7 @@ Once installed, open IGV, go to `File > Open Session` and select the `igv_sessio
 
 ### Package information
 
-```{r}
+```{r, echo=FALSE}
 pkgs <- installed.packages()
 datatable(pkgs)
 ```
@@ -390,7 +390,7 @@ datatable(pkgs)
 MD5 checksum is required for [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/info/submission.html) submission. 
 The checksums listed here is the checksum for un-compresed fastq files.
 
-```{r}
+```{r, echo=FALSE}
 f <- dir(".", "md5.*.txt")
 d <- unlist(lapply(f, readLines))
 data <- do.call(rbind, strsplit(d, "\\s+"))
