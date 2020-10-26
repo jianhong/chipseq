@@ -1666,7 +1666,7 @@ process index_documentation {
     
     input:
     path ('DiffBind/*') from ch_diffbind_res.collect().ifEmpty([])
-    path index_docs from ch_index_docs.collect()
+    path index_docs from ch_index_docs
     path images from ch_multiqc_plots
     path doc_img from ch_output_docs_images
     path designtab from ch_input
@@ -1677,7 +1677,8 @@ process index_documentation {
 
     script:
     """
-    Rscript -e "rmarkdown::render('${index_docs}', output_file='index.html', params = list(peaktype='${PEAK_TYPE}', design='${designtab}', genome='${params.genome}', summary='${workflow_summary}'))"
+    cp ${index_docs} new.rmd
+    Rscript -e "rmarkdown::render('new.rmd', output_file='index.html', params = list(peaktype='${PEAK_TYPE}', design='${designtab}', genome='${params.genome}', summary='${workflow_summary}'))"
     """
 }
 
