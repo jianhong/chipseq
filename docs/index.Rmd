@@ -23,7 +23,7 @@ library(yaml)
 
 # ![nf-core/chipseq](images/nf-core-chipseq_logo.png)
 
-This document describes the output produced by the pipeline. Most of the plots are taken from the [MultiQC report](`r cat(file.path("multiqc", $params$peaktype), "multiqc_report.html"))`), which summaries results at the end of the pipeline.
+This document describes the output produced by the pipeline. Most of the plots are taken from the [MultiQC report](`r cat(file.path("multiqc", params$peaktype), "multiqc_report.html"))`), which summaries results at the end of the pipeline.
 
 ## Experiment design
 
@@ -33,6 +33,7 @@ cat(data$data, sep = "\n")
 ```
 
 ### Design table
+
 ```{r}
 data <- read.csv(params$design)
 datatable(data)
