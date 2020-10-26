@@ -21,9 +21,9 @@ regexes = {
     'featureCounts': ['v_featurecounts.txt', r"featureCounts v(\S+)"],
     'Preseq': ['v_preseq.txt', r"Version: (\S+)"],
     'MultiQC': ['v_multiqc.txt', r"multiqc, version (\S+)"],
-    'ChIPpeakAnno': ['v_ChIPpeakAnno.txt', r"(\S+)\(.*?\)"],
-    'DiffBind': ['v_DiffBind.txt', r"(\S+)\(.*?\)"],
-    'DESeq2': ['v_DESeq2.txt', r"(\S+)\(.*?\)"],
+    'ChIPpeakAnno': ['v_ChIPpeakAnno.txt', r"\(.*?\)"],
+    'DiffBind': ['v_DiffBind.txt', r"\(.*?\)"],
+    'DESeq2': ['v_DESeq2.txt', r"\(.*?\)"],
 }
 
 results = OrderedDict()
