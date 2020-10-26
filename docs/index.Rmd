@@ -407,6 +407,17 @@ pkgs <- installed.packages()
 datatable(pkgs)
 ```
 
+### software_versions
+
+```{r, results = 'asis', echo=FALSE}
+files <- dir("software_versions", "yaml", full.names = TRUE)
+for(i in files){
+  data <- yaml::yaml.load_file(i)
+  cat(data$data, sep = "\n")
+}
+```
+
+
 ### MD5 checksum
 
 MD5 checksum is required for [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/info/submission.html) submission. 
