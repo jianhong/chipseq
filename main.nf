@@ -1684,6 +1684,7 @@ process index_documentation {
     path designtab from ch_input
     path checksum from ch_checksum.collect().ifEmpty([])
     path workflow_summary from ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml')
+    path ('software_versions/*') from ch_software_versions_mqc.collect()
     
     output:
     path 'index.html'
