@@ -130,6 +130,7 @@ params.bwa_index = params.genome ? params.genomes[ params.genome ].bwa ?: false 
 params.gtf = params.genome ? params.genomes[ params.genome ].gtf ?: false : false
 params.gene_bed = params.genome ? params.genomes[ params.genome ].bed12 ?: false : false
 params.macs_gsize = params.genome ? params.genomes[ params.genome ].macs_gsize ?: false : false
+params.deep_gsize = params.genome ? params.genomes[ params.genome ].deep_gsize ?: false : false
 params.blacklist = params.genome ? params.genomes[ params.genome ].blacklist ?: false : false
 params.anno_readme = params.genome ? params.genomes[ params.genome ].readme ?: false : false
 
@@ -982,11 +983,11 @@ process BIGWIG {
        -o ${name}.norm.CPM.bw \\
        --binSize 10  --normalizeUsing CPM ${extendReads}
 
-    if [ "$params.macs_gsize" != "" ]
+    if [ "$params.deep_gsize" != "" ]
     then
     bamCoverage -b ${bam[0]} \\
        -o ${name}.norm.RPGC.bw \\
-       --effectiveGenomeSize $params.macs_gsize \\
+       --effectiveGenomeSize $params.deep_gsize \\
        --binSize 10  --normalizeUsing RPGC ${extendReads}
     fi
     """
