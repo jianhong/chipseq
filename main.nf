@@ -492,6 +492,8 @@ process FASTQC {
         fastqc -q -t $task.cpus ${name}.fastq.gz
         gunzip -c ${name}.fastq.gz > ${name}.fastq
         ${params.md5sum} ${name}.fastq >>md5.${name}.txt
+        touch md5.${name}.txt
+        sleep 1
         """
     } else {
         """
@@ -504,6 +506,8 @@ process FASTQC {
         ${params.md5sum} ${name}_1.fastq >>md5.${name}.txt
         gunzip -c ${name}_2.fastq.gz > ${name}_2.fastq
         ${params.md5sum} ${name}_2.fastq >>md5.${name}.txt
+        touch md5.${name}.txt
+        sleep 1
         """
     }
 }
