@@ -984,7 +984,7 @@ process BIGWIG {
        -o ${name}.norm.CPM.bw \\
        --binSize 10  --normalizeUsing CPM ${extendReads}
 
-    if [ "$params.deep_gsize" != "" ]
+    if [ "$params.deep_gsize" != "" ] && [ "$params.deep_gsize" != "false" ]
     then
     bamCoverage -b ${bam[0]} \\
        -o ${name}.norm.RPGC.bw \\
