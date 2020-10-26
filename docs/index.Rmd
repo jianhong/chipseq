@@ -13,7 +13,6 @@ params:
   design: ""
   genome: ""
   summary: ""
-  checksum: ""
 ---
 
 ```{r setup, include=FALSE, message=FALSE}
@@ -33,7 +32,7 @@ data <- yaml::yaml.load_file(params$summary)
 cat(data$data, sep = "\n")
 ```
 
-Design table:
+### Design table
 ```{r}
 data <- read.csv(params$design)
 datatable(data)
@@ -67,7 +66,11 @@ The initial QC and alignments are performed at the library-level e.g. if the sam
 
 [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) gives general quality metrics about your reads. It provides information about the quality score distribution across your reads, the per base sequence content (%A/C/G/T). You get information about adapter contamination and other overrepresented sequences.
 
-![MultiQC - FastQC per base sequence quality plot](`r ifelse(file.exists("multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png"), "multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png", "images/mqc_cutadapt_plot.png")`)
+![MultiQC - FastQC per base sequence quality plot](`r ifelse(file.exists("multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png"), "multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png", "https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc.png")`)
+
+For further reading and documentation see the [FastQC help](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
+
+> **NB:** The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality. To see how your reads look after trimming, look at the FastQC reports in the `trim_galore` directory.
 
 ### Adapter trimming
 
@@ -387,7 +390,8 @@ MD5 checksum is required for [Gene Expression Omnibus (GEO)](https://www.ncbi.nl
 The checksums listed here is the checksum for un-compresed fastq files.
 
 ```{r}
-data <- read.csv(params$checksum)
+f <- dir(".", "md5.*.txt")
+data <- do.call(rbind, strsplit(f, " "))
 datatable(data)
 ```
 

@@ -195,6 +195,7 @@ if (params.bwa_index) {
         .set { ch_bwa_index }
 }
 
+
 // Save AWS IGenomes file containing annotation version
 if (params.anno_readme && file(params.anno_readme).exists()) {
     file("${params.outdir}/genome/").mkdirs()
@@ -477,32 +478,33 @@ process FASTQC {
 
     input:
     tuple val(name), path(reads) from ch_raw_reads_fastqc
+    path md5 from ch_md5
 
     output:
     path '*.{zip,html}' into ch_fastqc_reports_mqc
-    path 'md5.txt' into ch_checksum
+    path 'md5.*.txt' into ch_checksum
 
     script:
     // Added soft-links to original fastqs for consistent naming in MultiQC
     if (params.single_end) {
         """
-        touch md5.txt
+        touch md5.${name}.txt
         [ ! -f  ${name}.fastq.gz ] && ln -s $reads ${name}.fastq.gz
         fastqc -q -t $task.cpus ${name}.fastq.gz
         gunzip -c ${name}.fastq.gz > ${name}.fastq
-        ${params.md5sum} ${name}.fastq >>md5.txt
+        ${params.md5sum} ${name}.fastq >>md5.${name}.txt
         """
     } else {
         """
-        touch md5.txt
+        touch md5.${name}.txt
         [ ! -f  ${name}_1.fastq.gz ] && ln -s ${reads[0]} ${name}_1.fastq.gz
         [ ! -f  ${name}_2.fastq.gz ] && ln -s ${reads[1]} ${name}_2.fastq.gz
         fastqc -q -t $task.cpus ${name}_1.fastq.gz
         fastqc -q -t $task.cpus ${name}_2.fastq.gz
         gunzip -c ${name}_1.fastq.gz > ${name}_1.fastq
-        ${params.md5sum} ${name}_1.fastq >>md5.txt
+        ${params.md5sum} ${name}_1.fastq >>md5.${name}.txt
         gunzip -c ${name}_2.fastq.gz > ${name}_2.fastq
-        ${params.md5sum} ${name}_2.fastq >>md5.txt
+        ${params.md5sum} ${name}_2.fastq >>md5.${name}.txt
         """
     }
 }
@@ -1681,7 +1683,7 @@ process index_documentation {
     path images from ch_multiqc_plots
     path doc_img from ch_output_docs_images
     path designtab from ch_input
-    path checksum from ch_checksum
+    path checksum from ch_checksum.collect().ifEmpty([])
     path workflow_summary from ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml')
     
     output:
@@ -1690,7 +1692,7 @@ process index_documentation {
     script:
     """
     cp ${index_docs} new.rmd
-    Rscript -e "rmarkdown::render('new.rmd', output_file='index.html', params = list(peaktype='${PEAK_TYPE}', design='${designtab}', genome='${params.genome}', summary='${workflow_summary}', checksum='${checksum}'))"
+    Rscript -e "rmarkdown::render('new.rmd', output_file='index.html', params = list(peaktype='${PEAK_TYPE}', design='${designtab}', genome='${params.genome}', summary='${workflow_summary}'))"
     """
 }
 
