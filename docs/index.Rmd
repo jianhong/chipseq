@@ -393,7 +393,7 @@ The checksums listed here is the checksum for un-compresed fastq files.
 ```{r}
 f <- dir(".", "md5.*.txt")
 d <- unlist(lapply(f, readLines))
-data <- do.call(rbind, strsplit(d, " "))
+data <- do.call(rbind, strsplit(d, "\\s+"))
 datatable(data)
 ```
 
