@@ -489,25 +489,21 @@ process FASTQC {
         """
         touch md5.${name}.txt
         [ ! -f  ${name}.fastq.gz ] && ln -s $reads ${name}.fastq.gz
-        fastqc -q -t $task.cpus ${name}.fastq.gz
         gunzip -c ${name}.fastq.gz > ${name}.fastq
         ${params.md5sum} ${name}.fastq >>md5.${name}.txt
-        touch md5.${name}.txt
-        sleep 1
+        fastqc -q -t $task.cpus ${name}.fastq.gz
         """
     } else {
         """
         touch md5.${name}.txt
         [ ! -f  ${name}_1.fastq.gz ] && ln -s ${reads[0]} ${name}_1.fastq.gz
         [ ! -f  ${name}_2.fastq.gz ] && ln -s ${reads[1]} ${name}_2.fastq.gz
-        fastqc -q -t $task.cpus ${name}_1.fastq.gz
-        fastqc -q -t $task.cpus ${name}_2.fastq.gz
         gunzip -c ${name}_1.fastq.gz > ${name}_1.fastq
         ${params.md5sum} ${name}_1.fastq >>md5.${name}.txt
         gunzip -c ${name}_2.fastq.gz > ${name}_2.fastq
         ${params.md5sum} ${name}_2.fastq >>md5.${name}.txt
-        touch md5.${name}.txt
-        sleep 1
+        fastqc -q -t $task.cpus ${name}_1.fastq.gz
+        fastqc -q -t $task.cpus ${name}_2.fastq.gz
         """
     }
 }
