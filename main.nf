@@ -478,7 +478,6 @@ process FASTQC {
 
     input:
     tuple val(name), path(reads) from ch_raw_reads_fastqc
-    path md5 from ch_md5
 
     output:
     path '*.{zip,html}' into ch_fastqc_reports_mqc
