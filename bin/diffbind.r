@@ -186,6 +186,23 @@ if(packageVersion("ChIPpeakAnno")>="3.23.12"){
   out <- metagenePlot(peaks, txdb)
   ggsave(file.path(pf, "metagenePlotToTSSOfEachPeakList.pdf"), plot=out, width=9, height=9)
   ggsave(file.path(pf, "metagenePlotToTSSOfEachPeakList.png"), plot=out)
+  
+  if(length(peaks)<=5){
+    ol <- findOverlapsOfPeaks(peaks)
+    png(file.path(pf, "vennDiagram.all.png"))
+    makeVennDiagram(ol, connectedPeaks="keepAll")
+    dev.off()
+  }else{
+    peaks.split <- split(peaks, Condition)
+    null <- mapply(peaks.split, names(peaks.split), FUN=function(.peaks, .name){
+      if(length(.peaks)<=5){
+        ol <- findOverlapsOfPeaks(.peaks)
+        png(file.path(pf, paste0("vennDiagram.", .name, ".png")))
+        makeVennDiagram(ol, connectedPeaks="keepAll")
+        dev.off()
+      }
+    })
+  }
 }
 
 
