@@ -588,6 +588,7 @@ if (params.skip_trimming) {
  * STEP 3.1: Map read(s) with bwa mem
  */
 process BWA_MEM {
+    errorStrategy { task.attempt <= 3 ? 'retry' : 'terminate' }
     tag "$name"
     label 'process_high'
 
