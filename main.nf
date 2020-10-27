@@ -808,7 +808,8 @@ if (params.single_end) {
                 ch_rm_orphan_bam_macs_1;
                 ch_rm_orphan_bam_macs_2;
                 ch_rm_orphan_bam_phantompeakqualtools;
-                ch_rm_orphan_name_bam_counts }
+                ch_rm_orphan_name_bam_counts;
+                ch_group_bam_diffbind}
 
     ch_filter_bam_flagstat
         .into { ch_rm_orphan_flagstat_bigwig;
@@ -840,7 +841,7 @@ if (params.single_end) {
                                                              ch_rm_orphan_bam_macs_1,
                                                              ch_rm_orphan_bam_macs_2,
                                                              ch_rm_orphan_bam_phantompeakqualtools
-        tuple val(name), path("${prefix}.bam") into ch_rm_orphan_name_bam_counts
+        tuple val(name), path("${prefix}.bam") into ch_rm_orphan_name_bam_counts, ch_group_bam_diffbind
         tuple val(name), path('*.flagstat') into ch_rm_orphan_flagstat_bigwig,
                                                  ch_rm_orphan_flagstat_macs,
                                                  ch_rm_orphan_flagstat_mqc
@@ -1157,6 +1158,7 @@ process MACS2 {
     path '*igv.txt' into ch_macs_igv
     path '*_mqc.tsv' into ch_macs_mqc
     path '*.{bed,xls,gappedPeak,bdg}'
+    path "*.$PEAK_TYPE" into ch_diffbind
 
     script:
     broad = params.narrow_peak ? '' : "--broad --broad-cutoff ${params.broad_cutoff}"
@@ -1267,7 +1269,7 @@ ch_macs_consensus
     .map { it ->  [ it[0], it[1], it[2], it[-1] ] }
     .groupTuple()
     .map { it ->  [ it[0], it[1][0], it[2][0], it[3].sort() ] }
-    .into { ch_macs_consensus; ch_diffbind }
+    .into { ch_macs_consensus }
 
 
 /*
@@ -1365,7 +1367,7 @@ ch_group_bam_counts
     .groupTuple()
     .map { it -> [ it[0], it[1][0], it[2][0], it[3].flatten().sort() ] }
     .join(ch_macs_consensus_saf)
-    .into { ch_group_bam_counts; ch_group_bam_diffbind }
+    .into { ch_group_bam_counts }
 
 /*
  * STEP 7.3: Count reads in consensus peaks with featureCounts
@@ -1470,8 +1472,8 @@ process DIFFBIND {
   params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
   
   input: 
-  tuple val(antibody), val(replicatesExist), val(multipleGroups), path(peaks) from ch_diffbind.collect()
-  tuple val(antibody2), val(replicatesExist2), val(multipleGroups2), path(bams), path(saf) from ch_group_bam_diffbind.collect()
+  tuple path(peaks) from ch_diffbind.collect().ifEmpty([])
+  tuple path(bams) from ch_group_bam_diffbind.collect(it[1]).ifEmpty([])
   path designtab from ch_input
   path gtf from ch_gtf
   
