@@ -1267,7 +1267,7 @@ ch_macs_consensus
     .map { it ->  [ it[0], it[1], it[2], it[-1] ] }
     .groupTuple()
     .map { it ->  [ it[0], it[1][0], it[2][0], it[3].sort() ] }
-    .into { ch_macs_consensus; ch_diffbind }
+    .into { ch_macs_consensus }
 
 
 /*
@@ -1365,7 +1365,7 @@ ch_group_bam_counts
     .groupTuple()
     .map { it -> [ it[0], it[1][0], it[2][0], it[3].flatten().sort() ] }
     .join(ch_macs_consensus_saf)
-    .into { ch_group_bam_counts; ch_group_bam_diffbind }
+    .into { ch_group_bam_counts}
 
 /*
  * STEP 7.3: Count reads in consensus peaks with featureCounts
@@ -1456,12 +1456,20 @@ process CONSENSUS_PEAKS_DESEQ2 {
     """
 }
 
+
 /*
  * Replace STEP 6.3 by ChIPpeakAnno and Run DiffBind
  */
+ch_group_bam_counts
+  .map { it -> it[3].flatten().sort() }
+  .into{ ch_group_bam_diffbind }
+ch_macs_consensus
+  .map { it -> it[3].flattern().sort() }
+  .into{ ch_diffbind }
 // Group by ip from this point and carry forward boolean variables
 // need bam file, peaks
 process DIFFBIND {
+  errorStrategy { task.attempt <= 3 ? 'retry' : 'ignore' }
   tag "${antibody}"
     label 'process_medium'
     publishDir "${params.outdir}/bwa/mergedLibrary", mode: params.publish_dir_mode
@@ -1469,8 +1477,8 @@ process DIFFBIND {
   params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
   
   input: 
-  tuple val(antibody), val(replicatesExist), val(multipleGroups), path(peaks) from ch_diffbind
-  tuple val(antibody2), val(replicatesExist2), val(multipleGroups2), path(bams), path(saf) from ch_group_bam_diffbind
+  path peaks from ch_diffbind.collect()
+  path bams from ch_group_bam_diffbind.collect()
   path designtab from ch_input
   path gtf from ch_gtf
   
