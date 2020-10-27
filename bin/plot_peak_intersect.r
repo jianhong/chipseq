@@ -54,7 +54,7 @@ if (nintersects > 70) {
 }
 
 pdf(opt$output_file,onefile=F,height=10,width=20)
-
+if(length(sets)>1){
 upset(
     fromExpression(comb.vec),
     nsets = length(sets),
@@ -69,7 +69,7 @@ upset(
     number.angles = 30,
     text.scale = c(1.5, 1.5, 1.5, 1.5, 1.5, 1.2)
 )
-
+}
 dev.off()
 
 ################################################
