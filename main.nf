@@ -1365,7 +1365,7 @@ ch_group_bam_counts
     .groupTuple()
     .map { it -> [ it[0], it[1][0], it[2][0], it[3].flatten().sort() ] }
     .join(ch_macs_consensus_saf)
-    .into { ch_group_bam_counts; ch_group_bam_diffbind}
+    .into { ch_group_bam_counts; ch_group_bam_diffbind }
 
 /*
  * STEP 7.3: Count reads in consensus peaks with featureCounts
@@ -1456,15 +1456,11 @@ process CONSENSUS_PEAKS_DESEQ2 {
     """
 }
 
-
 /*
  * Replace STEP 6.3 by ChIPpeakAnno and Run DiffBind
  */
 // Group by ip from this point and carry forward boolean variables
 // need bam file, peaks
-peaks = Channel.from(ch_diffbind)
-bams = Channel.from(ch_group_bam_diffbind)
-
 process DIFFBIND {
   errorStrategy { task.attempt <= 3 ? 'retry' : 'ignore' }
   tag "${antibody}"
@@ -1474,7 +1470,8 @@ process DIFFBIND {
   params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
   
   input: 
-  tuple val(antibody), val(replicatesExist), val(multipleGroups), path(peaks), path(bams), path(saf) from peaks.cross(bams).grouopTuple(by:[0,1,2]).colect()
+  tuple val(antibody), val(replicatesExist), val(multipleGroups), path(peaks) from ch_diffbind.collect()
+  tuple val(antibody2), val(replicatesExist2), val(multipleGroups2), path(bams), path(saf) from ch_group_bam_diffbind.collect()
   path designtab from ch_input
   path gtf from ch_gtf
   
@@ -1485,7 +1482,7 @@ process DIFFBIND {
   """
   diffbind.r -d ${designtab} \\
   -p ${peaks.collect{it.toString()}.sort().join('___')} \\
-  -b ${bams.collect().findAll{ it.toString().endsWith('.bam') }.sort().join('___')} \\
+  -b ${bams.findAll { it.toString().endsWith('.bam') }.sort().join('___')} \\
   -g ${gtf} \\
   -c $task.cpus
   """
