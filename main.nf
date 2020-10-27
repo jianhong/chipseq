@@ -1155,11 +1155,11 @@ process MACS2 {
     output:
     tuple val(antibody), val(replicatesExist), val(multipleGroups), val(ip), val(control), path("*.$PEAK_TYPE") into ch_macs_homer,
                                                                                                                      ch_macs_qc,
-                                                                                                                     ch_macs_consensus
+                                                                                                                     ch_macs_consensus,
+                                                                                                                     ch_diffbind
     path '*igv.txt' into ch_macs_igv
     path '*_mqc.tsv' into ch_macs_mqc
     path '*.{bed,xls,gappedPeak,bdg}'
-    path "*.$PEAK_TYPE" into ch_diffbind
 
     script:
     broad = params.narrow_peak ? '' : "--broad --broad-cutoff ${params.broad_cutoff}"
@@ -1473,7 +1473,7 @@ process DIFFBIND {
   params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
   
   input: 
-  path peaks from ch_diffbind.collect().ifEmpty([])
+  path peaks from ch_diffbind.collect{it[6]}.ifEmpty([])
   path bams from ch_group_bam_diffbind.collect{it[1]}.ifEmpty([])
   path designtab from ch_input
   path gtf from ch_gtf
