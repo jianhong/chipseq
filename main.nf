@@ -1462,10 +1462,10 @@ process CONSENSUS_PEAKS_DESEQ2 {
  */
 ch_group_bam_counts
   .map { it -> it[3].flatten().sort() }
-  .into{ ch_group_bam_diffbind }
+  .set{ ch_group_bam_diffbind }
 ch_macs_consensus
   .map { it -> it[3].flattern().sort() }
-  .into{ ch_diffbind }
+  .set{ ch_diffbind }
 // Group by ip from this point and carry forward boolean variables
 // need bam file, peaks
 process DIFFBIND {
