@@ -34,7 +34,7 @@ cat(data$data, sep = "\n")
 
 ### Design table
 
-```{r}
+```{r, echo=FALSE}
 data <- read.csv(params$design)
 datatable(data)
 ```
