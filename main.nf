@@ -1474,7 +1474,7 @@ process DIFFBIND {
   
   input: 
   path peaks from ch_diffbind.collect().ifEmpty([])
-  path bams from ch_group_bam_diffbind.collect(it[1]).ifEmpty([])
+  path bams from ch_group_bam_diffbind.collect().ifEmpty([])
   path designtab from ch_input
   path gtf from ch_gtf
   
