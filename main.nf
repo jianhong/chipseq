@@ -1461,11 +1461,11 @@ process CONSENSUS_PEAKS_DESEQ2 {
  * Replace STEP 6.3 by ChIPpeakAnno and Run DiffBind
  */
 ch_group_bam_diffbind
-  .map { it -> [it[3].flatten().sort()] }
-  .set{ ch_group_bam_diffbind }
+  .map { it -> it[3] }
+  .set { ch_group_bam_diffbind }
 ch_diffbind
-  .map { it -> [it[3].flatten().sort()] }
-  .set{ ch_diffbind }
+  .map { it -> it[3] }
+  .set { ch_diffbind }
 // Group by ip from this point and carry forward boolean variables
 // need bam file, peaks
 process DIFFBIND {
