@@ -840,8 +840,9 @@ if (params.single_end) {
                                                              ch_rm_orphan_bam_bigwig,
                                                              ch_rm_orphan_bam_macs_1,
                                                              ch_rm_orphan_bam_macs_2,
-                                                             ch_rm_orphan_bam_phantompeakqualtools
-        tuple val(name), path("${prefix}.bam") into ch_rm_orphan_name_bam_counts, ch_group_bam_diffbind
+                                                             ch_rm_orphan_bam_phantompeakqualtools, 
+                                                             ch_group_bam_diffbind
+        tuple val(name), path("${prefix}.bam") into ch_rm_orphan_name_bam_counts
         tuple val(name), path('*.flagstat') into ch_rm_orphan_flagstat_bigwig,
                                                  ch_rm_orphan_flagstat_macs,
                                                  ch_rm_orphan_flagstat_mqc
@@ -1269,7 +1270,7 @@ ch_macs_consensus
     .map { it ->  [ it[0], it[1], it[2], it[-1] ] }
     .groupTuple()
     .map { it ->  [ it[0], it[1][0], it[2][0], it[3].sort() ] }
-    .into { ch_macs_consensus }
+    .set { ch_macs_consensus }
 
 
 /*
@@ -1367,7 +1368,7 @@ ch_group_bam_counts
     .groupTuple()
     .map { it -> [ it[0], it[1][0], it[2][0], it[3].flatten().sort() ] }
     .join(ch_macs_consensus_saf)
-    .into { ch_group_bam_counts }
+    .set { ch_group_bam_counts }
 
 /*
  * STEP 7.3: Count reads in consensus peaks with featureCounts
