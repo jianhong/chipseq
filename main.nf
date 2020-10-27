@@ -1464,7 +1464,7 @@ ch_group_bam_diffbind
   .map { it -> it[3].flatten().sort() }
   .set{ ch_group_bam_diffbind }
 ch_diffbind
-  .map { it -> it[3].flattern().sort() }
+  .map { it -> it[3].flatten().sort() }
   .set{ ch_diffbind }
 // Group by ip from this point and carry forward boolean variables
 // need bam file, peaks
