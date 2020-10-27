@@ -1460,12 +1460,6 @@ process CONSENSUS_PEAKS_DESEQ2 {
 /*
  * Replace STEP 6.3 by ChIPpeakAnno and Run DiffBind
  */
-ch_group_bam_diffbind
-  .map { it -> it[3] }
-  .set { ch_group_bam_diffbind }
-ch_diffbind
-  .map { it -> it[3] }
-  .set { ch_diffbind }
 // Group by ip from this point and carry forward boolean variables
 // need bam file, peaks
 process DIFFBIND {
@@ -1477,8 +1471,8 @@ process DIFFBIND {
   params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
   
   input: 
-  path peaks from ch_diffbind.collect()
-  path bams from ch_group_bam_diffbind.collect()
+  path peaks from ch_diffbind.collect{ it[3] }
+  path bams from ch_group_bam_diffbind.collect{ it[3] }
   path designtab from ch_input
   path gtf from ch_gtf
   
