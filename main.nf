@@ -1473,8 +1473,8 @@ process DIFFBIND {
   params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
   
   input: 
-  set path(peaks), path(bams) from ch_diffbind.collect{it[5]}.ifEmpty([]).sort()
-                     .combine(ch_group_bam_diffbind.collect{it[1]}.ifEmpty([]).sort())
+  set path(peak_bam) from ch_diffbind.collect{it[5]}.ifEmpty([])
+                     .combine(ch_group_bam_diffbind.collect{it[1]}.ifEmpty([]))
   path designtab from ch_input
   path gtf from ch_gtf
   
@@ -1484,7 +1484,7 @@ process DIFFBIND {
   script:
   """
   diffbind.r -d ${designtab} \\
-  -p ${peaks.toString().sort().join('___')} \\
+  -p ${peak_bam.findAll{ it.toString().endsWidth("${PEAK_TYPE}")}.sort().join('___')} \\
   -b ${bams.findAll { it.toString().endsWith('.bam') }.sort().join('___')} \\
   -g ${gtf} \\
   -c $task.cpus
