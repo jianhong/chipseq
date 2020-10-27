@@ -58,6 +58,9 @@ for (idx in 1:length(HomerFiles)) {
 
     sampleid = SampleIDs[idx]
     anno.dat <- read.csv(HomerFiles[idx], sep="\t", header=TRUE)
+    if(nrow(anno.dat)==0){
+        next
+    }
     anno.dat <- anno.dat[,c("Annotation","Distance.to.TSS","Nearest.PromoterID")]
 
     ## REPLACE UNASSIGNED FEATURE ENTRIES WITH SENSIBLE VALUES
