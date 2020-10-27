@@ -31,10 +31,14 @@ out <- "sample.csv"
 ## create a csv file with SampleID, Condition, Replicate, bamReads Peaks Peakcaller PeakFormat, ScoreCol, Factor, Tissue
 sampleDesign <- read.csv(opt$design)
 bamReads <- unlist(strsplit(opt$bams, "___"))
-names(bamReads) <- sub(".mLb.clN.*.bam", "", bamReads)
+names(bamReads) <- sub(".mLb.clN.*bam", "", bamReads)
 Peaks <- unlist(strsplit(opt$peaks, "___"))
 SampleID <- sub("_peaks.*?Peak", "", Peaks)
-stopifnot(all(names(bamReads) %in% SampleID))
+if(!all(names(bamReads) %in% SampleID)){
+  stop("some names of bamReads is not in SampleID. names(bamReads)=", 
+       paste(names(bamReads), collapse = "; "),
+       "SampleID=", paste(SampleID, collapse=";"))
+}
 bamReads <- bamReads[SampleID]
 names(Peaks) <- SampleID
 rownames(sampleDesign) <- paste(sampleDesign$group, sampleDesign$replicate, sep="_R")
