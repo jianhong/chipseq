@@ -1464,6 +1464,7 @@ ch_diffbind.collect{ it[3] }.each { println it }
 ch_group_bam_diffbind.collect{ it[3] }.each{ println it}
 // Group by ip from this point and carry forward boolean variables
 // need bam file, peaks
+/*
 process DIFFBIND {
   errorStrategy { task.attempt <= 3 ? 'retry' : 'ignore' }
   tag "${antibody}"
@@ -1490,7 +1491,7 @@ process DIFFBIND {
   -c $task.cpus
   """
 }
-
+*/
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
