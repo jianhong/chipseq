@@ -1464,7 +1464,6 @@ process CONSENSUS_PEAKS_DESEQ2 {
  */
 // Group by ip from this point and carry forward boolean variables
 // need bam file, peaks
-ch_group_bam_diffbind.map{it -> it[1]}.set(ch_group_bam_diffbind)
 process DIFFBIND {
   errorStrategy { task.attempt <= 3 ? 'retry' : 'ignore' }
   tag "${antibody}"
@@ -1475,7 +1474,7 @@ process DIFFBIND {
   
   input: 
   path peaks from ch_diffbind.collect().ifEmpty([])
-  path bams from ch_group_bam_diffbind.collect().ifEmpty([])
+  path bams from ch_group_bam_diffbind.collect{it[1]}.ifEmpty([])
   path designtab from ch_input
   path gtf from ch_gtf
   
