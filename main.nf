@@ -1460,10 +1460,10 @@ process CONSENSUS_PEAKS_DESEQ2 {
 /*
  * Replace STEP 6.3 by ChIPpeakAnno and Run DiffBind
  */
-//ch_diffbind.collect{ it[3] }.each { println "peak:"+it }
-//ch_group_bam_diffbind.collect{ it[3] }.each{ println "bam:"+it}
 // Group by ip from this point and carry forward boolean variables
 // need bam file, peaks
+peaks = Channel.from(ch_diffbind)
+bams = Channel.from(ch_group_bam_diffbind)
 
 process DIFFBIND {
   errorStrategy { task.attempt <= 3 ? 'retry' : 'ignore' }
@@ -1474,8 +1474,7 @@ process DIFFBIND {
   params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
   
   input: 
-  path peaks from ch_diffbind.collect{it[3]}.ifEmpty([])
-  path bams from ch_group_bam_diffbind.collect{it[3]}.ifEmpty([])
+  tuple val(antibody), val(replicatesExist), val(multipleGroups), path(peaks), path(bams), path(saf) from peaks.cross(bams).grouopTuple(by:[0,1,2]).colect()
   path designtab from ch_input
   path gtf from ch_gtf
   
