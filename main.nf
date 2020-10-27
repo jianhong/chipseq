@@ -1267,7 +1267,7 @@ ch_macs_consensus
     .map { it ->  [ it[0], it[1], it[2], it[-1] ] }
     .groupTuple()
     .map { it ->  [ it[0], it[1][0], it[2][0], it[3].sort() ] }
-    .into { ch_macs_consensus }
+    .into { ch_macs_consensus; ch_diffbind }
 
 
 /*
@@ -1365,7 +1365,7 @@ ch_group_bam_counts
     .groupTuple()
     .map { it -> [ it[0], it[1][0], it[2][0], it[3].flatten().sort() ] }
     .join(ch_macs_consensus_saf)
-    .into { ch_group_bam_counts}
+    .into { ch_group_bam_counts; ch_group_bam_diffbind}
 
 /*
  * STEP 7.3: Count reads in consensus peaks with featureCounts
@@ -1460,10 +1460,10 @@ process CONSENSUS_PEAKS_DESEQ2 {
 /*
  * Replace STEP 6.3 by ChIPpeakAnno and Run DiffBind
  */
-ch_group_bam_counts
+ch_group_bam_diffbind
   .map { it -> it[3].flatten().sort() }
   .set{ ch_group_bam_diffbind }
-ch_macs_consensus
+ch_diffbind
   .map { it -> it[3].flattern().sort() }
   .set{ ch_diffbind }
 // Group by ip from this point and carry forward boolean variables
