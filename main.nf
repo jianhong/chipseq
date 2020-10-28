@@ -1460,10 +1460,13 @@ process CONSENSUS_PEAKS_DESEQ2 {
 }
 
 /*
- * Replace STEP 7.3 by ChIPpeakAnno and Run DiffBind
+ * Replace STEP 7.4 by ChIPpeakAnno and Run DiffBind
  */
 // Group by ip from this point and carry forward boolean variables
 // need bam file, peaks
+ch_diffbind.collect{it[5]}
+           .combine(ch_group_bam_diffbind.collect{it[1]})
+           .set { ch_diffbind }
 process DIFFBIND {
   errorStrategy { task.attempt <= 3 ? 'retry' : 'ignore' }
   tag "${antibody}"
@@ -1473,8 +1476,7 @@ process DIFFBIND {
   params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
   
   input: 
-  path peak_bam from ch_diffbind.collect{it[5]}.ifEmpty([])
-                     .combine(ch_group_bam_diffbind.collect{it[1]}.ifEmpty([]))
+  path peak_bam from ch_diffbind
   path designtab from ch_input
   path gtf from ch_gtf
   
