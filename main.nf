@@ -808,7 +808,8 @@ if (params.single_end) {
                 ch_rm_orphan_bam_macs_1;
                 ch_rm_orphan_bam_macs_2;
                 ch_rm_orphan_bam_phantompeakqualtools;
-                ch_rm_orphan_name_bam_counts}
+                ch_rm_orphan_name_bam_counts;
+                ch_group_bam_diffbind}
 
     ch_filter_bam_flagstat
         .into { ch_rm_orphan_flagstat_bigwig;
@@ -839,7 +840,8 @@ if (params.single_end) {
                                                              ch_rm_orphan_bam_bigwig,
                                                              ch_rm_orphan_bam_macs_1,
                                                              ch_rm_orphan_bam_macs_2,
-                                                             ch_rm_orphan_bam_phantompeakqualtools
+                                                             ch_rm_orphan_bam_phantompeakqualtools, 
+                                                             ch_group_bam_diffbind
         tuple val(name), path("${prefix}.bam") into ch_rm_orphan_name_bam_counts
         tuple val(name), path('*.flagstat') into ch_rm_orphan_flagstat_bigwig,
                                                  ch_rm_orphan_flagstat_macs,
@@ -1153,11 +1155,11 @@ process MACS2 {
     output:
     tuple val(antibody), val(replicatesExist), val(multipleGroups), val(ip), val(control), path("*.$PEAK_TYPE") into ch_macs_homer,
                                                                                                                      ch_macs_qc,
-                                                                                                                     ch_macs_consensus
+                                                                                                                     ch_macs_consensus,
+                                                                                                                     ch_diffbind
     path '*igv.txt' into ch_macs_igv
     path '*_mqc.tsv' into ch_macs_mqc
     path '*.{bed,xls,gappedPeak,bdg}'
-    path '*.{bam,bai,$PEAK_TYPE}' into ch_diffbind
 
     script:
     broad = params.narrow_peak ? '' : "--broad --broad-cutoff ${params.broad_cutoff}"
@@ -1458,7 +1460,7 @@ process CONSENSUS_PEAKS_DESEQ2 {
 }
 
 /*
- * Replace STEP 7.5 by ChIPpeakAnno and Run DiffBind
+ * Replace STEP 7.3 by ChIPpeakAnno and Run DiffBind
  */
 // Group by ip from this point and carry forward boolean variables
 // need bam file, peaks
@@ -1471,7 +1473,8 @@ process DIFFBIND {
   params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
   
   input: 
-  path peak from ch_diffbind.collect().ifEmpty([])
+  path peak_bam from ch_diffbind.collect{it[5]}.ifEmpty([])
+                     .combine(ch_group_bam_diffbind.collect{it[1]}.ifEmpty([]))
   path designtab from ch_input
   path gtf from ch_gtf
   
@@ -1481,7 +1484,7 @@ process DIFFBIND {
   script:
   """
   diffbind.r -d ${designtab} \\
-  -p ${peak.toString().sort().join('___')} \\
+  -p ${peak_bam.toString().sort().join('___')} \\
   -g ${gtf} \\
   -c $task.cpus
   """
