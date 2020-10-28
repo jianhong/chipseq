@@ -7,7 +7,6 @@ library(GenomicFeatures)
 library(optparse)
 
 option_list <- list(make_option(c("-d", "--design"), type="character", default=NULL, help="filename of design table", metavar="path"),
-                    make_option(c("-b", "--bams"), type="character", default=NULL, help="filename after sample name in featurecount file header e.g. '.rmDup.bam' if 'DRUG_R1.rmDup.bam'", metavar="string"),
                     make_option(c("-p", "--peaks"), type="character", default=NULL, help="peak files", metavar="string"),
                     make_option(c("-g", "--gtf"), type="character", default=NULL, help="filename of gtf file", metavar="path"),
                     make_option(c("-c", "--cores"), type="integer", default=1, help="Number of cores", metavar="integer"))
@@ -19,7 +18,7 @@ if (is.null(opt$design)){
   print_help(opt_parser)
   stop("Please provide design table file.", call.=FALSE)
 }
-if (is.null(opt$bams)||is.null(opt$peaks)){
+if (is.null(opt$peaks)){
   print_help(opt_parser)
   stop("Please provide bam and peak file name.", call.=FALSE)
 }
@@ -30,6 +29,8 @@ if (is.null(opt$gtf)){
 out <- "sample.csv"
 ## create a csv file with SampleID, Condition, Replicate, bamReads Peaks Peakcaller PeakFormat, ScoreCol, Factor, Tissue
 sampleDesign <- read.csv(opt$design)
+opt$bams <- opt$peaks[grepl("bam$", opt$peaks)]
+opt$peaks <- opt$peaks[grepl("Peak$", opt$peaks)]
 bamReads <- unlist(strsplit(opt$bams, "___"))
 names(bamReads) <- sub(".mLb.clN.*bam", "", bamReads)
 Peaks <- unlist(strsplit(opt$peaks, "___"))
