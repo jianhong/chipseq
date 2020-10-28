@@ -29,11 +29,10 @@ if (is.null(opt$gtf)){
 out <- "sample.csv"
 ## create a csv file with SampleID, Condition, Replicate, bamReads Peaks Peakcaller PeakFormat, ScoreCol, Factor, Tissue
 sampleDesign <- read.csv(opt$design)
-opt$bams <- opt$peaks[grepl("bam$", opt$peaks)]
-opt$peaks <- opt$peaks[grepl("Peak$", opt$peaks)]
-bamReads <- unlist(strsplit(opt$bams, "___"))
+opt$peaks <- unlist(strsplit(opt$peaks, "___"))
+bamReads <- opt$peaks[grepl("bam$", opt$peaks)]
 names(bamReads) <- sub(".mLb.clN.*bam", "", bamReads)
-Peaks <- unlist(strsplit(opt$peaks, "___"))
+Peaks <- opt$peaks[grepl("Peak$", opt$peaks)]
 SampleID <- sub("_peaks.*?Peak", "", Peaks)
 if(!all(names(bamReads) %in% SampleID)){
   stop("some names of bamReads is not in SampleID. names(bamReads)=", 
