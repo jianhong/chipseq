@@ -1473,7 +1473,7 @@ process DIFFBIND {
   label 'process_medium'
   publishDir "${params.outdir}/bwa/mergedLibrary", mode: params.publish_dir_mode
   when:
-  params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
+  params.macs_gsize && !params.skip_consensus_peaks
   
   input: 
   path peak_bam from ch_peak_bam.collect()
