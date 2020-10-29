@@ -1470,9 +1470,8 @@ ch_diffbind.map{[it[3], it[4], it[5]]}
            .set{ch_peak_bam}
 process DIFFBIND {
   errorStrategy { task.attempt <= 3 ? 'retry' : 'ignore' }
-  tag "${antibody}"
-    label 'process_medium'
-    publishDir "${params.outdir}/bwa/mergedLibrary", mode: params.publish_dir_mode
+  label 'process_medium'
+  publishDir "${params.outdir}/bwa/mergedLibrary", mode: params.publish_dir_mode
   when:
   params.macs_gsize && (replicatesExist || multipleGroups) && !params.skip_consensus_peaks
   
