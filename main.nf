@@ -1466,7 +1466,7 @@ process CONSENSUS_PEAKS_DESEQ2 {
 // need bam file, peaks
 ch_diffbind.map{[it[3], it[4], it[5]]}
            .join(ch_group_bam_diffbind, by: 0)
-           .map{[it[2], it[3][0], it[3][1]]}
+           .map{[it[2], it[3][0], it[3][1]]}.flatten()
            .set{ch_peak_bam}
 process DIFFBIND {
   errorStrategy { task.attempt <= 3 ? 'retry' : 'ignore' }
@@ -1474,19 +1474,19 @@ process DIFFBIND {
   publishDir "${params.outdir}/bwa/mergedLibrary", mode: params.publish_dir_mode
   when:
   params.macs_gsize && !params.skip_consensus_peaks
-  
-  input: 
-  path peak_bam from ch_peak_bam.collect()
+
+  input:
+  path peaks from ch_peak_bam.collect()
   path designtab from ch_input
   path gtf from ch_gtf
-  
+
   output:
   path 'DiffBind/*' into ch_diffbind_res
-  
+
   script:
   """
   diffbind.r -d ${designtab} \\
-  -p ${peak_bam.flatten().toString().sort().join('___')} \\
+  -p ${peaks.collect{it.toString()}.join('___')} \\
   -g ${gtf} \\
   -c $task.cpus
   """
