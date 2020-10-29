@@ -198,7 +198,7 @@ filename <- sapply(files, function(.ele) {
     "N/A"
   }
 })
-filename <- sub("svg", "png", filename)
+filename <- gsub("svg", "png", filename)
 ```
 
 
