@@ -80,7 +80,7 @@ conda info --envs
 
 ## run from nfcore docker
 ```
-docker run -it nfcore/chipseq:1.2.1
+docker run -it -v ${PWD}/tmp4chipseq:/home/ nfcore/chipseq:1.2.1
 conda install nextflow
 Rscript -e 'BiocManager::install(c("biocparallel", "deseq2", "vsn", "ChIPpeakAnno", "DiffBind", "rmarkdown", "dt"), ask = FALSE)'
 Rscript -e "BiocManager::install('jianhong/ChIPpeakAnno')"
