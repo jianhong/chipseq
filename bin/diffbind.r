@@ -210,6 +210,7 @@ if(nrow(samples)>3){
         dev.off()
       }else{
         peaks.split <- split(peaks, samples$Condition)
+        peaks.split <- peaks.split[lengths(peaks.split)>1]
         null <- mapply(peaks.split, names(peaks.split), FUN=function(.peaks, .name){
           if(length(.peaks)<=5){
             ol <- findOverlapsOfPeaks(.peaks)
