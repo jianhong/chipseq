@@ -99,7 +99,7 @@ if(nrow(samples)>3){
   id2symbol <- id2symbol(gtf)
   anno <- toGRanges(txdb)
   resList <- list()
-  if(unique(Condition)>=2){
+  if(length(unique(Condition))>=2){
     contrasts <- combn(unique(Condition), m = 2, simplify = FALSE)
     names(contrasts) <- sapply(contrasts, function(.ele) paste(.ele[2], .ele[1], sep="-"))
     for(i in seq_along(contrasts)){
@@ -177,11 +177,11 @@ if(nrow(samples)>3){
       ggsave(file.path(pf, "metagenePlotToTSSofDiffBind.pdf"), plot=out, width=9, height=9)
       ggsave(file.path(pf, "metagenePlotToTSSofDiffBind.png"), plot=out)
     }
-    if(length(Peaks)>0){
-      peaks <- mapply(Peaks, PeakFormat, 
+    if(length(samples$Peaks)>0){
+      peaks <- mapply(samples$Peaks, samples$PeakFormat, 
                       FUN=function(.ele, .format) toGRanges(.ele, format=.format), 
                       SIMPLIFY = FALSE)
-      names(peaks) <- SampleID
+      names(peaks) <- samples$SampleID
       peaks <- GRangesList(peaks)
       out <- genomicElementDistribution(peaks, 
                                         TxDb = txdb,
@@ -209,7 +209,7 @@ if(nrow(samples)>3){
         makeVennDiagram(ol, connectedPeaks="keepAll")
         dev.off()
       }else{
-        peaks.split <- split(peaks, Condition)
+        peaks.split <- split(peaks, samples$Condition)
         null <- mapply(peaks.split, names(peaks.split), FUN=function(.peaks, .name){
           if(length(.peaks)<=5){
             ol <- findOverlapsOfPeaks(.peaks)

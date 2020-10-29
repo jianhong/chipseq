@@ -1469,7 +1469,7 @@ ch_diffbind.map{[it[3], it[4], it[5]]}
            .map{[it[2], it[3][0], it[3][1]]}.flatten()
            .set{ch_peak_bam}
 process DIFFBIND {
-  errorStrategy { task.attempt <= 3 ? 'retry' : 'ignore' }
+  errorStrategy { task.exitStatus in [143,137,104,134,139] ? 'retry' : 'ignore' }
   label 'process_medium'
   publishDir "${params.outdir}/bwa/mergedLibrary", mode: params.publish_dir_mode
   when:
