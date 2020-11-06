@@ -41,6 +41,7 @@ def reformat_design(DesignFile,ReadMappingFile,ControlMappingFile):
     ## CHECK HEADER
     fin = open(DesignFile,'r')
     header = fin.readline().strip().split(',')
+    header = header[0:6]
     if header != HEADER:
         print("{} header: {} != {}".format(ERROR_STR,','.join(header),','.join(HEADER)))
         sys.exit(1)
@@ -52,6 +53,7 @@ def reformat_design(DesignFile,ReadMappingFile,ControlMappingFile):
         line = fin.readline()
         if line:
             lspl = [x.strip() for x in line.strip().split(',')]
+            lspl = lspl[0:6]
             group,replicate,fastQFiles,antibody,control = lspl[0],lspl[1],[x for x in lspl[2:-2] if x],lspl[-2],lspl[-1]
 
             ## CHECK VALID NUMBER OF COLUMNS PER SAMPLE

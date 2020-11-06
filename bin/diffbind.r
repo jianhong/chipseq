@@ -29,6 +29,7 @@ if (is.null(opt$gtf)){
 out <- "sample.csv"
 ## create a csv file with SampleID, Condition, Replicate, bamReads Peaks Peakcaller PeakFormat, ScoreCol, Factor, Tissue
 sampleDesign <- read.csv(opt$design)
+sampleDesign <- unique(sampleDesign[, colnames(sampleDesign) %in% c("fastq_1", "fastq_2")])
 opt$peaks <- unlist(strsplit(opt$peaks, "___"))
 bamReads <- opt$peaks[grepl("bam$", opt$peaks)]
 names(bamReads) <- sub(".mLb.clN.*bam", "", bamReads)
@@ -47,16 +48,49 @@ Replicate <- sampleDesign[SampleID, "replicate"]
 Factor <- sampleDesign[SampleID, "antibody"]
 Peakcaller <- "macs2"
 PeakFormat <- sub("^.*?_peaks.(.*)$", "\\1", Peaks)
+block <- FALSE
+if(grepl("treatment", colnames(sampleDesign), ignore.case = TRUE)){
+  Treatment <- sampleDesign[SampleID, which(grepl("treatment",
+                                                  colnames(sampleDesign), 
+                                                  ignore.case = TRUE))[1]]
+  tt <- paste0(Condition, Treatment)
+  if(length(unique(Treatment))>1 && 
+     length(unique(tt))!=length(unique(Condition))){
+    samples <- data.frame(SampleID=SampleID,
+                          Condition=Condition,
+                          Replicate=Replicate,
+                          Factor=Factor,
+                          Treatment=Treatment,
+                          bamReads=bamReads,
+                          Peaks=Peaks,
+                          Peakcaller=Peakcaller,
+                          PeakFormat=PeakFormat,
+                          ScoreCol=5)
+    block <- TRUE
+  }else{
+    samples <- data.frame(SampleID=SampleID,
+                          Condition=Condition,
+                          Replicate=Replicate,
+                          Factor=Factor,
+                          bamReads=bamReads,
+                          Peaks=Peaks,
+                          Peakcaller=Peakcaller,
+                          PeakFormat=PeakFormat,
+                          ScoreCol=5)
+  }
+}else{
+  samples <- data.frame(SampleID=SampleID,
+                        Condition=Condition,
+                        Replicate=Replicate,
+                        Factor=Factor,
+                        bamReads=bamReads,
+                        Peaks=Peaks,
+                        Peakcaller=Peakcaller,
+                        PeakFormat=PeakFormat,
+                        ScoreCol=5)
+}
 
-samples <- data.frame(SampleID=SampleID,
-                      Condition=Condition,
-                      Replicate=Replicate,
-                      Factor=Factor,
-                      bamReads=bamReads,
-                      Peaks=Peaks,
-                      Peakcaller=Peakcaller,
-                      PeakFormat=PeakFormat,
-                      ScoreCol=5)
+
 pf <- "DiffBind"
 dir.create(pf)
 l <- lapply(Peaks, readLines)
@@ -109,10 +143,22 @@ if(nrow(samples)>3){
         next
       }
       chip <- chip.bk
-      chip <- dba.contrast(chip,
-                           group1 = dba.mask(chip, DBA_CONDITION, gp1),
-                           group2 = dba.mask(chip, DBA_CONDITION, gp2),
-                           categories = DBA_CONDITION)
+      if(!block){
+        chip <- dba.contrast(chip,
+                             group1 = dba.mask(chip, DBA_CONDITION, gp1),
+                             group2 = dba.mask(chip, DBA_CONDITION, gp2),
+                             name1 = gp1,
+                             name2 = gp2,
+                             categories = DBA_CONDITION)
+      }else{
+        chip <- dba.contrast(chip,
+                             group1 = dba.mask(chip, DBA_CONDITION, gp1),
+                             group2 = dba.mask(chip, DBA_CONDITION, gp2),
+                             name1 = gp1,
+                             name2 = gp2,
+                             categories = DBA_CONDITION,
+                             block = DBA_TREATMENT)
+      }
       chip <- dba.analyze(chip, bFullLibrarySize=FALSE)
       chip.DB <- dba.report(chip, th=1)
       
