@@ -29,7 +29,7 @@ if (is.null(opt$gtf)){
 out <- "sample.csv"
 ## create a csv file with SampleID, Condition, Replicate, bamReads Peaks Peakcaller PeakFormat, ScoreCol, Factor, Tissue
 sampleDesign <- read.csv(opt$design)
-sampleDesign <- unique(sampleDesign[, colnames(sampleDesign) %in% c("fastq_1", "fastq_2")])
+sampleDesign <- unique(sampleDesign[, !colnames(sampleDesign) %in% c("fastq_1", "fastq_2")])
 opt$peaks <- unlist(strsplit(opt$peaks, "___"))
 bamReads <- opt$peaks[grepl("bam$", opt$peaks)]
 names(bamReads) <- sub(".mLb.clN.*bam", "", bamReads)
@@ -49,7 +49,7 @@ Factor <- sampleDesign[SampleID, "antibody"]
 Peakcaller <- "macs2"
 PeakFormat <- sub("^.*?_peaks.(.*)$", "\\1", Peaks)
 block <- FALSE
-if(grepl("treatment", colnames(sampleDesign), ignore.case = TRUE)){
+if(any(grepl("treatment", colnames(sampleDesign), ignore.case = TRUE))){
   Treatment <- sampleDesign[SampleID, which(grepl("treatment",
                                                   colnames(sampleDesign), 
                                                   ignore.case = TRUE))[1]]
