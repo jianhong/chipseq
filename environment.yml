@@ -9,7 +9,7 @@ channels:
 dependencies:
   - nextflow
   ## conda-forge packages
-  - conda-forge::python=3.7
+  - conda-forge::python=3.6.12
   - conda-forge::markdown=3.3.2
   - conda-forge::pymdown-extensions=7.1
   - conda-forge::pygments=2.6.1
@@ -52,3 +52,4 @@ dependencies:
   - bioconda::bioconductor-chippeakanno
   - bioconda::bioconductor-diffbind
   - bioconda::r-rmarkdown
+  - bioconda::trackhub

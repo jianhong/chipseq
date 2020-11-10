@@ -1502,7 +1502,7 @@ process DIFFBIND {
 ///////////////////////////////////////////////////////////////////////////////
 
 /*
- * STEP 8: Create IGV session file
+ * STEP 8: Create IGV session file and UCSC genome browser hub file
  */
 process IGV {
     publishDir "${params.outdir}/igv/${PEAK_TYPE}", mode: params.publish_dir_mode
@@ -1519,11 +1519,13 @@ process IGV {
 
     output:
     path '*.{txt,xml}'
+    path 'trackhub/*'
 
     script: // scripts are bundled with the pipeline in nf-core/chipseq/bin/
     """
     cat *.txt > igv_files.txt
     igv_files_to_session.py igv_session.xml igv_files.txt ../../genome/${fasta.getName()} --path_prefix '../../'
+    create_trackhub.py trackhub igv_files.txt $params.species $params.email --path_prefix '../../'
     """
 }
 
