@@ -105,7 +105,7 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,PathPrefix=''):
             tracktype=TrackType[extension],
             autoScale='on')
           trackdb.add_tracks(track)
-          linkname=os.path.join(OutFolder, genome, os.path.basename(ifile))
+          linkname=os.path.join(OutFolder, Genome, os.path.basename(ifile))
           os.symlink(ifile, linkname)
         else:
           pass
