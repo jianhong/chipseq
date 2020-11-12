@@ -133,6 +133,7 @@ params.macs_gsize = params.genome ? params.genomes[ params.genome ].macs_gsize ?
 params.deep_gsize = params.genome ? params.genomes[ params.genome ].deep_gsize ?: false : false
 params.blacklist = params.genome ? params.genomes[ params.genome ].blacklist ?: false : false
 params.anno_readme = params.genome ? params.genomes[ params.genome ].readme ?: false : false
+params.species = params.genome ? params.genomes[ params.genome ].species ?: params.genome : false
 
 // Global variables
 def PEAK_TYPE = params.narrow_peak ? 'narrowPeak' : 'broadPeak'
