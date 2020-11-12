@@ -98,14 +98,14 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,PathPrefix=''):
           pass
         elif extension in TrackType.keys():
           track = trackhub.Track(
-            name=trackhub.helpers.sanitize(os.path.basename(ifile)) ,
+            name=os.path.splitext(os.path.basename(ifile))[0],
             source=ifile,
             color=color,
             visibility=Visibility[extension],
             tracktype=TrackType[extension],
             autoScale='on')
           trackdb.add_tracks(track)
-          linkname=os.path.join(OutFolder, Genome, os.path.basename(ifile))
+          linkname=os.path.join(OutFolder, Genome, os.path.splitext(os.path.basename(ifile))[0]+"."+TrackType[extension])
           makedir(os.path.join(OutFolder, Genome))
           os.symlink(ifile, linkname)
         else:
