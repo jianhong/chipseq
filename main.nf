@@ -1526,7 +1526,7 @@ process IGV {
     """
     cat *.txt > igv_files.txt
     igv_files_to_session.py igv_session.xml igv_files.txt ../../genome/${fasta.getName()} --path_prefix '../../'
-    create_trackhub.py trackhub igv_files.txt $params.species $params.email --path_prefix '../../'
+    create_trackhub.py trackhub igv_files.txt $params.species $params.email --path_prefix '../../../../'
     """
 }
 
