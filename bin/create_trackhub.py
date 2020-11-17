@@ -178,7 +178,7 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
           linkname=os.path.join(OutFolder, Genome, filename+"."+TrackType[extension])
           makedir(os.path.join(OutFolder, Genome))
           ext = {'bed':'bed3','narrowpeak':'bed6+4','broadpeak':'bed6+3'}[extension]
-          cmd = 'sort -k1,1 -k2,2n '+infile+' > '+infile+'sorted.bed; bedToBigBed -type='+ext+ ' '+infile+'sorted.bed '+linkname+'; rm '+infile+'sorted.bed'
+          cmd = 'sort -k1,1 -k2,2n '+ifile+' > '+ifile+'sorted.bed; bedToBigBed -type='+ext+ ' '+ifile+'sorted.bed '+linkname+'; rm '+ifile+'sorted.bed'
           os.system(cmd)
           if sampleDesignDict:
             track = trackhub.Track(
