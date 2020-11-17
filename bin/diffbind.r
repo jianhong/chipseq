@@ -124,11 +124,9 @@ if(nrow(samples)>3){
   dev.off()
   
   chip <- dba.count(chip, bLog=TRUE)
-  if(file.exists(opt$blacklist)){
-    chip <- dba.blacklist(chip, blacklist=import(opt$blacklist), greylist=BLACKLIST)
-  }else{
-    chip <- dba.blacklist(chip, blacklist=BLACKLIST, greylist=BLACKLIST)
-  }
+
+  chip <- dba.blacklist(chip, blacklist=BLACKLIST, greylist=FALSE)
+
   saveRDS(chip, file.path(pf, "chip.rds"))
   chip.bk <- chip
   
