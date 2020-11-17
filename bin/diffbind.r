@@ -9,6 +9,8 @@ library(optparse)
 option_list <- list(make_option(c("-d", "--design"), type="character", default=NULL, help="filename of design table", metavar="path"),
                     make_option(c("-p", "--peaks"), type="character", default=NULL, help="peak files", metavar="string"),
                     make_option(c("-g", "--gtf"), type="character", default=NULL, help="filename of gtf file", metavar="path"),
+                    make_option(c("-b", "--blacklist"), type="character", default=NULL, help="filename of blacklist file", metavar="path"),
+                    make_option(c("-s", "--species"), type="character", default=NULL, help="species", metavar="string"),
                     make_option(c("-c", "--cores"), type="integer", default=1, help="Number of cores", metavar="integer"))
 
 opt_parser <- OptionParser(option_list=option_list)
@@ -96,6 +98,14 @@ dir.create(pf)
 l <- lapply(Peaks, readLines)
 keep <- lengths(l)>0
 samples <- samples[keep, , drop=FALSE]
+
+BLACKLIST <- paste0("DBA_BLACKLIST_", toupper(opt$species))
+if(exists(BLACKLIST)){
+  BLACKLIST <- get(BLACKLIST)
+}else{
+  BLACKLIST <- FALSE
+}
+
 if(nrow(samples)>3){
   write.csv(samples, file.path(pf, "sample.csv"))
   
@@ -114,6 +124,11 @@ if(nrow(samples)>3){
   dev.off()
   
   chip <- dba.count(chip, bLog=TRUE)
+  if(file.exists(opt$blacklist)){
+    chip <- dba.blacklist(chip, blacklist=import(opt$blacklist), greylist=BLACKLIST)
+  }else{
+    chip <- dba.blacklist(chip, blacklist=BLACKLIST, greylist=BLACKLIST)
+  }
   saveRDS(chip, file.path(pf, "chip.rds"))
   chip.bk <- chip
   

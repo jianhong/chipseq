@@ -178,6 +178,7 @@ if (params.gtf)       {
 } else { exit 1, 'GTF annotation file not specified!' }
 if (params.gene_bed)  { ch_gene_bed = file(params.gene_bed, checkIfExists: true) }
 if (params.blacklist) { ch_blacklist = Channel.fromPath(params.blacklist, checkIfExists: true) } else { ch_blacklist = Channel.empty() }
+ch_blacklist.into{ch_blacklist;ch_blacklist_diffbind}
 
 if (params.fasta) {
     lastPath = params.fasta.lastIndexOf(File.separator)
@@ -1480,15 +1481,19 @@ process DIFFBIND {
   path peaks from ch_peak_bam.collect()
   path designtab from ch_input
   path gtf from ch_gtf
+  path blacklist from ch_blacklist_diffbind.ifEmpty([])
 
   output:
   path 'DiffBind/*' into ch_diffbind_res
 
   script:
+  blacklist_params = params.blacklist ? "-b ${blacklist}" : '-b FALSE'
   """
   diffbind.r -d ${designtab} \\
   -p ${peaks.collect{it.toString()}.join('___')} \\
   -g ${gtf} \\
+  ${blacklist_params} \\
+  -s ${params.genome} \\
   -c $task.cpus
   """
 }
@@ -1517,6 +1522,7 @@ process IGV {
     path peaks from ch_macs_igv.collect().ifEmpty([])
     path consensus_peaks from ch_macs_consensus_igv.collect().ifEmpty([])
     path differential_peaks from ch_macs_consensus_deseq_comp_igv.collect().ifEmpty([])
+    path designtab from ch_input
 
     output:
     path '*.{txt,xml}'
@@ -1526,7 +1532,7 @@ process IGV {
     """
     cat *.txt > igv_files.txt
     igv_files_to_session.py igv_session.xml igv_files.txt ../../genome/${fasta.getName()} --path_prefix '../../'
-    create_trackhub.py trackhub igv_files.txt $params.species $params.email --path_prefix '../../../../'
+    create_trackhub.py trackhub igv_files.txt $params.species $params.email $designtab '.mLb.clN__.mRp.clN' --path_prefix '../../../../'
     """
 }
 
