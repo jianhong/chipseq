@@ -175,30 +175,7 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
         extension = os.path.splitext(ifile)[1].replace(".", "").lower()
         filename = trackhub.helpers.sanitize(os.path.splitext(os.path.basename(ifile))[0].replace(".", "_"), strict=False)
         if extension in ['bed','broadpeak','narrowpeak']:
-          linkname=os.path.join(OutFolder, Genome, filename+"."+TrackType[extension])
-          makedir(os.path.join(OutFolder, Genome))
-          ext = {'bed':'bed3','narrowpeak':'bed6+4','broadpeak':'bed6+3'}[extension]
-          cmd = 'sort -k1,1 -k2,2n '+ifile+' > '+ifile+'sorted.bed; bedToBigBed -type='+ext+ ' '+ifile+'sorted.bed '+linkname+'; rm '+ifile+'sorted.bed'
-          os.system(cmd)
-          if sampleDesignDict:
-            track = trackhub.Track(
-              name=filename,
-              source=os.path.basename(linkname),
-              color=color,
-              visibility=Visibility[extension],
-              tracktype=TrackType[extension],
-              subgroups=sampleDesignDict[filename],
-              autoScale='on')
-            regions_view.add_tracks(track)
-          else:
-            track = trackhub.Track(
-              name=filename,
-              source=os.path.basename(linkname),
-              color=color,
-              visibility=Visibility[extension],
-              tracktype=TrackType[extension],
-              autoScale='on')
-            trackdb.add_tracks(track)
+          pass
         elif extension in TrackType.keys():
           if sampleDesignDict:
             track = trackhub.Track(
