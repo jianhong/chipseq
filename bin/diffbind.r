@@ -172,7 +172,7 @@ if(nrow(samples)>3){
                              categories = DBA_CONDITION,
                              block = DBA_TREATMENT)
       }
-      chip <- dba.analyze(chip)
+      chip <- dba.analyze(chip, bBlacklist = FALSE, bGreylist = FALSE)
       chip.DB <- dba.report(chip, th=1)
       
       # Annotation
