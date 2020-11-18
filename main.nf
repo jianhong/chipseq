@@ -1083,8 +1083,8 @@ process COMPUTMATRIX {
         
     computeMatrix reference-point \\
         --regionsFileName $bed \\
-        --scoreFileName ${bigwig.collect{it.toString()}.join(' ')} \\
-        --samplesLabel ${name.collect{it.toString()}.join(' ')} \\
+        --scoreFileName ${bigwig} \\
+        --samplesLabel ${sampleLabel} \\
         --outFileName ${bed.getName()}.reference_${params.deepToolsReferencePoint}.mat.gz \\
         --outFileNameMatrix ${bed.getName()}.reference_${params.deepToolsReferencePoint}.vals.mat.tab \\
         --referencePoint $params.deepToolsReferencePoint \\
