@@ -970,7 +970,7 @@ process BIGWIG {
     tuple val(name), path('*.bigWig') into ch_bigwig_plotprofile
     path '*igv.txt' into ch_bigwig_igv
     path '*scale_factor.txt'
-    path val(name), path('*.bw') into ch_bw_computematrix
+    tuple val(name), path('*.bw') into ch_bw_computematrix
 
     script:
     pe_fragment = params.single_end ? '' : '-pc'

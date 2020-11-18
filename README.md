@@ -78,6 +78,25 @@ conda remove --name chipflow --all
 conda info --envs
 ```
 
+
+## design table
+
+| group | replicate | fastq_1 | fastq_2 | antibody | control | track_color | track_group |
+|-------|-----------|---------|---------|----------|---------|-------------|-------------|
+| WT | 1 | fastq/WT1.fastq.gz| | ANT1 | Input | #E69F00 | SAMPLE |
+| WT | 2 | fastq/WT2.fastq.gz| | ANT1 | Input | #E69F00 | SAMPLE |
+| KD | 1 | fastq/KD1.fastq.gz| | ANT1 | Input | #0000FF | SAMPLE |
+| KD | 2 | fastq/KD2.fastq.gz| | ANT1 | Input | #0000FF | SAMPLE |
+| Input | 1 | fastq/KD1.fastq.gz| |  |  | #000000 | SAMPLE |
+| Input | 2 | fastq/KD2.fastq.gz| |  |  | #000000 | SAMPLE |
+
+## metagene analysis
+
+```
+nextflow run jianhong/chipseq -profile test -resume --genomicElements beds/*.bed
+```
+
+
 ## run from nfcore docker
 ```
 docker run -it -v ${PWD}/tmp4chipseq:/home/ nfcore/chipseq:1.2.1
