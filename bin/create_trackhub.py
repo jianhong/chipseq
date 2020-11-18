@@ -42,7 +42,6 @@ args = argParser.parse_args()
 ############################################
 
 def makedir(path):
-
     if not len(path) == 0:
         try:
             os.makedirs(path)
@@ -95,7 +94,7 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
         line = dIn.readline()
         if line:
           lspl = [x.strip() for x in line.strip().split(',')]
-          lspl[0] = [lspl[0]+Postfix[1], lspl[0]+'_R'+lspl[1]+Postfix[0]]
+          lspl[0] = [lspl[0]+Postfix[1], lspl[0]+'_R'+lspl[1]]
           lspl[0] = [trackhub.helpers.sanitize(lspl[0][0].replace(".", "_"), strict=False),trackhub.helpers.sanitize(lspl[0][1].replace(".", "_"), strict=False)]
           sampleDesignDict[lspl[0][0]] = {}
           sampleDesignDict[lspl[0][1]] = {}
