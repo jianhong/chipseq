@@ -148,6 +148,7 @@ ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multi
 ch_output_docs = file("$baseDir/docs/output.md", checkIfExists: true)
 ch_output_docs_images = file("$baseDir/docs/images/", checkIfExists: true)
 ch_index_docs = file("$baseDir/docs/index.Rmd", checkIfExists: true)
+ch_genomic_elements_bed = params.genomicElements? Channel.fromPath(params.genomicElements, checkIfExists: true) : Channel.empty()
 
 // JSON files required by BAMTools for alignment filtering
 if (params.single_end) {
@@ -969,7 +970,7 @@ process BIGWIG {
     tuple val(name), path('*.bigWig') into ch_bigwig_plotprofile
     path '*igv.txt' into ch_bigwig_igv
     path '*scale_factor.txt'
-    path '*.bw'
+    path val(name), path('*.bw') into ch_bw_computematrix
 
     script:
     pe_fragment = params.single_end ? '' : '-pc'
@@ -1039,6 +1040,64 @@ process PLOTPROFILE {
     plotHeatmap --matrixFile ${name}.computeMatrix.mat.gz \\
         --outFileName ${name}.plotHeatmap.pdf \\
         --outFileNameMatrix ${name}.plotHeatmap.mat.tab
+    """
+}
+
+process COMPUTMATRIX {
+    label 'process_high'
+    publishDir "${params.outdir}/bwa/mergedLibrary/deepTools/metagene", mode: params.publish_dir_mode
+
+    when:
+    params.genomicElements
+
+    input:
+    tuple val(name), path(bigwig) from ch_bw_computematrix.collect()
+    path bed from ch_genomic_elements_bed
+
+    output:
+    path '*.{gz,pdf,mat.tab}'
+
+    script:
+    """
+    computeMatrix scale-regions \\
+        --regionsFileName $bed \\
+        --scoreFileName ${bigwig.collect{it.toString()}.join(' ')} \\
+        --samplesLabel ${name.collect{it.toString()}.join(' ')} \\
+        --outFileName ${bed.getName()}.scale_regions.mat.gz \\
+        --outFileNameMatrix ${bed.getName()}.scale_regions.vals.mat.tab \\
+        --regionBodyLength $params.deepToolsBodySize \\
+        --beforeRegionStartLength $params.deepToolsRegionSize \\
+        --afterRegionStartLength $params.deepToolsRegionSize \\
+        --skipZeros \\
+        --numberOfProcessors $task.cpus
+
+    plotProfile --matrixFile ${bed.getName()}.scale_regions.mat.gz \\
+        --outFileName ${bed.getName()}.scale_regionsProfile.pdf \\
+        --outFileNameData ${bed.getName()}.scale_regionsProfile.tab
+
+    plotHeatmap --matrixFile ${bed.getName()}.scale_regions.mat.gz \\
+        --outFileName ${bed.getName()}.scale_regionsHeatmap.pdf \\
+        --outFileNameMatrix ${bed.getName()}.scale_regionsHeatmap.mat.tab
+        
+    computeMatrix reference-point \\
+        --regionsFileName $bed \\
+        --scoreFileName ${bigwig.collect{it.toString()}.join(' ')} \\
+        --samplesLabel ${name.collect{it.toString()}.join(' ')} \\
+        --outFileName ${bed.getName()}.reference_${params.deepToolsReferencePoint}.mat.gz \\
+        --outFileNameMatrix ${bed.getName()}.reference_${params.deepToolsReferencePoint}.vals.mat.tab \\
+        --referencePoint $params.deepToolsReferencePoint \\
+        --beforeRegionStartLength $params.deepToolsRegionSize \\
+        --afterRegionStartLength $params.deepToolsRegionSize \\
+        --skipZeros \\
+        --numberOfProcessors $task.cpus
+
+    plotProfile --matrixFile ${bed.getName()}.reference_${params.deepToolsReferencePoint}.mat.gz \\
+        --outFileName ${bed.getName()}.reference_${params.deepToolsReferencePoint}Profile.pdf \\
+        --outFileNameData ${bed.getName()}.reference_${params.deepToolsReferencePoint}Profile.tab
+
+    plotHeatmap --matrixFile ${bed.getName()}.reference_${params.deepToolsReferencePoint}.mat.gz \\
+        --outFileName ${bed.getName()}.reference_${params.deepToolsReferencePoint}Heatmap.pdf \\
+        --outFileNameMatrix ${bed.getName()}.reference_${params.deepToolsReferencePoint}Heatmap.mat.tab
     """
 }
 
