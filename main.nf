@@ -1062,7 +1062,7 @@ process COMPUTMATRIX {
     computeMatrix scale-regions \\
         --regionsFileName $bed \\
         --scoreFileName ${bigwig.collect{it.toString()}.join(' ')} \\
-        --samplesLabel ${name.collect{it.toString()}.join(' ')} \\
+        --samplesLabel ${name.collect().join(' ')} \\
         --outFileName ${bed.getName()}.scale_regions.mat.gz \\
         --outFileNameMatrix ${bed.getName()}.scale_regions.vals.mat.tab \\
         --regionBodyLength $params.deepToolsBodySize \\
