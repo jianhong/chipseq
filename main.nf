@@ -1051,18 +1051,20 @@ process COMPUTMATRIX {
     params.genomicElements
 
     input:
-    tuple val(name), path(bigwig) from ch_bw_computematrix.collect()
+    val bws from ch_bw_computematrix.collect()
     path bed from ch_genomic_elements_bed
 
     output:
     path '*.{gz,pdf,mat.tab}'
 
     script:
+    bigwig = bws.findAll{it.toString().endsWith('.bw')}.collect().join(' ')
+    sampleLabel = bws.findAll{!it.toString().endsWith('.bw')}.collect().join(' ')
     """
     computeMatrix scale-regions \\
         --regionsFileName $bed \\
-        --scoreFileName ${bigwig.collect{it.toString()}.join(' ')} \\
-        --samplesLabel ${name.collect().join(' ')} \\
+        --scoreFileName ${bigwig} \\
+        --samplesLabel ${sampleLabel} \\
         --outFileName ${bed.getName()}.scale_regions.mat.gz \\
         --outFileNameMatrix ${bed.getName()}.scale_regions.vals.mat.tab \\
         --regionBodyLength $params.deepToolsBodySize \\
