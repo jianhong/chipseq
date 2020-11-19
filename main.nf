@@ -970,7 +970,7 @@ process BIGWIG {
     tuple val(name), path('*.bigWig') into ch_bigwig_plotprofile
     path '*igv.txt' into ch_bigwig_igv
     path '*scale_factor.txt'
-    tuple val(name), path('*.bw') into ch_bw_computematrix
+    path '*.bw' into ch_bw_computematrix
 
     script:
     pe_fragment = params.single_end ? '' : '-pc'
@@ -1051,7 +1051,7 @@ process COMPUTMATRIX {
     params.genomicElements
 
     input:
-    val bws from ch_bw_computematrix.flatten().collect()
+    path bws from ch_bw_computematrix.collect()
     path bed from ch_genomic_elements_bed
 
     output:
@@ -1059,7 +1059,7 @@ process COMPUTMATRIX {
 
     script:
     bigwig = bws.findAll{it.toString().endsWith('.CPM.bw')}.join(' ')
-    sampleLabel = bws.findAll{!it.toString().endsWith('.bw')}.join(' ')
+    sampleLabel = bigwig.replaceAll(".norm.CPM.bw","")
     """
     computeMatrix scale-regions \\
         --regionsFileName $bed \\
