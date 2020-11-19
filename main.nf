@@ -289,9 +289,18 @@ workflow {
     /*
      * Merge bam and do metagene analysis
      */
+    BAM_CLEAN
+        .out
+        .bam
+        .map {
+            meta, bam ->
+                fmeta = meta.replaceAll(/_R\d+.*$/, "")
+                [ fmeta, bam ] }
+       .groupTuple(by: [0])
+       .map { it ->  [ it[0], it[1].flatten() ] }
+       .set { ch_to_be_merged }
     MERGE_REP_BAM(
-      BAM_CLEAN.out.bam.map { it ->  [it[0].replaceAll('_R\\d+.*$':""), it[1]].flatten() }
-          .groupTuple(by: 0).map { it -> [it[0], it[1][1..-1].flatten()]},
+      ch_to_be_merged,
       params.modules['merge_rep_bam']
     )
 
