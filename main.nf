@@ -290,7 +290,7 @@ workflow {
      * Merge bam and do metagene analysis
      */
     MERGE_REP_BAM(
-      BAM_CLEAN.out.bam.map { it ->  [it[0].replaceAll('_R\d+.*$', ""), it[1]].flatten() }
+      BAM_CLEAN.out.bam.map { it ->  [it[0].replaceAll('_R\\d+.*$', ""), it[1]].flatten() }
           .groupTuple(by: 0).map { it -> [it[0], it[1][1..-1].flatten()]},
       params.modules['merge_rep_bam']
     )
