@@ -149,6 +149,7 @@ ch_output_docs = file("$baseDir/docs/output.md", checkIfExists: true)
 ch_output_docs_images = file("$baseDir/docs/images/", checkIfExists: true)
 ch_index_docs = file("$baseDir/docs/index.Rmd", checkIfExists: true)
 ch_genomic_elements_bed = params.genomicElements? Channel.fromPath(params.genomicElements, checkIfExists: true) : Channel.empty()
+ch_genomic_elements_bed.into{ch_genomic_elements_bed; ch_genomic_elements_bed_group}
 
 // JSON files required by BAMTools for alignment filtering
 if (params.single_end) {
@@ -870,8 +871,54 @@ if (params.single_end) {
 /*
  * STEP 4.4: Merge replicated bams
  */
-ch_group_bam_merge_rup.map { it ->  [it[0].replaceAll(/_R\d+.*$/, ""), it[1]].flatten() }.groupTuple(by: 0).view()
+ch_group_bam_merge_rup
+      .map { it ->  [it[0].replaceAll(/_R\d+.*$/, ""), it[1]].flatten() }
+      .groupTuple(by: 0)
+      .set(ch_group_bam_merge_rup)
 
+process MERGE_REP_BAM {
+    tag "$name"
+    label 'process_medium'
+    publishDir path: "${params.outdir}/bwa/mergedLibrary/replicatesMerged", mode: params.publish_dir_mode,
+        saveAs: { filename ->
+                      if (filename.endsWith('.bw')) "bigWigs/$filename"
+                          else if (filename.endsWith('.sorted.bam')) "bams/$filename"
+                          else if (filename.endsWith('.sorted.bam.bai')) "bams/$filename"
+                          else null
+                }
+
+    input:
+    tuple val(name), path(bam) from ch_group_bam_merge_rup
+
+    output:
+    tuple val(name), path('*.{bam,bam.bai}') into ch_group_bam_rup_merged
+    tuple val(name), path('*.bw') into ch_group_bw_rup_merged
+
+    script: 
+    singleExt = (params.single_end && params.fragment_size > 0) ? "--extendReads ${params.fragment_size}" : ''
+    extendReads = params.single_end ? "${singleExt}" : '--extendReads'
+    """
+    samtools merge \\
+        $name.bam \\
+        ${bam.findAll{it.toString().endsWith('.bam')}}
+        
+    samtools sort -o $name.sorted.bam $name.bam 
+
+    samtools index $$name.sorted.bam
+    
+    bamCoverage -b $$name.sorted.bam \\
+       -o ${name}.norm.CPM.bw \\
+       --binSize 10  --normalizeUsing CPM ${extendReads}
+
+    if [ "$params.deep_gsize" != "" ] && [ "$params.deep_gsize" != "false" ]
+    then
+    bamCoverage -b $$name.sorted.bam \\
+       -o ${name}.norm.RPGC.bw \\
+       --effectiveGenomeSize $params.deep_gsize \\
+       --binSize 10  --normalizeUsing RPGC ${extendReads}
+    fi 
+    """
+}
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -1061,6 +1108,67 @@ process COMPUTMATRIX {
     input:
     path bws from ch_bw_computematrix.collect()
     path bed from ch_genomic_elements_bed
+
+    output:
+    path '*.{gz,pdf,mat.tab}'
+
+    script:
+    bigwig = bws.findAll{it.toString().endsWith('.CPM.bw')}.join(' ')
+    sampleLabel = bigwig.replaceAll(".norm.CPM.bw","")
+    """
+    computeMatrix scale-regions \\
+        --regionsFileName $bed \\
+        --scoreFileName ${bigwig} \\
+        --samplesLabel ${sampleLabel} \\
+        --outFileName ${bed.getName()}.scale_regions.mat.gz \\
+        --outFileNameMatrix ${bed.getName()}.scale_regions.vals.mat.tab \\
+        --regionBodyLength $params.deepToolsBodySize \\
+        --beforeRegionStartLength $params.deepToolsRegionSize \\
+        --afterRegionStartLength $params.deepToolsRegionSize \\
+        --skipZeros \\
+        --numberOfProcessors $task.cpus
+
+    plotProfile --matrixFile ${bed.getName()}.scale_regions.mat.gz \\
+        --outFileName ${bed.getName()}.scale_regionsProfile.pdf \\
+        --outFileNameData ${bed.getName()}.scale_regionsProfile.tab
+
+    plotHeatmap --matrixFile ${bed.getName()}.scale_regions.mat.gz \\
+        --outFileName ${bed.getName()}.scale_regionsHeatmap.pdf \\
+        --outFileNameMatrix ${bed.getName()}.scale_regionsHeatmap.mat.tab
+        
+    computeMatrix reference-point \\
+        --regionsFileName $bed \\
+        --scoreFileName ${bigwig} \\
+        --samplesLabel ${sampleLabel} \\
+        --outFileName ${bed.getName()}.reference_${params.deepToolsReferencePoint}.mat.gz \\
+        --outFileNameMatrix ${bed.getName()}.reference_${params.deepToolsReferencePoint}.vals.mat.tab \\
+        --referencePoint $params.deepToolsReferencePoint \\
+        --beforeRegionStartLength $params.deepToolsRegionSize \\
+        --afterRegionStartLength $params.deepToolsRegionSize \\
+        --skipZeros \\
+        --numberOfProcessors $task.cpus
+
+    plotProfile --matrixFile ${bed.getName()}.reference_${params.deepToolsReferencePoint}.mat.gz \\
+        --outFileName ${bed.getName()}.reference_${params.deepToolsReferencePoint}Profile.pdf \\
+        --outFileNameData ${bed.getName()}.reference_${params.deepToolsReferencePoint}Profile.tab
+
+    plotHeatmap --matrixFile ${bed.getName()}.reference_${params.deepToolsReferencePoint}.mat.gz \\
+        --outFileName ${bed.getName()}.reference_${params.deepToolsReferencePoint}Heatmap.pdf \\
+        --outFileNameMatrix ${bed.getName()}.reference_${params.deepToolsReferencePoint}Heatmap.mat.tab
+    """
+}
+
+
+process COMPUTMATRIX_MERGED {
+    label 'process_high'
+    publishDir "${params.outdir}/bwa/mergedLibrary/deepTools/metagene/merged", mode: params.publish_dir_mode
+
+    when:
+    params.genomicElements
+
+    input:
+    path bws from ch_group_bw_rup_merged.collect()
+    path bed from ch_genomic_elements_bed_group
 
     output:
     path '*.{gz,pdf,mat.tab}'
