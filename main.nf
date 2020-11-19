@@ -1051,7 +1051,7 @@ process COMPUTMATRIX {
     params.genomicElements
 
     input:
-    val bws from ch_bw_computematrix.collect().flatten()
+    val bws from ch_bw_computematrix.flatten().collect()
     path bed from ch_genomic_elements_bed
 
     output:
