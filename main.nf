@@ -899,20 +899,20 @@ process MERGE_REP_BAM {
     extendReads = params.single_end ? "${singleExt}" : '--extendReads'
     """
     samtools merge \\
-        $name.bam \\
+        ${name}.bam \\
         ${bam.findAll{it.toString().endsWith('.bam')}}
         
-    samtools sort -o $name.sorted.bam $name.bam 
+    samtools sort -o ${name}.sorted.bam ${name}.bam 
 
-    samtools index $$name.sorted.bam
+    samtools index ${name}.sorted.bam
     
-    bamCoverage -b $$name.sorted.bam \\
+    bamCoverage -b ${name}.sorted.bam \\
        -o ${name}.norm.CPM.bw \\
        --binSize 10  --normalizeUsing CPM ${extendReads}
 
     if [ "$params.deep_gsize" != "" ] && [ "$params.deep_gsize" != "false" ]
     then
-    bamCoverage -b $$name.sorted.bam \\
+    bamCoverage -b ${name}.sorted.bam \\
        -o ${name}.norm.RPGC.bw \\
        --effectiveGenomeSize $params.deep_gsize \\
        --binSize 10  --normalizeUsing RPGC ${extendReads}
@@ -1099,6 +1099,7 @@ process PLOTPROFILE {
 }
 
 process COMPUTMATRIX {
+    errorStrategy 'ignore'
     label 'process_high'
     publishDir "${params.outdir}/bwa/mergedLibrary/deepTools/metagene", mode: params.publish_dir_mode
 
@@ -1160,6 +1161,7 @@ process COMPUTMATRIX {
 
 
 process COMPUTMATRIX_MERGED {
+    errorStrategy 'ignore'
     label 'process_high'
     publishDir "${params.outdir}/bwa/mergedLibrary/deepTools/metagene/merged", mode: params.publish_dir_mode
 
