@@ -19,7 +19,7 @@ process MERGE_REP_BAM {
 
     output:
     tuple val(meta), path("*.bam"), emit: bam
-    path "*.bw" emit: bw
+    path "*.bw", emit: bw
 
     script:
     def ioptions         = initOptions(options)
