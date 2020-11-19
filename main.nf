@@ -870,7 +870,7 @@ if (params.single_end) {
 /*
  * STEP 4.4: Merge replicated bams
  */
-ch_group_bam_merge_rup.map { it ->  [it[0].replaceAll(/_R\d+.*$/, ""), it[1].flatten()] }.groupTuple(by: 0).view()
+ch_group_bam_merge_rup.map { it ->  [it[0].replaceAll(/_R\d+.*$/, ""), it[1]].flatten() }.groupTuple(by: 0).view()
 
 
 ///////////////////////////////////////////////////////////////////////////////
