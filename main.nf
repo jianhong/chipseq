@@ -1058,8 +1058,8 @@ process COMPUTMATRIX {
     path '*.{gz,pdf,mat.tab}'
 
     script:
-    bigwig = bws.findAll{it.toString().endsWith('.CPM.bw')}.collect{it.toString()}.join(' ')
-    sampleLabel = bws.findAll{!it.toString().endsWith('.bw')}.collect{it.toString()}.join(' ')
+    bigwig = bws.findAll{it.toString().endsWith('.CPM.bw')}.join(' ')
+    sampleLabel = bws.findAll{!it.toString().endsWith('.bw')}.join(' ')
     """
     computeMatrix scale-regions \\
         --regionsFileName $bed \\
