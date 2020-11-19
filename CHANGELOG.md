@@ -1,3 +1,7 @@
+# [0.0.1] Init. - 2020-11-20
+
+* fork the pipeline from nf-core/chipseq and create a custom pipeline. 
+
 # nf-core/chipseq: Changelog
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
