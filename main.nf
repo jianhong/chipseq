@@ -294,7 +294,7 @@ workflow {
         .bam
         .map {
             meta, bam ->
-                fmeta = meta.replaceAll(/_R\d+.*$/, "")
+                fmeta = meta.map{it -> it.replaceAll(/_R\d+.*$/, "")}
                 [ fmeta, bam ] }
        .groupTuple(by: [0])
        .map { it ->  [ it[0], it[1].flatten() ] }
