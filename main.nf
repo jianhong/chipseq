@@ -892,7 +892,7 @@ process MERGE_REP_BAM {
 
     output:
     tuple val(name), path('*.{bam,bam.bai}') into ch_group_bam_rup_merged
-    tuple val(name), path('*.bw') into ch_group_bw_rup_merged
+    path '*.bw' into ch_group_bw_rup_merged
 
     script: 
     singleExt = (params.single_end && params.fragment_size > 0) ? "--extendReads ${params.fragment_size}" : ''
