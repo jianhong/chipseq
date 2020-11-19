@@ -9,7 +9,7 @@ channels:
 dependencies:
   - nextflow
   ## conda-forge packages
-  - conda-forge::python=3.6.12
+  - conda-forge::python=3.7.8
   - conda-forge::markdown=3.3.2
   - conda-forge::pymdown-extensions=7.1
   - conda-forge::pygments=2.6.1
@@ -36,7 +36,7 @@ dependencies:
   - bioconda::samtools=1.4.1
   - bioconda::picard=2.23.8
   - bioconda::bamtools=2.5.1
-  - bioconda::pysam=0.15.3
+  - bioconda::pysam=0.16.0.1
   - bioconda::bedtools=2.29.2
   - bioconda::ucsc-bedgraphtobigwig=357
   - bioconda::deeptools=3.5.0
