@@ -291,15 +291,25 @@ workflow {
      */
     BAM_CLEAN
         .out
-        .bam.view()
-     /*   .map {
+        .bam
+        .map {
             meta, bam ->
-                fmeta = meta.replaceAll(/_R\d+.*$/, "")
+                fmeta = meta.id.replaceAll(/_R\d+.*$/, "")
                 [ fmeta, bam ] }
        .groupTuple(by: [0])
        .map { it ->  [ it[0], it[1].flatten() ] }
        .set { ch_to_be_merged }
-    MERGE_REP_BAM(
+       .view()
+    BAM_CLEAN
+        .out
+        .bam
+        .join ( BAM_CLEAN.out.bai, by: [0] )
+        .map { meta, bam, bai -> meta.control ? [ meta.control, meta, [ bam ], [ bai ] ] : null }
+        .combine(ch_control_bam_bai, by: 0)
+        .map { it -> [ it[1] , it[2] + it[4], it[3] + it[5] ] }
+        .set { ch_to_be_merged }
+        .view()
+    /*MERGE_REP_BAM(
       ch_to_be_merged,
       params.modules['merge_rep_bam']
     )*/
