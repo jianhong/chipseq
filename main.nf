@@ -900,7 +900,7 @@ process MERGE_REP_BAM {
     """
     samtools merge \\
         ${name}.bam \\
-        ${bam.findAll{it.toString().endsWith('.bam')}}
+        ${bam.findAll{it.toString().endsWith('.bam')}.join(' ')}
         
     samtools sort -o ${name}.sorted.bam ${name}.bam 
 
