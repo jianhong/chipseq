@@ -291,10 +291,10 @@ workflow {
      */
     BAM_CLEAN
         .out
-        .bam
-        .map {
+        .bam.view()
+     /*   .map {
             meta, bam ->
-                fmeta = meta.map{it -> it.replaceAll(/_R\d+.*$/, "")}
+                fmeta = meta.replaceAll(/_R\d+.*$/, "")
                 [ fmeta, bam ] }
        .groupTuple(by: [0])
        .map { it ->  [ it[0], it[1].flatten() ] }
@@ -302,7 +302,7 @@ workflow {
     MERGE_REP_BAM(
       ch_to_be_merged,
       params.modules['merge_rep_bam']
-    )
+    )*/
 
     /*
      * Post alignment QC
