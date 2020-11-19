@@ -874,6 +874,7 @@ if (params.single_end) {
 ch_group_bam_merge_rup
       .map { it ->  [it[0].replaceAll(/_R\d+.*$/, ""), it[1]].flatten() }
       .groupTuple(by: 0)
+      .map { it -> [it[0], it[1][1..-1].flatten()]}
       .set{ch_group_bam_merge_rup}
 
 process MERGE_REP_BAM {
