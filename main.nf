@@ -812,7 +812,8 @@ if (params.single_end) {
                 ch_rm_orphan_bam_macs_2;
                 ch_rm_orphan_bam_phantompeakqualtools;
                 ch_rm_orphan_name_bam_counts;
-                ch_group_bam_diffbind}
+                ch_group_bam_diffbind;
+                ch_group_bam_merge_rup}
 
     ch_filter_bam_flagstat
         .into { ch_rm_orphan_flagstat_bigwig;
@@ -844,7 +845,8 @@ if (params.single_end) {
                                                              ch_rm_orphan_bam_macs_1,
                                                              ch_rm_orphan_bam_macs_2,
                                                              ch_rm_orphan_bam_phantompeakqualtools, 
-                                                             ch_group_bam_diffbind
+                                                             ch_group_bam_diffbind,
+                                                             ch_group_bam_merge_rup
         tuple val(name), path("${prefix}.bam") into ch_rm_orphan_name_bam_counts
         tuple val(name), path('*.flagstat') into ch_rm_orphan_flagstat_bigwig,
                                                  ch_rm_orphan_flagstat_macs,
@@ -864,6 +866,12 @@ if (params.single_end) {
         """
     }
 }
+
+/*
+ * STEP 4.4: Merge replicated bams
+ */
+ch_group_bam_merge_rup.map { it ->  [it[0].replaceAll(/_R\d+.*$/, ""), it[1]] }.groupTuple(by: 1).view()
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
