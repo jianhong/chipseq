@@ -1,19 +1,13 @@
-# ![nf-core/chipseq](docs/images/nf-core-chipseq_logo.png)
-
-[![GitHub Actions CI Status](https://github.com/nf-core/chipseq/workflows/nf-core%20CI/badge.svg)](https://github.com/nf-core/chipseq/actions)
-[![GitHub Actions Linting Status](https://github.com/nf-core/chipseq/workflows/nf-core%20linting/badge.svg)](https://github.com/nf-core/chipseq/actions)
-[![Nextflow](https://img.shields.io/badge/nextflow-%E2%89%A520.07.1-brightgreen.svg)](https://www.nextflow.io/)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.3240506.svg)](https://doi.org/10.5281/zenodo.3240506)
-
-[![install with bioconda](https://img.shields.io/badge/install%20with-bioconda-brightgreen.svg)](https://bioconda.github.io/)
-[![Docker](https://img.shields.io/docker/automated/nfcore/chipseq.svg)](https://hub.docker.com/r/nfcore/chipseq)
-[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23chipseq-4A154B?logo=slack)](https://nfcore.slack.com/channels/chipseq)
+# ![qiubio-nf-core/chipseq](assets/chipseqlogo.png)
 
 ## Introduction
 
-**nfcore/chipseq** is a bioinformatics analysis pipeline used for Chromatin ImmunopreciPitation sequencing (ChIP-seq) data.
+**qiubio/chipseq** is a bioinformatics analysis pipeline used for Chromatin ImmunopreciPitation sequencing (ChIP-seq) data based on [nfcore/chipseq](https://nf-co.re/chipseq).
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
+
+This pipeline will generate the UCSC genome browser track hub and metagene analysis
+resuls in addition to original output of **nfcore/chipseq** pipeline.
 
 ## Pipeline summary
 
@@ -44,58 +38,61 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
     10. Create consensus peakset across all samples and create tabular file to aid in the filtering of the data ([`BEDTools`](https://github.com/arq5x/bedtools2/))
     11. Count reads in consensus peaks ([`featureCounts`](http://bioinf.wehi.edu.au/featureCounts/))
     12. Differential binding analysis, PCA and clustering ([`R`](https://www.r-project.org/), [`DESeq2`](https://bioconductor.org/packages/release/bioc/html/DESeq2.html))
-6. Create IGV session file containing bigWig tracks, peaks and differential sites for data visualisation ([`IGV`](https://software.broadinstitute.org/software/igv/)).
+6. Visualisation the tracks.
+    1. Create IGV session file containing bigWig tracks, peaks and differential sites for data visualisation ([`IGV`](https://software.broadinstitute.org/software/igv/)).
+    2. Create UCSC genome browser track hub for bigWig tracks [trackhub](https://daler.github.io/trackhub/quickstart.html).
 7. Present QC for raw read, alignment, peak-calling and differential binding results ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
+     
 
-## Quick Start
 
-1. Install [`nextflow`](https://nf-co.re/usage/installation)
+## Installation by conda
 
-2. Install either [`Docker`](https://docs.docker.com/engine/installation/) or [`Singularity`](https://www.sylabs.io/guides/3.0/user-guide/) for full pipeline reproducibility _(please only use [`Conda`](https://conda.io/miniconda.html) as a last resort; see [docs](https://nf-co.re/usage/configuration#basic-configuration-profiles))_
+```bash
+conda update conda
+wget https://raw.githubusercontent.com/jianhong/chipseq/master/environment.yml
+conda env create -n chipflow -f environment.yml
+rm environment.yml
+conda activate chipflow
+nextflow pull jianhong/chipseq
+srun --mem 60G -c 2 nextflow run jianhong/chipseq -profile test
+```
 
-3. Download the pipeline and test it on a minimal dataset with a single command:
+## Update
 
-    ```bash
-    nextflow run nf-core/chipseq -profile test,<docker/singularity/conda/institute>
-    ```
+```bash
+conda activate chipflow
+nextflow pull jianhong/chipseq
+```
 
-    > Please check [nf-core/configs](https://github.com/nf-core/configs#documentation) to see if a custom config file to run nf-core pipelines already exists for your Institute. If so, you can simply use `-profile <institute>` in your command. This will enable either `docker` or `singularity` and set the appropriate execution settings for your local compute environment.
+## Remove
 
-4. Start running your own analysis!
+```bash
+conda activate chipflow
+nextflow drop jianhong/chipseq
+conda deactivate
+conda remove --name chipflow --all
+conda info --envs
+```
 
-    ```bash
-    nextflow run nf-core/chipseq -profile <docker/singularity/conda/institute> --input design.csv --genome GRCh37
-    ```
 
-See [usage docs](docs/usage.md) for all of the available options when running the pipeline.
+## design table
 
-## Documentation
+| group | replicate | fastq_1 | fastq_2 | antibody | control | track_color | track_group |
+|-------|-----------|---------|---------|----------|---------|-------------|-------------|
+| WT | 1 | fastq/WT1.fastq.gz| | ANT1 | Input | #E69F00 | SAMPLE |
+| WT | 2 | fastq/WT2.fastq.gz| | ANT1 | Input | #E69F00 | SAMPLE |
+| KD | 1 | fastq/KD1.fastq.gz| | ANT1 | Input | #0000FF | SAMPLE |
+| KD | 2 | fastq/KD2.fastq.gz| | ANT1 | Input | #0000FF | SAMPLE |
+| Input | 1 | fastq/KD1.fastq.gz| |  |  | #000000 | SAMPLE |
+| Input | 2 | fastq/KD2.fastq.gz| |  |  | #000000 | SAMPLE |
 
-The nf-core/chipseq pipeline comes with documentation about the pipeline which you can read at [https://nf-core/chipseq/docs](https://nf-core/chipseq/docs) or find in the [`docs/` directory](docs).
+## metagene analysis
 
-## Credits
+```
+nextflow run jianhong/chipseq -profile test -resume --genomicElements beds/*.bed
+```
 
-These scripts were originally written by Chuan Wang ([@chuan-wang](https://github.com/chuan-wang)) and Phil Ewels ([@ewels](https://github.com/ewels)) for use at the [National Genomics Infrastructure](https://portal.scilifelab.se/genomics/) at [SciLifeLab](http://www.scilifelab.se/) in Stockholm, Sweden. The pipeline has since been re-implemented by Harshil Patel ([@drpatelh](https://github.com/drpatelh)) from [The Bioinformatics & Biostatistics Group](https://www.crick.ac.uk/research/science-technology-platforms/bioinformatics-and-biostatistics/) at [The Francis Crick Institute](https://www.crick.ac.uk/), London.
+## Get help
 
-Many thanks to others who have helped out and contributed along the way too, including (but not limited to): [@apeltzer](https://github.com/apeltzer), [@bc2zb](https://github.com/bc2zb), [@crickbabs](https://github.com/crickbabs), [@drejom](https://github.com/drejom), [@houghtos](https://github.com/houghtos), [@KevinMenden](https://github.com/KevinMenden), [@mashehu](https://github.com/mashehu), [@pditommaso](https://github.com/pditommaso), [@Rotholandus](https://github.com/Rotholandus), [@sofiahaglund](https://github.com/sofiahaglund), [@tiagochst](https://github.com/tiagochst) and [@winni2k](https://github.com/winni2k).
+Please create an issue to submit your questions.
 
-## Contributions and Support
-
-If you would like to contribute to this pipeline, please see the [contributing guidelines](.github/CONTRIBUTING.md).
-
-For further information or help, don't hesitate to get in touch on the [Slack `#chipseq` channel](https://nfcore.slack.com/channels/chipseq) (you can join with [this invite](https://nf-co.re/join/slack)).
-
-## Citation
-
-If you use nf-core/chipseq for your analysis, please cite it using the following doi: [10.5281/zenodo.3240506](https://doi.org/10.5281/zenodo.3240506)
-
-You can cite the `nf-core` publication as follows:
-
-An extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.
-
-> **The nf-core framework for community-curated bioinformatics pipelines.**
->
-> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.
->
-> _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).
-> ReadCube: [Full Access Link](https://rdcu.be/b1GjZ)

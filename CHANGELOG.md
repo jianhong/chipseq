@@ -1,25 +1,11 @@
+# [0.0.1] Init. - 2020-11-20
+
+* fork the pipeline from nf-core/chipseq and create a custom pipeline. 
+
 # nf-core/chipseq: Changelog
 
-The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
-and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
-
-## [Unpublished Version / DEV]
-
-### `Added`
-
-* Move template boilerplate code to Groovy `lib/`
-* Implement pipeline in DSL2
-* Update template to tools `1.10.2`
-
-### `Fixed`
-
-### `Removed`
-
-* `--single_end` parameter in favour of auto-detecting from input samplesheeet.
-
-### `Dependencies`
-
-* Update Nextflow `19.10.0` -> `20.07.1`
+The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
+and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [1.2.1] - 2020-07-29
 
