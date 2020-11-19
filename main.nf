@@ -54,7 +54,6 @@ if (params.input)     { ch_input = file(params.input, checkIfExists: true) } els
 if (params.gtf)       { ch_gtf = file(params.gtf, checkIfExists: true) } else { exit 1, 'GTF annotation file not specified!' }
 if (params.gene_bed)  { ch_gene_bed = file(params.gene_bed, checkIfExists: true) }
 if (params.blacklist) { ch_blacklist = Channel.fromPath(params.blacklist, checkIfExists: true) } else { ch_blacklist = Channel.empty() }
-ch_blacklist.into{ch_blacklist;ch_blacklist_diffbind}
 
 if (params.fasta) {
     ch_fasta = file(params.fasta, checkIfExists: true)
@@ -114,7 +113,7 @@ ch_deseq2_clustering_header = file("$baseDir/assets/multiqc/deseq2_clustering_he
 
 // deepTools genomic elements bed files
 ch_genomic_elements_bed = params.genomicElements? Channel.fromPath(params.genomicElements, checkIfExists: true) : Channel.empty()
-ch_genomic_elements_bed.into{ch_genomic_elements_bed; ch_genomic_elements_bed_group}
+ch_genomic_elements_bed.set{ch_genomic_elements_bed}
 
 // index.Rmd
 ch_index_docs = file("$baseDir/docs/index.Rmd", checkIfExists: true)
