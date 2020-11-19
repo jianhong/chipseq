@@ -1,4 +1,4 @@
-# ![qiubio-nf-core/chipseq](docs/images/chipseqlogo.png)
+# ![qiubio-nf-core/chipseq](assets/chipseqlogo.png)
 
 ## Introduction
 
