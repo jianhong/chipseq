@@ -19,7 +19,7 @@ process JO_MERGE_REP_BAM {
 
     output:
     tuple val(meta), path("${meta.id}.*.sorted.bam"), path("${meta.id}.*.sorted.bam.bai"), emit: bam
-    tuple val(meta.id), path("*.bw"), emit: bw
+    tuple val(meta), path("*.bw"), emit: bw
 
     script:
     def ioptions         = initOptions(options)

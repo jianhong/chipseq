@@ -54,22 +54,22 @@ workflow JO_METAGENE_ANALYSIS {
     JO_MERGE_REP_BAM.out.bw
        .map{ meta, bw -> 
                ["CPM", meta.id, bw.findAll{it.toString().endsWith('.CPM.bw')}] }
-       .groupTuple(by: [0]).ifEmpty([[],[],[]]).map{[it[1], it[2]]}
        .set{ch_cpm_bw}
     JO_MERGE_REP_BAM.out.bw
        .map{ meta, bw -> 
                ["log2", meta.id, bw.findAll{
                            it.toString()
                              .endsWith('.normByInput.CPM.log2ratio.bw')}] }
-       .groupTuple(by: [0]).ifEmpty([[],[],[]]).map{[it[1], it[2]]}
        .set{ch_log2_bw}
-    ch_single_bw.map{["single", it[0].id, it[1]]}
-       .groupTuple(by: [0]).ifEmpty([[],[],[]]).map{[it[1], it[2]]}
+    ch_single_bw.map{meta, bw ->
+                       ["single", meta.id, bw]}
        .set{ch_single_bw}
-    ch_cpm_bw.concat(ch_log2_bw, ch_single_bw).set{ch_bw}
+    ch_cpm_bw.concat(ch_log2_bw, ch_single_bw)
+       .groupTuple(by: [0]).ifEmpty([[],[],[]]).map{[it[1], it[2]]}
+       .set{ch_bw}
     JO_METAGENE(ch_bw, ch_bed, metagene_options)
     
     emit:
-    bam = JO_MERGE_REP_BAM.out.bam  // channel: [ val(name), path(bam), path(bai) ]
-    bw  = JO_MERGE_REP_BAM.out.bw   // channel: [ val(name), [bw] ]
+    bam = JO_MERGE_REP_BAM.out.bam  // channel: [ val(meta), path(bam), path(bai) ]
+    bw  = JO_MERGE_REP_BAM.out.bw   // channel: [ val(meta), [bw] ]
 }
