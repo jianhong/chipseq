@@ -1,5 +1,5 @@
 // Import generic module functions
-include { initOptions; saveFiles } from './functions'
+include { initOptions; saveFiles } from '../functions'
 
 /*
  * Merge bam file for replicates
