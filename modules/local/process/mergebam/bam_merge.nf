@@ -25,16 +25,16 @@ process JO_MERGE_REP_BAM {
     def ioptions         = initOptions(options)
     def singleExt        = (single_end && params.fragment_size > 0) ? "--extendReads ${params.fragment_size}" : ''
     def extendReads      = single_end ? "${singleExt}" : '--extendReads'
-    def name             = name + '.' + single_end?"se":"pe"
+    def pe               = single_end?"se":"pe"
     """
     samtools merge \\
-        ${name}.bam \\
+        ${name}.${pe}.bam \\
         ${bam.join(' ')}
-    samtools sort -o ${name}.sorted.bam ${name}.bam
-    samtools index ${name}.sorted.bam
+    samtools sort -o ${name}.${pe}.sorted.bam ${name}.${pe}.bam
+    samtools index ${name}.${pe}.sorted.bam
 
-    bamCoverage -b ${name}.sorted.bam \\
-       -o ${name}.norm.CPM.bw \\
+    bamCoverage -b ${name}.${pe}.sorted.bam \\
+       -o ${name}.${pe}.norm.CPM.bw \\
        --binSize 10  --normalizeUsing CPM ${extendReads}
 
     if [ "input" != "null"]; then
@@ -43,7 +43,7 @@ process JO_MERGE_REP_BAM {
         ${inputbam.join(' ')}
      samtools sort -o ${input}.sorted.bam ${input}.bam
      samtools index ${input}.bam
-     bamCompare -b1 ${name}.sorted.bam \\
+     bamCompare -b1 ${name}.${pe}.sorted.bam \\
                 -b2 ${input}.sorted.bam \\
                 --scaleFactorsMethod readCount \\
                 --operation log2 \\
@@ -55,8 +55,8 @@ process JO_MERGE_REP_BAM {
         
     if [ "$params.deep_gsize" != "" ] && [ "$params.deep_gsize" != "false" ] && [ "$params.deep_gsize" != "null" ]
     then
-    bamCoverage -b ${name}.sorted.bam \\
-       -o ${name}.norm.RPGC.bw \\
+    bamCoverage -b ${name}.${pe}.sorted.bam \\
+       -o ${name}.${pe}.norm.RPGC.bw \\
        --effectiveGenomeSize $params.deep_gsize \\
        --binSize 10  --normalizeUsing RPGC ${extendReads}
     fi 

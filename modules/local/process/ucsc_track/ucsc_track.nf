@@ -6,7 +6,6 @@ include { initOptions; saveFiles } from '../functions'
  */
 process JO_TRACKHUB {
     tag "$name"
-    errorStrategy 'ignore'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:name) }
