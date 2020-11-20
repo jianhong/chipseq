@@ -554,6 +554,7 @@ workflow {
                 MACS2_CONSENSUS.out.bed.collect())
         .set{ch_trackhub}
    ch_trackhub.view()
+   ch_trackhub.collect().view()
    JO_TRACKHUB(
         ch_trackhub.collect(),
         ch_input,
