@@ -21,6 +21,10 @@ input:
             type: file
             description: BED files
             pattern: "*.{bed}"
+        - designTable:
+            type: file
+            description: csv file
+            pattern: "*.{csv}"
 output:
     -
         - count:

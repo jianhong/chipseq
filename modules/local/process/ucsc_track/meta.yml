@@ -1,0 +1,29 @@
+name: Create UCSC track hub
+description: Create track hub files for UCSC genome browser
+keywords:
+    - trackhub
+tools:
+    - trackhub:
+        description: |
+            trackhub is a Python package that enables the programmatic 
+            construction and upload of arbitrarily complex track hubs.
+        homepage: https://daler.github.io/trackhub
+        documentation: https://daler.github.io/trackhub
+input:
+    -
+        - bw:
+            type: file
+            description: bigWig files
+            pattern: "*.{bw,bed,broadPeak,narrowPeak}"
+        - designTable:
+            type: file
+            description: csv file
+            pattern: ".{csv}"
+output:
+    -
+        - hub:
+            type: path
+            description: trackhub files
+            pattern: "trackhub/*"
+authors:
+    - "@jianhong"

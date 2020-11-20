@@ -28,7 +28,7 @@ process JO_METAGENE {
     tuple val(name), path("*.tab"), emit: mat
     
     script:
-    def bigwig       = bws.join(' ')
+    def bigwig       = bw.join(' ')
     sampleLabel      = name.join(' ')
     """
     computeMatrix scale-regions \\

@@ -58,9 +58,8 @@ workflow JO_METAGENE_ANALYSIS {
        .map{ meta, bw -> [meta.id, bw] }
        .collect().ifEmpty([[], []])
        .set{ch_sigle_bw}
-    JO_METAGENE(ch_cpm_bw, ch_bed, metagene_options)
-    JO_METAGENE(ch_log2_bw, ch_bed, metagene_options)
-    JO_METAGENE(ch_sigle_bw, ch_bed, metagene_options)
+    ch_cpm_bw.concat(ch_log2_bw, ch_sigle_bw).set{ch_bw}
+    JO_METAGENE(ch_bw, ch_bed, metagene_options)
     
     emit:
     bam = JO_MERGE_REP_BAM.out.bam  // channel: [ val(name), path(bam), path(bai) ]

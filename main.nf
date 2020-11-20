@@ -159,6 +159,7 @@ include { INPUT_CHECK                         } from './modules/local/subworkflo
 include { BAM_CLEAN                           } from './modules/local/subworkflow/bam_clean'
 
 include { JO_METAGENE_ANALYSIS                } from './modules/local/subworkflow/metagene_analysis'
+include { JO_TRACKHUB                         } from './modules/local/process/ucsc_track/ucsc_track'
 
 ////////////////////////////////////////////////////
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
@@ -541,6 +542,24 @@ workflow {
         params.modules['macs2_consensus'],
         [:]
     )
+    
+    /*
+     * Create IGV session
+     */
+   
+   JO_METAGENE_ANALYSIS.out.bw.collect().ifEmpty([[],[]]).set{ch_bw}
+   UCSC_BEDRAPHTOBIGWIG.out.bigwig
+        .collect{[it[0].id, it[1]]}.ifEmpty([[],[]]).set{ch_single_bw}
+   MACS2_CALLPEAK.out.peak
+        .collect{[it[0].id, it[1]]}.ifEmpty([[],[]]).set{ch_peak_bed}
+   MACS2_CONSENSUS.out.bed
+        .collect{[it[0].id, it[1]]}.ifEmpty([[],[]]).set{ch_consensus_bed}
+   ch_bw.concat(ch_single_bw, ch_peak_bed, ch_consensus_bed).set{ch_trackhub}
+   JO_TRACKHUB(
+        ch_trackhub,
+        ch_input,
+        params.modules['jo_trackhub']
+   )
 
     /*
      * Pipeline reporting
