@@ -556,7 +556,7 @@ workflow {
    MACS2_CONSENSUS.out.bed
         .collect{[it[0].id, it[1]]}.ifEmpty([[],[]]).set{ch_consensus_bed}
    ch_bw.concat(ch_single_bw, ch_peak_bed, ch_consensus_bed)
-        .colect().ifEmpty([[],[]]).set{ch_trackhub}
+        .collect().ifEmpty([[],[]]).set{ch_trackhub}
    JO_TRACKHUB(
         ch_trackhub,
         ch_input,
