@@ -548,18 +548,14 @@ workflow {
      * Create ucsc trackhub
      */
    
-   JO_METAGENE_ANALYSIS.out.bw.collect().ifEmpty([[],[]]).set{ch_bw}
-   UCSC_BEDRAPHTOBIGWIG.out.bigwig
-        .collect{[it[0].id, it[1]]}.ifEmpty([[],[]]).set{ch_single_bw}
-   MACS2_CALLPEAK.out.peak
-        .collect{[it[0].id, it[1]]}.ifEmpty([[],[]]).set{ch_peak_bed}
-   MACS2_CONSENSUS.out.bed
-        .collect{[it[0].id, it[1]]}.ifEmpty([[],[]]).set{ch_consensus_bed}
-   ch_bw.concat(ch_single_bw, ch_peak_bed, ch_consensus_bed).set{ch_bw}
-   ch_bw.collect{it[0]}
-        .phase(ch_bw.collect{it[1]}).set{ch_trackhub}
+   JO_METAGENE_ANALYSIS.out.bw.collect()
+        .concat(UCSC_BEDRAPHTOBIGWIG.out.bigwig.collect(), 
+                MACS2_CALLPEAK.out.peak.collect(),
+                MACS2_CONSENSUS.out.bed.collect())
+        .set{ch_trackhub}
+   ch_trackhub.view()
    JO_TRACKHUB(
-        ch_trackhub,
+        ch_trackhub.collect(),
         ch_input,
         params.modules['jo_trackhub']
    )

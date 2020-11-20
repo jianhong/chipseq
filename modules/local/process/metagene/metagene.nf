@@ -5,11 +5,10 @@ include { initOptions; saveFiles } from '../functions'
  * Metagene analysis
  */
 process JO_METAGENE {
-    tag "$name"
     label 'process_high'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:name) }
+        saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:'') }
 
     conda (params.conda ? "./environment.txt" : null)
 
@@ -30,6 +29,7 @@ process JO_METAGENE {
     def bigwig       = bw.join(' ')
     sampleLabel      = name.join(' ')
     """
+    if [ ${#bw[@]} -eq ${#name[@]} ]; then
     computeMatrix scale-regions \\
         --regionsFileName $bed \\
         --scoreFileName ${bigwig} \\
@@ -65,5 +65,6 @@ process JO_METAGENE {
     plotHeatmap --matrixFile ${bed.getSimpleName()}.reference_${params.deepToolsReferencePoint}.mat.gz \\
         --outFileName ${bed.getSimpleName()}.reference_${params.deepToolsReferencePoint}Heatmap.pdf \\
         --outFileNameMatrix ${bed.getSimpleName()}.reference_${params.deepToolsReferencePoint}Heatmap.mat.tab
+    fi
     """
 }
