@@ -18,14 +18,14 @@ process JO_MERGE_REP_BAM {
     val options
 
     output:
-    tuple val(name), path("${name}.sorted.bam"), path("${name}.sorted.bam.bai"), emit: bam
+    tuple val(name), path("${name}.*.sorted.bam"), path("${name}.*.sorted.bam.bai"), emit: bam
     tuple val(name), path("*.bw"), emit: bw
 
     script:
     def ioptions         = initOptions(options)
     def singleExt        = (single_end && params.fragment_size > 0) ? "--extendReads ${params.fragment_size}" : ''
     def extendReads      = single_end ? "${singleExt}" : '--extendReads'
-    def name             = name + '.' + single_end
+    def name             = name + '.' + single_end?"se":"pe"
     """
     samtools merge \\
         ${name}.bam \\
