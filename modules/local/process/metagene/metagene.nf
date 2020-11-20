@@ -30,7 +30,6 @@ process JO_METAGENE {
     def bigwig       = bw.join(' ')
     sampleLabel      = name.join(' ')
     """
-    if [ ${#bw[@]} -eq ${#name[@]} ]; then
     computeMatrix scale-regions \\
         --regionsFileName $bed \\
         --scoreFileName ${bigwig} \\
@@ -66,6 +65,5 @@ process JO_METAGENE {
     plotHeatmap --matrixFile ${bed.getSimpleName()}.reference_${params.deepToolsReferencePoint}.mat.gz \\
         --outFileName ${bed.getSimpleName()}.reference_${params.deepToolsReferencePoint}Heatmap.pdf \\
         --outFileNameMatrix ${bed.getSimpleName()}.reference_${params.deepToolsReferencePoint}Heatmap.mat.tab
-    fi
     """
 }
