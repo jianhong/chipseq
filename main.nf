@@ -395,6 +395,13 @@ workflow {
         .out
         .bam
         .join ( BAM_CLEAN.out.bai, by: [0] )
+        .map { meta, bam, bai -> meta.control ? null : [ meta.id, [ bam ] , [ bai ] ] }
+        .set { ch_control_bam_bai }
+        
+    BAM_CLEAN
+        .out
+        .bam
+        .join ( BAM_CLEAN.out.bai, by: [0] )
         .map { meta, bam, bai -> meta.control ? [ meta.control, meta, [ bam ], [ bai ] ] : null }
         .combine(ch_control_bam_bai, by: 0)
         .map { it -> [ it[1] , it[2] + it[4], it[3] + it[5] ] }
