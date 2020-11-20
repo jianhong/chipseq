@@ -545,7 +545,7 @@ workflow {
     )
     
     /*
-     * Create IGV session
+     * Create ucsc trackhub
      */
    
    JO_METAGENE_ANALYSIS.out.bw.collect().ifEmpty([[],[]]).set{ch_bw}
@@ -555,8 +555,9 @@ workflow {
         .collect{[it[0].id, it[1]]}.ifEmpty([[],[]]).set{ch_peak_bed}
    MACS2_CONSENSUS.out.bed
         .collect{[it[0].id, it[1]]}.ifEmpty([[],[]]).set{ch_consensus_bed}
-   ch_bw.concat(ch_single_bw, ch_peak_bed, ch_consensus_bed)
-        .collect().ifEmpty([[],[]]).set{ch_trackhub}
+   ch_bw.concat(ch_single_bw, ch_peak_bed, ch_consensus_bed).set{ch_bw}
+   ch_bw.collect{it[0]}
+        .phase(ch_bw.collect{it[1]}).set{ch_trackhub}
    JO_TRACKHUB(
         ch_trackhub,
         ch_input,

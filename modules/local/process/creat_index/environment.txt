@@ -1,0 +1,3 @@
+conda-forge::pandoc=2.11.2
+bioconda::r-rmarkdown=0.9.5
+bioconda::r-dt=0.2

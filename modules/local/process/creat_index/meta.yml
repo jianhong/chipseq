@@ -1,0 +1,26 @@
+name: Create index file the analysis
+description: Create index file the analysis
+keywords:
+    - index
+input:
+    -
+        - index:
+            type: file
+            description: index files
+            pattern: "*.{Rmd}"
+        - designTable:
+            type: file
+            description: csv file
+            pattern: ".{csv}"
+        - checksum:
+            type: file
+            description: md5 checksum
+            pattern: ".{md5}"
+output:
+    -
+        - html:
+            type: file
+            description: index files
+            pattern: "index.html"
+authors:
+    - "@jianhong"
