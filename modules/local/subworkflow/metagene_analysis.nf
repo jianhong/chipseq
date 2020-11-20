@@ -8,7 +8,7 @@ include { JO_METAGENE        } from '../process/metagene/metagene'
 workflow JO_METAGENE_ANALYSIS {
     take:
     ch_clean_bam               // channel: [ [meta], bam ]
-    ch_sigle_bw                // channel: [ [meta], bw  ]
+    ch_single_bw                // channel: [ [meta], bw  ]
     ch_bed                     // channel: [ bed ]
     bam_merge_options          //     map: options for bam_merge module
     metagene_options           //     map: options for metagene module
