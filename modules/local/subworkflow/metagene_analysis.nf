@@ -21,9 +21,9 @@ workflow JO_METAGENE_ANALYSIS {
                 [ meta.control? 
                      meta.control.replaceAll(/_R\d+.*$/, ""):
                      meta.id.replaceAll(/_R\d+.*$/, ""),
-                  meta.id.replaceAll(/_R\d+.*$/, ""), bam ] }
-       .groupTuple(by: [0, 1])
-       .map{control, name, bam -> [control, [name, bam]]}
+                  meta.id.replaceAll(/_R\d+.*$/, ""), meta.single_end, bam ] }
+       .groupTuple(by: [0, 1, 2])
+       .map{control, name, se, bam -> [control, [name, se, bam]]}
        .set{ch_to_be_merged}
     ch_clean_bam
         .map {
@@ -34,9 +34,9 @@ workflow JO_METAGENE_ANALYSIS {
     ch_to_be_merged_input.cross(ch_to_be_merged)
        .map{input, chip -> 
              if(input[0]==chip[1][0]){
-                [chip[1][0], null, chip[1][1].unique(), []]
+                [chip[1][0], null, chip[1][1], chip[1][2].unique(), []]
              }else{
-                [chip[1][0], input[0], chip[1][1].unique(), input[1].unique()]
+                [chip[1][0], input[0], chip[1][1], chip[1][2].unique(), input[1].unique()]
              }
            }
        .set{ch_to_be_merged}

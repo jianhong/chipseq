@@ -14,7 +14,7 @@ process JO_MERGE_REP_BAM {
     conda (params.conda ? "./environment.txt" : null)
 
     input:
-    tuple val(name), val(input), path(bam), path(inputbam)
+    tuple val(name), val(input), val(single_end), path(bam), path(inputbam)
     val options
 
     output:
@@ -23,8 +23,9 @@ process JO_MERGE_REP_BAM {
 
     script:
     def ioptions         = initOptions(options)
-    def singleExt        = (params.single_end && params.fragment_size > 0) ? "--extendReads ${params.fragment_size}" : ''
-    def extendReads      = params.single_end ? "${singleExt}" : '--extendReads'
+    def singleExt        = (single_end && params.fragment_size > 0) ? "--extendReads ${params.fragment_size}" : ''
+    def extendReads      = single_end ? "${singleExt}" : '--extendReads'
+    def name             = name + '.' + single_end
     """
     samtools merge \\
         ${name}.bam \\

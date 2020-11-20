@@ -39,6 +39,7 @@ params.bwa_index = params.genome ? params.genomes[ params.genome ].bwa ?: false 
 params.gtf = params.genome ? params.genomes[ params.genome ].gtf ?: false : false
 params.gene_bed = params.genome ? params.genomes[ params.genome ].bed12 ?: false : false
 params.macs_gsize = params.genome ? params.genomes[ params.genome ].macs_gsize ?: false : false
+params.deep_gsize = params.genome ? params.genomes[ params.genome ].deep_gsize ?: false : false
 params.blacklist = params.genome ? params.genomes[ params.genome ].blacklist ?: false : false
 anno_readme = params.genome ? params.genomes[ params.genome ].readme ?: false : false
 params.species = params.genome ? params.genomes[ params.genome ].species ?: params.genome : false
