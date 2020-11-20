@@ -6,7 +6,6 @@ include { initOptions; saveFiles } from '../functions'
  */
 process JO_METAGENE {
     tag "$name"
-    errorStrategy 'ignore'
     label 'process_high'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
