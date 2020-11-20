@@ -32,11 +32,6 @@ workflow JO_METAGENE_ANALYSIS {
        .groupTuple(by: [0])
        .set{ch_to_be_merged_input}
        
-    meta.id = row.sample
-    meta.single_end = row.single_end.toBoolean()
-    meta.antibody = row.antibody
-    meta.control = row.control
-    
     ch_to_be_merged_input.cross(ch_to_be_merged)
        .map{input, chip -> 
              if(input[0]==chip[1][0]){
