@@ -37,14 +37,14 @@ process JO_MERGE_REP_BAM {
        -o ${meta.id}.${pe}.norm.CPM.bw \\
        --binSize 10  --normalizeUsing CPM ${extendReads}
 
-    if [ "input" != "null"]; then
+    if [ "${meta.control}" != "null"]; then
      samtools merge \\
-        ${input}.bam \\
+        ${meta.control}.bam \\
         ${inputbam.join(' ')}
-     samtools sort -o ${input}.sorted.bam ${input}.bam
-     samtools index ${input}.bam
+     samtools sort -o ${meta.control}.sorted.bam ${meta.control}.bam
+     samtools index ${meta.control}.bam
      bamCompare -b1 ${meta.id}.${pe}.sorted.bam \\
-                -b2 ${input}.sorted.bam \\
+                -b2 ${meta.control}.sorted.bam \\
                 --scaleFactorsMethod readCount \\
                 --operation log2 \\
                 --normalizeUsing CPM \\
