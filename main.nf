@@ -159,7 +159,7 @@ include { MULTIQC                             } from './modules/local/process/mu
 include { INPUT_CHECK                         } from './modules/local/subworkflow/input_check'
 include { BAM_CLEAN                           } from './modules/local/subworkflow/bam_clean'
 
-include { MERGE_REP_BAM                       } from './modules/local/process/bam_merge'
+include { MERGE_REP_BAM                       } from './modules/local/process/mergebam/bam_merge'
 
 ////////////////////////////////////////////////////
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
@@ -294,25 +294,35 @@ workflow {
         .bam
         .map {
             meta, bam ->
-                fmeta = meta.id.replaceAll(/_R\d+.*$/, "")
-                [ fmeta, bam ] }
-       .groupTuple(by: [0])
-       .map { it ->  [ it[0], it[1].flatten() ] }
-       .set { ch_to_be_merged }
-       .view()
+                [ meta.control? 
+                     meta.control.replaceAll(/_R\d+.*$/, ""):
+                     meta.id.replaceAll(/_R\d+.*$/, ""),
+                  meta.id.replaceAll(/_R\d+.*$/, ""), bam ] }
+       .groupTuple(by: [0, 1])
+       .map{control, name, bam -> [control, [name, bam]]}
+       .set{ch_to_be_merged}
     BAM_CLEAN
         .out
         .bam
-        .join ( BAM_CLEAN.out.bai, by: [0] )
-        .map { meta, bam, bai -> meta.control ? [ meta.control, meta, [ bam ], [ bai ] ] : null }
-        .combine(ch_control_bam_bai, by: 0)
-        .map { it -> [ it[1] , it[2] + it[4], it[3] + it[5] ] }
-        .set { ch_to_be_merged }
-        .view()
-    /*MERGE_REP_BAM(
+        .map {
+            meta, bam ->
+                [ meta.id.replaceAll(/_R\d+.*$/, ""), bam ] }
+       .groupTuple(by: [0])
+       .set{ch_to_be_merged_input}
+    ch_to_be_merged_input.cross(ch_to_be_merged)
+       .map{input, chip -> 
+             if(input[0]==chip[1][0]){
+                [chip[1][0], null, chip[1][1].unique(), []]
+             }else{
+                [chip[1][0], input[0], chip[1][1].unique(), input[1].unique()]
+             }
+           }
+       .set{ch_to_be_merged}
+    
+    MERGE_REP_BAM(
       ch_to_be_merged,
       params.modules['merge_rep_bam']
-    )*/
+    )
 
     /*
      * Post alignment QC
@@ -381,13 +391,6 @@ workflow {
     /*
      * Refactor channels: [ val(meta), [ ip_bam, control_bam ] [ ip_bai, control_bai ] ]
      */
-    BAM_CLEAN
-        .out
-        .bam
-        .join ( BAM_CLEAN.out.bai, by: [0] )
-        .map { meta, bam, bai -> meta.control ? null : [ meta.id, [ bam ] , [ bai ] ] }
-        .set { ch_control_bam_bai }
-
     BAM_CLEAN
         .out
         .bam
