@@ -4,7 +4,7 @@ include { initOptions; saveFiles } from '../functions'
 /*
  * Merge bam file for replicates
  */
-process MERGE_REP_BAM {
+process JO_MERGE_REP_BAM {
     tag "$name"
     label 'process_medium'
     publishDir "${params.outdir}",
@@ -18,7 +18,7 @@ process MERGE_REP_BAM {
     val options
 
     output:
-    tuple val(name), path("*.sorted.bam"), path("*.sorted.bam.bai"), emit: bam
+    tuple val(name), path("${name}.sorted.bam"), path("${name}.sorted.bam.bai"), emit: bam
     tuple val(name), path("*.bw"), emit: bw
 
     script:

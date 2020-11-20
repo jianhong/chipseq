@@ -113,7 +113,6 @@ ch_deseq2_clustering_header = file("$baseDir/assets/multiqc/deseq2_clustering_he
 
 // deepTools genomic elements bed files
 ch_genomic_elements_bed = params.genomicElements? Channel.fromPath(params.genomicElements, checkIfExists: true) : Channel.empty()
-ch_genomic_elements_bed.set{ch_genomic_elements_bed}
 
 // index.Rmd
 ch_index_docs = file("$baseDir/docs/index.Rmd", checkIfExists: true)
@@ -159,7 +158,7 @@ include { MULTIQC                             } from './modules/local/process/mu
 include { INPUT_CHECK                         } from './modules/local/subworkflow/input_check'
 include { BAM_CLEAN                           } from './modules/local/subworkflow/bam_clean'
 
-include { MERGE_REP_BAM                       } from './modules/local/process/mergebam/bam_merge'
+include { JO_METAGENE_ANALYSIS                } from './modules/local/subworkflow/metagene_analysis'
 
 ////////////////////////////////////////////////////
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
@@ -285,44 +284,6 @@ workflow {
         params.modules['samtools_sort_filter']
     )
     ch_software_versions = ch_software_versions.mix(BAM_CLEAN.out.bamtools_version.first().ifEmpty(null))
-    
-    /*
-     * Merge bam and do metagene analysis
-     */
-    BAM_CLEAN
-        .out
-        .bam
-        .map {
-            meta, bam ->
-                [ meta.control? 
-                     meta.control.replaceAll(/_R\d+.*$/, ""):
-                     meta.id.replaceAll(/_R\d+.*$/, ""),
-                  meta.id.replaceAll(/_R\d+.*$/, ""), bam ] }
-       .groupTuple(by: [0, 1])
-       .map{control, name, bam -> [control, [name, bam]]}
-       .set{ch_to_be_merged}
-    BAM_CLEAN
-        .out
-        .bam
-        .map {
-            meta, bam ->
-                [ meta.id.replaceAll(/_R\d+.*$/, ""), bam ] }
-       .groupTuple(by: [0])
-       .set{ch_to_be_merged_input}
-    ch_to_be_merged_input.cross(ch_to_be_merged)
-       .map{input, chip -> 
-             if(input[0]==chip[1][0]){
-                [chip[1][0], null, chip[1][1].unique(), []]
-             }else{
-                [chip[1][0], input[0], chip[1][1].unique(), input[1].unique()]
-             }
-           }
-       .set{ch_to_be_merged}
-    
-    MERGE_REP_BAM(
-      ch_to_be_merged,
-      params.modules['merge_rep_bam']
-    )
 
     /*
      * Post alignment QC
@@ -416,6 +377,18 @@ workflow {
         params.modules['deeptools_plotfingerprint']
     )
 
+    
+    /*
+     * do metagene analysis for given bed files
+     */
+    JO_METAGENE_ANALYSIS(
+        BAM_CLEAN.out.bam,
+        UCSC_BEDRAPHTOBIGWIG.out.bigwig,
+        ch_genomic_elements_bed,
+        params.modules['jo_merge_rep_bam'],
+        params.modules['jo_metagene']
+    )
+    
     peakType = params.narrow_peak ? 'narrowPeak' : 'broadPeak'
     if (params.macs_gsize) {
 
