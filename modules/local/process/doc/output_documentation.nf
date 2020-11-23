@@ -1,5 +1,5 @@
 // Import generic module functions
-include { saveFiles } from './functions'
+include { saveFiles } from '../functions'
 
 /*
  * Output Markdown documentation to HTML
@@ -9,7 +9,7 @@ process OUTPUT_DOCUMENTATION {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:"pipeline_info", publish_id:'') }
 
-    conda (params.conda ? "${baseDir}/environment.yml" : null)
+    conda (params.conda ? "${params.modules_dir}/doc/environment.txt" : null)
 
     input:
     path output_docs

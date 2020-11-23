@@ -152,7 +152,7 @@ include { MACS2_CONSENSUS                     } from './modules/local/process/ma
 include { FRIP_SCORE                          } from './modules/local/process/frip_score'
 //include { DESEQ2_FEATURECOUNTS                } from './modules/local/process/deseq2_featurecounts'
 include { IGV                                 } from './modules/local/process/igv'
-include { OUTPUT_DOCUMENTATION                } from './modules/local/process/output_documentation'
+include { OUTPUT_DOCUMENTATION                } from './modules/local/process/doc/output_documentation'
 include { GET_SOFTWARE_VERSIONS               } from './modules/local/process/get_software_versions'
 include { MULTIQC                             } from './modules/local/process/multiqc'
 

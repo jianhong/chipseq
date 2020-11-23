@@ -10,7 +10,7 @@ process JO_INDEX {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:name) }
 
-    conda (params.conda ? "./environment.txt" : null)
+    conda (params.conda ? "${params.modules_dir}/creat_index/environment.txt" : null)
 
     when:
     !params.skip_trackhub

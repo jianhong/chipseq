@@ -11,7 +11,7 @@ process JO_MERGE_REP_BAM {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:meta.id) }
 
-    conda (params.conda ? "./environment.txt" : null)
+    conda (params.conda ? "${params.modules_dir}/mergebam/environment.txt" : null)
 
     input:
     tuple val(meta), path(bam), path(inputbam)

@@ -24,6 +24,7 @@ dependencies:
   - conda-forge::r-xfun=0.16
 
   ## bioconda packages
+  - bioconda::nextflow=20.10.0
   - bioconda::samtools=1.10
   - bioconda::bamtools=2.5.1
   - bioconda::pysam=0.16.0.1

@@ -49,12 +49,8 @@ resuls in addition to original output of **nfcore/chipseq** pipeline.
 
 ```bash
 conda update conda
-wget https://raw.githubusercontent.com/jianhong/chipseq/master/environment.yml
-conda env create -n chipflow -f environment.yml
-rm environment.yml
-conda activate chipflow
 nextflow pull jianhong/chipseq -r dev
-srun --mem 60G -c 2 nextflow run jianhong/chipseq -profile test -r dev
+srun --mem 60G -c 2 nextflow run jianhong/chipseq -profile test -r dev --conda
 ```
 
 ## Update

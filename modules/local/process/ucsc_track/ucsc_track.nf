@@ -9,7 +9,7 @@ process JO_TRACKHUB {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:'') }
 
-    conda (params.conda ? "./environment.txt" : null)
+    conda (params.conda ? "${params.modules_dir}/ucsc_track/environment.txt" : null)
 
     when:
     !params.skip_trackhub
