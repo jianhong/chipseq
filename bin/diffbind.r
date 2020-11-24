@@ -173,7 +173,12 @@ if(nrow(samples)>3){
                              block = DBA_TREATMENT)
       }
       chip <- dba.analyze(chip, bBlacklist = FALSE, bGreylist = FALSE)
-      chip.DB <- dba.report(chip, th=1)
+      
+      chip.DB <- dba.report(chip, th=1, DataType=DBA_DATA_FRAME)
+      chip.DB <- chip.DB[!is.na(chip.DB$Chr) & 
+                           !is.na(chip.DB$Start) & 
+                           !is.na(chip.DB$End), , drop=FALSE]
+      chip.DB <- toGRanges(chip.DB)
       
       # Annotation
       chip.anno <- annotatePeakInBatch(chip.DB, AnnotationData = anno,
