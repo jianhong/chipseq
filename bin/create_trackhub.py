@@ -176,7 +176,7 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
         if extension in ['bed','broadpeak','narrowpeak']:
           pass
         elif extension in TrackType.keys():
-          if sampleDesignDict:
+          if filename in sampleDesignDict:
             track = trackhub.Track(
               name=filename,
               source=ifile,
