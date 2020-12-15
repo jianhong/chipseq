@@ -1266,7 +1266,8 @@ process PHANTOMPEAKQUALTOOLS {
 // Create channel linking IP bams with control bams
 ch_rm_orphan_bam_macs_1
     .combine(ch_rm_orphan_bam_macs_2)
-    .set { ch_rm_orphan_bam_macs_1 }
+    .set { ch_rm_orphan_bam_macs_1;
+           ch_rm_orphan_bam_macs_no_control}
 
 ch_design_controls_csv
     .combine(ch_rm_orphan_bam_macs_1)
@@ -1315,6 +1316,55 @@ process PLOTFINGERPRINT {
 /*
  * STEP 6.2: Call peaks with MACS2 and calculate FRiP score
  */
+
+process MACS2_NO_CONTROL {
+    tag "${ip}"
+    label 'process_medium'
+    publishDir "${params.outdir}/bwa/mergedLibrary/macs/${PEAK_TYPE}/noCtrl", mode: params.publish_dir_mode,
+        saveAs: { filename ->
+                      if (filename.endsWith('.tsv')) "qc/$filename"
+                      else if (filename.endsWith('.igv.txt')) null
+                      else filename
+                }
+
+    when:
+    params.macs_gsize
+
+    input:
+    tuple val(name), path(bams) from ch_rm_orphan_bam_macs_no_control
+    path peak_count_header from ch_peak_count_header
+    path frip_score_header from ch_frip_score_header
+
+    output:
+    tuple val(name), path("*.$PEAK_TYPE")
+    path '*_mqc.tsv'
+    path '*.{bed,xls,gappedPeak,bdg}'
+
+    script:
+    broad = params.narrow_peak ? '' : "--broad --broad-cutoff ${params.broad_cutoff}"
+    format = params.single_end ? 'BAM' : 'BAMPE'
+    pileup = params.save_macs_pileup ? '-B --SPMR' : ''
+    fdr = params.macs_fdr ? "--qvalue ${params.macs_fdr}" : ''
+    pvalue = params.macs_pvalue ? "--pvalue ${params.macs_pvalue}" : ''
+    """
+    macs2 callpeak \\
+        -t ${bam[0]} \\
+        $broad \\
+        -f $format \\
+        -g $params.macs_gsize \\
+        -n $name \\
+        $pileup \\
+        $fdr \\
+        $pvalue \\
+        --keep-dup all
+
+    cat ${name}_peaks.${PEAK_TYPE} | wc -l | awk -v OFS='\t' '{ print "${name}", \$1 }' | cat $peak_count_header - > ${name}_peaks.count_mqc.tsv
+
+    READS_IN_PEAKS=\$(intersectBed -a ${bam[0]} -b ${name}_peaks.${PEAK_TYPE} -bed -c -f 0.20 | awk -F '\t' '{sum += \$NF} END {print sum}')
+    grep 'mapped (' $ipflagstat | awk -v a="\$READS_IN_PEAKS" -v OFS='\t' '{print "${name}", a/\$1}' | cat $frip_score_header - > ${name}_peaks.FRiP_mqc.tsv
+    """
+}
+
 process MACS2 {
     tag "${ip} vs ${control}"
     label 'process_medium'
@@ -1896,9 +1946,9 @@ process index_documentation {
 workflow.onComplete {
 
     // Set up the e-mail variables
-    def subject = "[nf-core/chipseq] Successful: $workflow.runName"
+    def subject = "[jianhong/chipseq] Successful: $workflow.runName"
     if (!workflow.success) {
-        subject = "[nf-core/chipseq] FAILED: $workflow.runName"
+        subject = "[jianhong/chipseq] FAILED: $workflow.runName"
     }
     def email_fields = [:]
     email_fields['version'] = workflow.manifest.version
@@ -2030,7 +2080,7 @@ def nfcoreHeader() {
     ${c_blue}  |\\ | |__  __ /  ` /  \\ |__) |__         ${c_yellow}}  {${c_reset}
     ${c_blue}  | \\| |       \\__, \\__/ |  \\ |___     ${c_green}\\`-._,-`-,${c_reset}
                                             ${c_green}`._,._,\'${c_reset}
-    ${c_purple}  nf-core/chipseq v${workflow.manifest.version}${c_reset}
+    ${c_purple}  jianhong/chipseq v${workflow.manifest.version}${c_reset}
     -${c_dim}--------------------------------------------------${c_reset}-
     """.stripIndent()
 }
