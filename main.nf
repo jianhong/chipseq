@@ -875,6 +875,7 @@ if (params.single_end) {
 ch_group_bam_merge_rup
       .map { it ->  [it[0].replaceAll(/_R\d+.*$/, ""), it[1]].flatten() }
       .groupTuple(by: 0)
+      .map { it -> [it[0], it[1..-1].flatten()]}
       .set{ch_group_bam_merge_rup}
 
 process MERGE_REP_BAM {
@@ -1318,7 +1319,7 @@ process PLOTFINGERPRINT {
  */
 
 process MACS2_NO_CONTROL {
-    tag "${ip}"
+    tag "${name}"
     label 'process_medium'
     publishDir "${params.outdir}/bwa/mergedLibrary/macs/${PEAK_TYPE}/noCtrl", mode: params.publish_dir_mode,
         saveAs: { filename ->
@@ -1331,12 +1332,9 @@ process MACS2_NO_CONTROL {
 
     input:
     tuple val(name), path(bam) from ch_rm_orphan_bam_macs_no_control
-    path peak_count_header from ch_peak_count_header
-    path frip_score_header from ch_frip_score_header
 
     output:
     tuple val(name), path("*.$PEAK_TYPE")
-    path '*_mqc.tsv'
     path '*.{bed,xls,gappedPeak,bdg}'
 
     script:
@@ -1356,11 +1354,6 @@ process MACS2_NO_CONTROL {
         $fdr \\
         $pvalue \\
         --keep-dup all
-
-    cat ${name}_peaks.${PEAK_TYPE} | wc -l | awk -v OFS='\t' '{ print "${name}", \$1 }' | cat $peak_count_header - > ${name}_peaks.count_mqc.tsv
-
-    READS_IN_PEAKS=\$(intersectBed -a ${bam[0]} -b ${name}_peaks.${PEAK_TYPE} -bed -c -f 0.20 | awk -F '\t' '{sum += \$NF} END {print sum}')
-    grep 'mapped (' $ipflagstat | awk -v a="\$READS_IN_PEAKS" -v OFS='\t' '{print "${name}", a/\$1}' | cat $frip_score_header - > ${name}_peaks.FRiP_mqc.tsv
     """
 }
 
