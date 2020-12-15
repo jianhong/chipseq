@@ -1323,7 +1323,6 @@ process MACS2_NO_CONTROL {
     publishDir "${params.outdir}/bwa/mergedLibrary/macs/${PEAK_TYPE}/noCtrl", mode: params.publish_dir_mode,
         saveAs: { filename ->
                       if (filename.endsWith('.tsv')) "qc/$filename"
-                      else if (filename.endsWith('.igv.txt')) null
                       else filename
                 }
 
@@ -1331,7 +1330,7 @@ process MACS2_NO_CONTROL {
     params.macs_gsize
 
     input:
-    tuple val(name), path(bams) from ch_rm_orphan_bam_macs_no_control
+    tuple val(name), path(bam) from ch_rm_orphan_bam_macs_no_control
     path peak_count_header from ch_peak_count_header
     path frip_score_header from ch_frip_score_header
 
