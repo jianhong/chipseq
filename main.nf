@@ -847,7 +847,8 @@ if (params.single_end) {
                                                              ch_rm_orphan_bam_macs_2,
                                                              ch_rm_orphan_bam_phantompeakqualtools, 
                                                              ch_group_bam_diffbind,
-                                                             ch_group_bam_merge_rup
+                                                             ch_group_bam_merge_rup,
+           ch_rm_orphan_bam_macs_no_control
         tuple val(name), path("${prefix}.bam") into ch_rm_orphan_name_bam_counts
         tuple val(name), path('*.flagstat') into ch_rm_orphan_flagstat_bigwig,
                                                  ch_rm_orphan_flagstat_macs,
@@ -1266,8 +1267,7 @@ process PHANTOMPEAKQUALTOOLS {
 // Create channel linking IP bams with control bams
 ch_rm_orphan_bam_macs_1
     .combine(ch_rm_orphan_bam_macs_2)
-    .set { ch_rm_orphan_bam_macs_1;
-           ch_rm_orphan_bam_macs_no_control}
+    .set { ch_rm_orphan_bam_macs_1 }
 
 ch_design_controls_csv
     .combine(ch_rm_orphan_bam_macs_1)
