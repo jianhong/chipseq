@@ -190,14 +190,14 @@ if (params.fasta) {
     exit 1, 'Fasta file not specified!'
 }
 
-if (params.bwa_index) {
+//if (params.bwa_index) {
     lastPath = params.bwa_index.lastIndexOf(File.separator)
     bwa_dir  = params.bwa_index.substring(0,lastPath+1)
-    bwa_base = params.bwa_index.substring(lastPath+1, params.bwa_index.lastIndexOf('\{')-1-lastPath)
+    bwa_base = params.bwa_index.substring(lastPath+1)
     Channel
         .fromPath(bwa_dir, checkIfExists: true)
         .set { ch_bwa_index }
-}
+//}
 
 
 // Save AWS IGenomes file containing annotation version
