@@ -8,6 +8,7 @@
 #######################################################################
 
 import os
+import sys
 import glob
 import errno
 import argparse
@@ -88,7 +89,7 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
 
     paramColn = {}
     for i in range(len(header)):
-      if header[i][:6]=="track_":
+      if header[i][:6]=="track_": # header start with track_
         paramColn[header[i][6:]]=i
 
     sampleDesignDict = {}

@@ -41,29 +41,54 @@ def check_samplesheet(file_in, file_out):
     CTCF_IP,1,CTCF_IP_1.fastq.gz,CTCF_IP_2.fastq.gz,CTCF,INPUT
     INPUT,1,INPUT_1.fastq.gz,INPUT_IP_2.fastq.gz,,
     """
-
+    
+    PEAKTYPES = {'narrowPeak':['h2afz', 'h3ac', 'h3k4me2', 'h3k4me3',
+                               'h3k9ac', 'h3k27ac'], 
+                 'broadPeak':['h2afz', "h3f3a", 'h3k4me1', 
+                              'h3k9me1', 'h3k9me2', 'h3k9me3', 'h3k14ac', 
+                              'h4k20me1', 'h3k27me3', 'h3k36me3', 
+                              'h3k79me2', 'h3k79me3']}
+    
     sample_run_dict = {}
     antibody_dict = {}
     with open(file_in, "r") as fin:
 
         ## Check header
-        HEADER = ['group', 'replicate', 'fastq_1', 'fastq_2', 'antibody', 'control']
+        HEADER = ['group', 'replicate', 'fastq_1', 'fastq_2', 'antibody', 'control', 'md5_1', 'md5_2']
         header = fin.readline().strip().split(",")
-        header = header[0:6]
-        if header != HEADER:
+        n_header = len(header)
+        if n_header > 8:
+            n_header = 8
+        if header[0:n_header] != HEADER[0:n_header]:
             print("ERROR: Please check samplesheet header -> {} != {}".format(",".join(header), ",".join(HEADER)))
             sys.exit(1)
 
         ## Check sample entries
         for line in fin:
             lspl = [x.strip() for x in line.strip().split(",")]
-            lspl = lspl[0:6]
-            sample, replicate, fastq_1, fastq_2, antibody, control = lspl
-
+            
             ## Check valid number of columns per row
             if len(lspl) != len(header):
                 print_error("Invalid number of columns (minimum = {})!".format(len(header)), 'Line', line)
+            
+            sample, replicate, fastq_1, fastq_2, antibody, control = lspl[0:6]
+            md5_1 = ''
+            md5_2 = ''
+            peaktype = 'narrowPeak'
+            for pt in PEAKTYPES:
+                if antibody.lower() in PEAKTYPES[pt]:
+                    peaktype = pt
+            if 'md5_1' in header:
+                md5_1 = lspl[header.index('md5_1')]
+            if 'md5_2' in header:
+                md5_2 = lspl[header.index('md5_2')]
+            if 'peaktype' in header:
+                peaktype = lspl[header.index('peaktype')]
+            if not peaktype in ['narrowPeak', 'broadPeak']:
+                print("ERROR: Please check the peaktype. The peaktype must by narrowPeak or broadPeak")
+                sys.exit(1)
 
+            lspl = lspl[0:6]
             num_cols = len([x for x in lspl if x])
             if num_cols < 3:
                 print_error("Invalid number of populated columns (minimum = 3)!", 'Line', line)
@@ -105,9 +130,9 @@ def check_samplesheet(file_in, file_out):
             ## Auto-detect paired-end/single-end
             sample_info = []  ## [single_end, fastq_1, fastq_2]
             if sample and fastq_1 and fastq_2:  ## Paired-end short reads
-                sample_info = ["0", fastq_1, fastq_2]
+                sample_info = ["0", fastq_1, fastq_2, md5_1, md5_2, peaktype]
             elif sample and fastq_1 and not fastq_2:  ## Single-end short reads
-                sample_info = ["1", fastq_1, fastq_2]
+                sample_info = ["1", fastq_1, fastq_2, md5_1, md5_2, peaktype]
             else:
                 print_error("Invalid combination of columns provided!", 'Line', line)
 
@@ -133,7 +158,7 @@ def check_samplesheet(file_in, file_out):
         make_dir(out_dir)
         with open(file_out, "w") as fout:
 
-            fout.write(",".join(["sample", "single_end", "fastq_1", "fastq_2", "antibody", "control"]) + "\n")
+            fout.write(",".join(["sample", "single_end", "fastq_1", "fastq_2", "md5_1", "md5_2", "peaktype", "antibody", "control"]) + "\n")
             for sample in sorted(sample_run_dict.keys()):
 
                 ## Check that replicate ids are in format 1..<NUM_REPS>

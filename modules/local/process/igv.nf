@@ -9,8 +9,6 @@ process IGV {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:'') }
 
-    conda (params.conda ? "${baseDir}/environment.yml" : null)
-
     input:
     path fasta
     path ("${bigwig_options.publish_dir}/*")

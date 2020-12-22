@@ -85,6 +85,10 @@ NAIVE_INPUT,3,BLA203A49_S1_L006_R1_001.fastq.gz,,,
 | `fastq_2`   | Full path to FastQ file for read 2. File has to be zipped and have the extension ".fastq.gz" or ".fq.gz".                                        |
 | `antibody`  | Antibody name. This is required to segregate downstream analysis for different antibodies. Required when `control` is specified.                 |
 | `control`   | Group identifier for control sample. The pipeline will automatically select the control sample with the same replicate identifier as the IP.     |
+| `md5_1`   | Checksum for read 1 gz file.     |
+| `md5_2`   | Checksum for read 2 gz file.     |
+| `peaktype`   | narrowPeak or broadPeak. Default, the pipeline will automatic detect the peaktype.     |
+| `track_...`   | The parameters can be used for each track in track hub.     |
 
 Example design files have been provided with the pipeline for [paired-end](../assets/design_pe.csv) and [single-end](../assets/design_se.csv) data.
 

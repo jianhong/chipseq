@@ -7,7 +7,7 @@ process MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
-    conda (params.conda ? "${baseDir}/environment.yml" : null)
+    conda (params.conda ? "${params.conda_softwares.rbase}" : null)
 
     input:
     tuple val(meta), path(spp), path(rdata)

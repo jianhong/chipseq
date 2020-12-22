@@ -160,7 +160,9 @@ include { INPUT_CHECK                         } from './modules/local/subworkflo
 include { BAM_CLEAN                           } from './modules/local/subworkflow/bam_clean'
 
 include { JO_METAGENE_ANALYSIS                } from './modules/local/subworkflow/metagene_analysis'
+include { JO_CHECKSUMS                        } from './modules/local/process/checksum/checksum'
 include { JO_TRACKHUB                         } from './modules/local/process/ucsc_track/ucsc_track'
+include { JO_INDEX                            } from './modules/local/process/create_index/create_index'
 
 ////////////////////////////////////////////////////
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
@@ -197,6 +199,11 @@ workflow {
     INPUT_CHECK (
         ch_input,
         params.seq_center,
+        [:]
+    )
+    
+    JO_CHECKSUMS (
+        INPUT_CHECK.out.reads,
         [:]
     )
 
@@ -391,18 +398,15 @@ workflow {
         params.modules['jo_metagene']
     )
     
-    peakType = params.narrow_peak ? 'narrowPeak' : 'broadPeak'
     if (params.macs_gsize) {
 
         /*
          * Call peaks
          */
-        broad = params.narrow_peak ? '' : "--broad --broad-cutoff ${params.broad_cutoff}"
         pileup = params.save_macs_pileup ? '--bdg --SPMR' : ''
         fdr = params.macs_fdr ? "--qvalue ${params.macs_fdr}" : ''
         pvalue = params.macs_pvalue ? "--pvalue ${params.macs_pvalue}" : ''
-        params.modules['macs2_callpeak'].publish_dir += "/$peakType"
-        params.modules['macs2_callpeak'].args += " $broad $pileup $fdr $pvalue"
+        params.modules['macs2_callpeak'].args += " $pileup $fdr $pvalue"
 
         // Create channel: [ val(meta), ip_bam, control_bam ]
         ch_ip_control_bam_bai
@@ -436,13 +440,12 @@ workflow {
             params.modules['multiqc_custom_peaks']
         )
 
-        params.modules['plot_macs2_qc'].publish_dir += "/$peakType/qc"
+        params.modules['plot_macs2_qc'].publish_dir += "/macs2_qc"
         PLOT_MACS2_QC (
-            MACS2_CALLPEAK.out.peak.collect{it[1]},
+            MACS2_CALLPEAK.out.peak.map{[it[0].peaktype, it[1]]}.groupTuple(),
             params.modules['plot_macs2_qc']
         )
 
-        params.modules['homer_annotatepeaks_macs2'].publish_dir += "/$peakType"
         HOMER_ANNOTATEPEAKS_MACS2 (
             MACS2_CALLPEAK.out.peak,
             ch_fasta,
@@ -451,9 +454,9 @@ workflow {
         )
         ch_software_versions = ch_software_versions.mix(HOMER_ANNOTATEPEAKS_MACS2.out.version.first().ifEmpty(null))
 
-        params.modules['plot_homer_annotatepeaks'].publish_dir += "/$peakType/qc"
+        params.modules['plot_homer_annotatepeaks'].publish_dir += "/homer_anno_qc"
         PLOT_HOMER_ANNOTATEPEAKS (
-            HOMER_ANNOTATEPEAKS_MACS2.out.txt.collect{it[1]},
+            HOMER_ANNOTATEPEAKS_MACS2.out.txt.map{[it[0].peaktype, it[1]]}.groupTuple(),
             ch_peak_annotation_header,
             "_peaks.annotatePeaks.txt",
             params.modules['plot_homer_annotatepeaks']
@@ -464,29 +467,31 @@ workflow {
         MACS2_CALLPEAK
             .out
             .peak
-            .map { meta, peak -> [ meta.antibody, meta.id.split('_')[0..-2].join('_'), peak ] }
+            .map { meta, peak -> [ meta.antibody, meta.id.split('_')[0..-2].join('_'), meta.peaktype, peak ] }
             .groupTuple()
             .map {
-                antibody, groups, peaks ->
+                antibody, groups, peaktype, peaks ->
                     [ antibody,
                       groups.groupBy().collectEntries { [(it.key) : it.value.size()] },
+                      peaktype[0],
                       peaks ] }
             .map {
-                antibody, groups, peaks ->
+                antibody, groups, peaktype, peaks ->
                     def meta = [:]
                     meta.id = antibody
+                    meta.peaktype = peaktype
                     meta.multiple_groups = groups.size() > 1
                     meta.replicates_exist = groups.max { groups.value }.value > 1
                     [ meta, peaks ] }
             .set { ch_antibody_peaks }
 
-        params.modules['macs2_consensus'].publish_dir += "/$peakType/consensus"
+        params.modules['macs2_consensus'].publish_dir += "/consensus"
         MACS2_CONSENSUS (
             ch_antibody_peaks,
             params.modules['macs2_consensus']
         )
 
-        params.modules['homer_annotatepeaks_consensus'].publish_dir += "/$peakType/consensus"
+        params.modules['homer_annotatepeaks_consensus'].publish_dir += "/consensus"
         HOMER_ANNOTATEPEAKS_CONSENSUS (
             MACS2_CONSENSUS.out.bed,
             ch_fasta,
@@ -514,7 +519,7 @@ workflow {
                     [ fmeta, it[2], it[5] ] }
             .set { ch_ip_bam }
 
-        params.modules['subread_featurecounts'].publish_dir += "/$peakType/consensus"
+        params.modules['subread_featurecounts'].publish_dir += "/consensus"
         SUBREAD_FEATURECOUNTS (
             ch_ip_bam,
             params.modules['subread_featurecounts']
@@ -553,10 +558,12 @@ workflow {
                 MACS2_CALLPEAK.out.peak.collect(),
                 MACS2_CONSENSUS.out.bed.collect())
         .set{ch_trackhub}
-   ch_trackhub.view()
-   ch_trackhub.collect().view()
+   ch_trackhub.map{[it[0].id]}.collect().set{ch_trackhub_name}
+   ch_trackhub.map{[it[1]]}.collect().set{ch_trackhub_track}
+   
    JO_TRACKHUB(
-        ch_trackhub.collect(),
+        ch_trackhub_name,
+        ch_trackhub_track,
         ch_input,
         params.modules['jo_trackhub']
    )
@@ -580,7 +587,7 @@ workflow {
      */
     workflow_summary = Schema.params_mqc_summary(summary)
     ch_workflow_summary = Channel.value(workflow_summary)
-    params.modules['multiqc'].publish_dir += "/$peakType"
+    params.modules['multiqc'].publish_dir += "/$run_name"
     MULTIQC (
         ch_multiqc_config,
         ch_multiqc_custom_config.collect().ifEmpty([]),
@@ -620,6 +627,18 @@ workflow {
         // path ('macs/consensus/*') from ch_macs_consensus_deseq_mqc.collect().ifEmpty([])
 
         params.modules['multiqc']
+    )
+    
+    
+    JO_INDEX (
+        ch_index_docs,
+        ch_input,
+        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'),
+        MULTIQC.out.plots,
+        ch_output_docs_images,
+        JO_CHECKSUMS.out.md5.collect(),
+        GET_SOFTWARE_VERSIONS.out.yaml.collect(),
+        [:]
     )
 }
 

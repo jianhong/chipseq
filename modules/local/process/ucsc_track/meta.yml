@@ -11,6 +11,9 @@ tools:
         documentation: https://daler.github.io/trackhub
 input:
     -
+        - name:
+            type: value
+            description: bigWig files name
         - bw:
             type: file
             description: bigWig files

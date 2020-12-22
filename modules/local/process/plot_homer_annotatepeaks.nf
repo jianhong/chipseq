@@ -6,14 +6,14 @@ include { initOptions; saveFiles } from './functions'
  */
 process PLOT_HOMER_ANNOTATEPEAKS {
     label 'process_medium'
-    publishDir "${params.outdir}",
+    publishDir "${params.outdir}/${peaktype}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:'') }
         
-    conda (params.conda ? "${baseDir}/environment.yml" : null)
+    conda (params.conda ? "${params.conda_softwares.rbase}" : null)
 
     input:
-    path annos
+    tuple val(peaktype), path(annos)
     path mqc_header
     val suffix
     val options
@@ -26,6 +26,7 @@ process PLOT_HOMER_ANNOTATEPEAKS {
     script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
     def ioptions = initOptions(options)
     """
+    install_packages.r optparse ggplot2 reshape2 scales
     plot_homer_annotatepeaks.r \\
         -i ${annos.join(',')} \\
         -s ${annos.join(',').replaceAll("${suffix}","")} \\

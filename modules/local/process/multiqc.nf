@@ -17,7 +17,7 @@ process MULTIQC {
     container "quay.io/biocontainers/multiqc:1.9--pyh9f0ad1d_0"
     //container "https://depot.galaxyproject.org/singularity/multiqc:1.9--pyh9f0ad1d_0"
 
-    conda (params.conda ? "bioconda::multiqc=1.9" : null)
+    conda (params.conda ? "${params.conda_softwares.pip}" : null)
 
     input:
     path multiqc_config
@@ -63,6 +63,7 @@ process MULTIQC {
     output:
     path "*multiqc_report.html", emit: report
     path "*_data", emit: data
+    path '*_plots', emit: plots
 
     script:
     def software      = getSoftwareName(task.process)
@@ -71,6 +72,10 @@ process MULTIQC {
     def rfilename     = custom_runName ? "--filename " + custom_runName.replaceAll('\\W','_').replaceAll('_+','_') + "_multiqc_report" : ''
     def custom_config = params.multiqc_config ? "--config $mqc_custom_config" : ''
     """
-    multiqc -f $ioptions.args $rtitle $rfilename $custom_config .
+    if ! command -v multiqc &> /dev/null
+        then 
+            pip install multiqc
+    fi
+    multiqc -p -f $ioptions.args $rtitle $rfilename $custom_config .
     """
 }

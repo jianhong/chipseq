@@ -17,6 +17,9 @@
 ## LOAD LIBRARIES                             ##
 ################################################
 ################################################
+c("optparse", "DESeq2", "vsn", 
+         "ggplot2", "RColorBrewer", "pheatmap",
+         "lattice", "BiocParallel")
 
 library(optparse)
 library(DESeq2)

@@ -11,7 +11,7 @@ process BAM_FILTER {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:meta.id) }
 
-    conda (params.conda ? "${baseDir}/environment.yml" : null)
+    conda (params.conda ? "${params.conda_softwares.samtools} ${params.conda_softwares.bamtools}" : null)
 
     input:
     tuple val(meta), path(bam), path(bai)

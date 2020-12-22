@@ -13,7 +13,7 @@ process PHANTOMPEAKQUALTOOLS {
     container "quay.io/biocontainers/phantompeakqualtools:1.2.2--0"
     //container "https://depot.galaxyproject.org/singularity/phantompeakqualtools:1.2.2--0"
 
-    conda (params.conda ? "bioconda::phantompeakqualtools=1.2.2" : null)
+    conda (params.conda ? "${params.conda_softwares.rbase}" : null)
 
     input:
     tuple val(meta), path(bam)
@@ -30,8 +30,8 @@ process PHANTOMPEAKQUALTOOLS {
     def ioptions = initOptions(options)
     def prefix   = ioptions.suffix ? "${meta.id}${ioptions.suffix}" : "${meta.id}"
     """
-    RUN_SPP=`which run_spp.R`
-    Rscript -e "library(caTools); source(\\"\$RUN_SPP\\")" -c="$bam" -savp="${prefix}.spp.pdf" -savd="${prefix}.spp.Rdata" -out="${prefix}.spp.out" -p=$task.cpus
+    install_packages.r snow snowfall bitops caTools Rsamtools hms-dbmi/spp
+    run_spp.R -c="$bam" -savp="${prefix}.spp.pdf" -savd="${prefix}.spp.Rdata" -out="${prefix}.spp.out" -p=$task.cpus
     echo $VERSION > ${software}.version.txt
     """
 }

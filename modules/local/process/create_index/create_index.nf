@@ -8,12 +8,9 @@ process JO_INDEX {
     tag "$name"
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:name) }
+        saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:".", publish_id:name) }
 
-    conda (params.conda ? "${params.modules_dir}/creat_index/environment.txt" : null)
-
-    when:
-    !params.skip_trackhub
+    conda (params.conda ? "${params.conda_softwares.pandoc} ${params.conda_softwares.rbase}" : null)
     
     input:
     path index_docs
@@ -26,11 +23,12 @@ process JO_INDEX {
     val options
 
     output:
-    path "trackhub/*"
+    path "index.html"
     
     script:
     """
     cp ${index_docs} new.rmd
-    Rscript -e "rmarkdown::render('new.rmd', output_file='index.html', params = list(peaktype='${PEAK_TYPE}', design='${designtab}', genome='${params.genome}', summary='${workflow_summary}'))"
+    install_packages.r rmarkdown DT
+    Rscript -e "rmarkdown::render('new.rmd', output_file='index.html', params = list(design='${designtab}', genome='${params.genome}', summary='${workflow_summary}'))"
     """
 }

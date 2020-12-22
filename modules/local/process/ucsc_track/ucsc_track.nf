@@ -6,8 +6,8 @@ include { initOptions; saveFiles } from '../functions'
  */
 process JO_TRACKHUB {
     publishDir "${params.outdir}",
-        mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:'') }
+        mode: 'copyNoFollow',
+        saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:'', publish_id:'') }
 
     conda (params.conda ? "${params.modules_dir}/ucsc_track/environment.txt" : null)
 
@@ -15,17 +15,26 @@ process JO_TRACKHUB {
     !params.skip_trackhub
     
     input:
-    tuple val(name), path(bw)
+    val name
+    path bw
     path designtab
     val options
 
     output:
     path "trackhub/*"
+    path "*.version.txt", emit: version
     
     script:
     def sampleLabel = name.join('___')
     def bws         = bw.join('___')
     """
-    create_trackhub.py trackhub  $params.species $params.email $designtab '.mLb.clN__.mRp.clN' --path_prefix '../../../../'
+    find * -type l -name "*.bigWig" -exec echo -e ""{}"\\t0,0,178" \\; > bigwig.igv.txt
+    find * -type l -name "*Peak" -exec echo -e ""{}"\\t0,0,178" \\; > peaks.igv.txt
+
+    cat *.txt > track_files.txt
+    
+    create_trackhub.py trackhub track_files.txt $params.species $params.email $designtab '.mLb.clN__.mRp.clN' --path_prefix '../../../../'
+    
+    python -c "import trackhub; print(trackhub.__version__)" > trackhub.version.txt
     """
 }

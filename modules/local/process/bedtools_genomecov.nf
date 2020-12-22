@@ -11,7 +11,7 @@ process BEDTOOLS_GENOMECOV {
     container "quay.io/biocontainers/bedtools:2.29.2--hc088bd4_0"
     //container "https://depot.galaxyproject.org/singularity/bedtools:2.29.2--hc088bd4_0"
 
-    conda (params.conda ? "bioconda::bedtools=2.29.2" : null)
+    conda (params.conda ? "${params.conda_softwares.bedtools}" : null)
 
     input:
     tuple val(meta), path(bam), path(flagstat)
@@ -29,7 +29,7 @@ process BEDTOOLS_GENOMECOV {
     def pe       = meta.single_end ? '' : '-pc'
     def extend   = (meta.single_end && params.fragment_size > 0) ? "-fs ${params.fragment_size}" : ''
     """
-    SCALE_FACTOR=\$(grep 'mapped (' $flagstat | awk '{print 1000000/\$1}')
+    SCALE_FACTOR=\$(grep 'mapped (' $flagstat | awk '{print 1000000/(\$1+1)}')
     echo \$SCALE_FACTOR > ${prefix}.scale_factor.txt
 
     bedtools \\

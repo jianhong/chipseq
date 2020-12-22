@@ -6,6 +6,8 @@
 ## Copyright (c) 2020 Jianhong Ou (jianhong.ou@gmail.com)
 #######################################################################
 #######################################################################
+c("optparse", "DiffBind", "ChIPpeakAnno", 
+  "rtracklayer", "ggplot2", "GenomicFeatures")
 
 library(DiffBind)
 library(ChIPpeakAnno)

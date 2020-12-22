@@ -10,8 +10,6 @@ process SAMPLESHEET_CHECK {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:"pipeline_info", publish_id:'') }
 
-    conda (params.conda ? "${baseDir}/environment.yml" : null)
-
     input:
     path samplesheet
     val options
@@ -32,6 +30,8 @@ def get_samplesheet_paths(LinkedHashMap row, String seq_center) {
     meta.single_end = row.single_end.toBoolean()
     meta.antibody = row.antibody
     meta.control = row.control
+    meta.md5 = [row.md5_1, row.md5_2]
+    meta.peaktype = row.peaktype
 
     def rg = "\'@RG\\tID:${meta.id}\\tSM:${meta.id.split('_')[0..-2].join('_')}\\tPL:ILLUMINA\\tLB:${meta.id}\\tPU:1\'"
     if (seq_center) {

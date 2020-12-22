@@ -25,9 +25,9 @@ dependencies:
 
   ## bioconda packages
   - bioconda::nextflow=20.10.0
-  - bioconda::samtools=1.10
+  - bioconda::samtools=1.09
   - bioconda::bamtools=2.5.1
-  - bioconda::pysam=0.16.0.1
+  - bioconda::pysam=0.15.3
   - bioconda::bedtools=2.29.2
   - bioconda::bioconductor-biocparallel=1.22.0
   - bioconda::bioconductor-deseq2=1.28.0

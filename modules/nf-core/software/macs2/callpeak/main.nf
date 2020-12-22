@@ -4,14 +4,14 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 process MACS2_CALLPEAK {
     tag "$meta.id"
     label 'process_medium'
-    publishDir "${params.outdir}",
+    publishDir "${params.outdir}/${meta.peaktype}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
     container "quay.io/biocontainers/macs2:2.2.7.1--py37h516909a_0"
     //container "https://depot.galaxyproject.org/singularity/macs2:2.2.7.1--py37h516909a_0"
 
-    conda (params.conda ? "bioconda::macs2=2.2.7.1" : null)
+    conda (params.conda ? "${params.conda_softwares.macs2}" : null)
 
     input:
     tuple val(meta), path(ipbam), path(controlbam)
@@ -32,10 +32,12 @@ process MACS2_CALLPEAK {
     def prefix   = ioptions.suffix ? "${meta.id}${ioptions.suffix}" : "${meta.id}"
     def format   = meta.single_end ? 'BAM' : 'BAMPE'
     def control  = controlbam ? "--control $controlbam" : ''
+    def broad = meta.peaktype=='broadPeak' ? "--broad --broad-cutoff ${params.broad_cutoff}" : ''
     """
     macs2 \\
         callpeak \\
         $ioptions.args \\
+        $broad \\
         --gsize $macs2_gsize \\
         --format $format \\
         --name $prefix \\

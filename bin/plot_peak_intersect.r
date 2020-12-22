@@ -5,6 +5,7 @@
 ## LOAD LIBRARIES                             ##
 ################################################
 ################################################
+c("optparse", "UpSetR")
 
 library(optparse)
 library(UpSetR)

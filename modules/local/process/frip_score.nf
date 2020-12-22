@@ -8,7 +8,7 @@ process FRIP_SCORE {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:meta.id) }
 
-    conda (params.conda ? "${baseDir}/environment.yml" : null)
+    conda (params.conda ? "${params.conda_softwares.samtools}" : null)
 
     input:
     tuple val(meta), path(bam), path(peak)

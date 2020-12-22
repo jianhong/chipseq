@@ -5,7 +5,7 @@
 ## LOAD LIBRARIES                             ##
 ################################################
 ################################################
-
+c("optparse", "ggplot2", "reshape2", "scales")
 library(optparse)
 library(ggplot2)
 library(reshape2)
@@ -18,7 +18,6 @@ library(scales)
 ################################################
 
 option_list <- list(make_option(c("-i", "--peak_files"), type="character", default=NULL, help="Comma-separated list of peak files.", metavar="path"),
-                    make_option(c("-s", "--sample_ids"), type="character", default=NULL, help="Comma-separated list of sample ids associated with peak files. Must be unique and in same order as peaks files input.", metavar="string"),
                     make_option(c("-o", "--outdir"), type="character", default='./', help="Output directory", metavar="path"),
                     make_option(c("-p", "--outprefix"), type="character", default='macs2_peakqc', help="Output prefix", metavar="string"))
 
@@ -29,17 +28,13 @@ if (is.null(opt$peak_files)){
     print_help(opt_parser)
     stop("At least one peak file must be supplied", call.=FALSE)
 }
-if (is.null(opt$sample_ids)){
-    print_help(opt_parser)
-    stop("Please provide sample ids associated with peak files.", call.=FALSE)
-}
 
 if (file.exists(opt$outdir) == FALSE) {
     dir.create(opt$outdir,recursive=TRUE)
 }
 
 PeakFiles <- unlist(strsplit(opt$peak_files,","))
-SampleIDs <- unlist(strsplit(opt$sample_ids,","))
+SampleIDs <- sub("_peaks.*$", "", PeakFiles)
 if (length(PeakFiles) != length(SampleIDs)) {
     print_help(opt_parser)
     stop("Number of sample ids must equal number of homer annotated files.", call.=FALSE)

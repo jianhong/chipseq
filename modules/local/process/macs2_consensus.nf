@@ -7,11 +7,11 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 process MACS2_CONSENSUS {
     tag "$meta.id"
     label 'process_long'
-    publishDir "${params.outdir}",
+    publishDir "${params.outdir}/${meta.peaktype}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
-    conda (params.conda ? "${baseDir}/environment.yml" : null)
+    conda (params.conda ? "${params.conda_softwares.bedtools} ${params.conda_softwares.rbase}" : null)
 
     input:
     tuple val(meta), path(peaks)
@@ -29,10 +29,10 @@ process MACS2_CONSENSUS {
         def software     = getSoftwareName(task.process)
         def ioptions     = initOptions(options)
         def prefix       = ioptions.suffix ? "${meta.id}${ioptions.suffix}.consensus_peaks" : "${meta.id}.consensus_peaks"
-        def peak_type    = params.narrow_peak ? 'narrowPeak' : 'broadPeak'
-        def mergecols    = params.narrow_peak ? (2..10).join(',') : (2..9).join(',')
-        def collapsecols = params.narrow_peak ? (['collapse']*9).join(',') : (['collapse']*8).join(',')
-        def expandparam  = params.narrow_peak ? '--is_narrow_peak' : ''
+        def peak_type    = meta.peaktype
+        def mergecols    = meta.peaktype=="narrowPeak" ? (2..10).join(',') : (2..9).join(',')
+        def collapsecols = meta.peaktype=="narrowPeak" ? (['collapse']*9).join(',') : (['collapse']*8).join(',')
+        def expandparam  = meta.peaktype=="narrowPeak" ? '--is_narrow_peak' : ''
         """
         sort -T '.' -k1,1 -k2,2n ${peaks.collect{it.toString()}.sort().join(' ')} \\
             | mergeBed -c $mergecols -o $collapsecols > ${prefix}.txt
@@ -49,6 +49,7 @@ process MACS2_CONSENSUS {
         echo -e "GeneID\tChr\tStart\tEnd\tStrand" > ${prefix}.saf
         awk -v FS='\t' -v OFS='\t' 'FNR > 1 { print \$4, \$1, \$2, \$3,  "+" }' ${prefix}.boolean.txt >> ${prefix}.saf
 
+        install_packages.r optparse UpSetR
         plot_peak_intersect.r -i ${prefix}.boolean.intersect.txt -o ${prefix}.boolean.intersect.plot.pdf
         """
     }

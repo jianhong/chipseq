@@ -7,8 +7,6 @@ process MULTIQC_CUSTOM_PEAKS {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
-    conda (params.conda ? "${baseDir}/environment.yml" : null)
-
     input:
     tuple val(meta), path(peak), path(frip)
     path peak_count_header

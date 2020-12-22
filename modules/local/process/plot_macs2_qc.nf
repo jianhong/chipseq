@@ -6,14 +6,14 @@ include { initOptions; saveFiles } from './functions'
  */
 process PLOT_MACS2_QC {
     label 'process_medium'
-    publishDir "${params.outdir}",
+    publishDir "${params.outdir}/${peaktype}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:'') }
 
-    conda (params.conda ? "${baseDir}/environment.yml" : null)
+    conda (params.conda ? "${params.conda_softwares.rbase}" : null)
 
     input:
-    path peaks
+    tuple val(peaktype), path(peaks)
     val options
 
     output:
@@ -22,11 +22,10 @@ process PLOT_MACS2_QC {
 
     script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
     def ioptions  = initOptions(options)
-    def peak_type = params.narrow_peak ? 'narrowPeak' : 'broadPeak'
     """
+    install_packages.r optparse ggplot2 reshape2 scales
     plot_macs2_qc.r \\
         -i ${peaks.join(',')} \\
-        -s ${peaks.join(',').replaceAll("_peaks.${peak_type}","")} \\
         $ioptions.args
     """
 }

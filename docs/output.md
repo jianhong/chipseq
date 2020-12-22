@@ -1,6 +1,6 @@
-# ![nf-core/chipseq](images/nf-core-chipseq_logo.png)
+# ![QiuBio Pipeline/chipseq](images/chipseqlogo.png)
 
-This document describes the output produced by the pipeline. Most of the plots are taken from the MultiQC report, which summarises results at the end of the pipeline.
+This document describes the output produced by the pipeline. The pipeline was build from [nf-core/chipseq](https://github.com/nf-core/chipseq).
 
 ## Pipeline overview
 

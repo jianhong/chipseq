@@ -11,7 +11,7 @@ process JO_METAGENE {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:name) }
 
-    conda (params.conda ? "${params.modules_dir}/metagene/environment.txt" : null)
+    conda (params.conda ? "${params.conda_softwares.deeptools}" : null)
 
     when:
     params.genomicElements
@@ -25,6 +25,7 @@ process JO_METAGENE {
     tuple val(name), path("*.gz"), emit: count
     tuple val(name), path("*.pdf"), emit: pdf
     tuple val(name), path("*.tab"), emit: mat
+    path "*.version.txt", emit: version
     
     script:
     def bigwig       = bw.join(' ')
@@ -65,5 +66,7 @@ process JO_METAGENE {
     plotHeatmap --matrixFile ${bed.getSimpleName()}.reference_${params.deepToolsReferencePoint}.mat.gz \\
         --outFileName ${bed.getSimpleName()}.reference_${params.deepToolsReferencePoint}Heatmap.pdf \\
         --outFileNameMatrix ${bed.getSimpleName()}.reference_${params.deepToolsReferencePoint}Heatmap.mat.tab
+    
+    computeMatrix --version | sed -e "s/computeMatrix //g" > deeptools.version.txt
     """
 }

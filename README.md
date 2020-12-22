@@ -9,6 +9,24 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 This pipeline will generate the UCSC genome browser track hub and metagene analysis
 resuls in addition to original output of **nfcore/chipseq** pipeline.
 
+The most important change for this pipeline from **nfcore/chipseq** pipeline is 
+that I tried to improve the reproducibility of the pipeline depend on conda but 
+not docker for following 2 reasons:
+
+1. I can not use docker in our cluster. 
+
+2. The memory required for the pipeline is too heavy for personal computer if using docker.
+
+However, conda always throw errors when create environment even I use modules. 
+I add conda_softwares section in module.conf setting to make the pipeline more flexible 
+to figure out this issue.
+I also changed the R/Biocondactor package installation methods from conda installation 
+to BiocManager installation, which will be much slower than conda installation. 
+The reason for that is because lots of package in conda is malfunction. By using
+BiocManager to avoid the dependece issues.
+
+
+
 ## Pipeline summary
 
 1. Raw read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))

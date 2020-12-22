@@ -11,7 +11,7 @@ process PICARD_COLLECTMULTIPLEMETRICS {
     container "quay.io/biocontainers/picard:2.23.2--0"
     //container "https://depot.galaxyproject.org/singularity/picard:2.23.2--0"
 
-    conda (params.conda ? "bioconda::picard=2.23.2" : null)
+    conda (params.conda ? "${params.conda_softwares.picard}" : null)
 
     input:
     tuple val(meta), path(bam)

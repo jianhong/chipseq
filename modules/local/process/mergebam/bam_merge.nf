@@ -11,7 +11,7 @@ process JO_MERGE_REP_BAM {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:meta.id) }
 
-    conda (params.conda ? "${params.modules_dir}/mergebam/environment.txt" : null)
+    conda (params.conda ? "${params.conda_softwares.samtools} ${params.conda_softwares.deeptools}": null)
 
     input:
     tuple val(meta), path(bam), path(inputbam)
@@ -20,6 +20,7 @@ process JO_MERGE_REP_BAM {
     output:
     tuple val(meta), path("${meta.id}.*.sorted.bam"), path("${meta.id}.*.sorted.bam.bai"), emit: bam
     tuple val(meta), path("*.bw"), emit: bw
+    path "*.version.txt", emit: version
 
     script:
     def ioptions         = initOptions(options)
@@ -60,5 +61,7 @@ process JO_MERGE_REP_BAM {
        --effectiveGenomeSize $params.deep_gsize \\
        --binSize 10  --normalizeUsing RPGC ${extendReads}
     fi 
+    
+    echo \$(samtools --version 2>&1) | sed 's/^.*samtools //; s/Using.*\$//' > samtools.version.txt
     """
 }
