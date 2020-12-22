@@ -8,7 +8,7 @@ process PICARD_COLLECTMULTIPLEMETRICS {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
-    container (params.universalContainer? "${process.container}":"quay.io/biocontainers/picard:2.23.2--0")
+    container (params.universalContainer? "${params.container}":"quay.io/biocontainers/picard:2.23.2--0")
     //container "https://depot.galaxyproject.org/singularity/picard:2.23.2--0"
 
     conda (params.conda ? "${params.conda_softwares.picard}" : null)

@@ -9,7 +9,7 @@ process PRESEQ_LCEXTRAP {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
-    container (params.universalContainer? "${process.container}":"quay.io/biocontainers/preseq:2.0.3--hf53bd2b_3")
+    container (params.universalContainer? "${params.container}":"quay.io/biocontainers/preseq:2.0.3--hf53bd2b_3")
     //container "https://depot.galaxyproject.org/singularity/preseq:2.0.3--hf53bd2b_3"
 
     conda (params.conda ? "bioconda::preseq=2.0.3" : null)

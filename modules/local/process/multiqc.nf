@@ -14,7 +14,7 @@ process MULTIQC {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:'') }
 
-    container "quay.io/biocontainers/multiqc:1.9--pyh9f0ad1d_0"
+    container (params.universalContainer?"${params.container}":"quay.io/biocontainers/multiqc:1.9--pyh9f0ad1d_0")
     //container "https://depot.galaxyproject.org/singularity/multiqc:1.9--pyh9f0ad1d_0"
 
     conda (params.conda ? "${params.conda_softwares.pip}" : null)

@@ -10,7 +10,7 @@ process GET_CHROM_SIZES {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:"genome", publish_id:'') }
 
-    container (params.universalContainer? "${process.container}":"quay.io/biocontainers/samtools:1.10--h9402c20_2")
+    container (params.universalContainer? "${params.container}":"quay.io/biocontainers/samtools:1.10--h9402c20_2")
     //container " https://depot.galaxyproject.org/singularity/samtools:1.10--h9402c20_2"
 
     conda (params.conda ? "${params.conda_softwares.samtools}" : null)

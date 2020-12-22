@@ -10,7 +10,7 @@ process HOMER_ANNOTATEPEAKS {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
-    container (params.universalContainer? "${process.container}":"quay.io/biocontainers/homer:4.11--pl526h9a982cc_2")
+    container (params.universalContainer? "${params.container}":"quay.io/biocontainers/homer:4.11--pl526h9a982cc_2")
     //container "https://depot.galaxyproject.org/singularity/homer:4.11--pl526h9a982cc_2"
 
     conda (params.conda ? "${params.conda_softwares.homer}" : null)

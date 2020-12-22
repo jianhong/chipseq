@@ -8,7 +8,7 @@ process MACS2_CALLPEAK {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
-    container (params.universalContainer? "${process.container}":"quay.io/biocontainers/macs2:2.2.7.1--py37h516909a_0")
+    container (params.universalContainer? "${params.container}":"quay.io/biocontainers/macs2:2.2.7.1--py37h516909a_0")
     //container "https://depot.galaxyproject.org/singularity/macs2:2.2.7.1--py37h516909a_0"
 
     conda (params.conda ? "${params.conda_softwares.macs2}" : null)
