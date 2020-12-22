@@ -18,7 +18,7 @@ process BAM_REMOVE_ORPHANS {
     val options
 
     output:
-    tuple val(meta), path("${prefix}.bam"), emit: bam
+    tuple val(meta), path("${prefix}.bam"), optional: true, emit: bam
 
     script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
     def ioptions = initOptions(options)
@@ -27,6 +27,9 @@ process BAM_REMOVE_ORPHANS {
         """
         samtools sort -n -@ $task.cpus -o ${prefix}.name.sorted.bam -T ${prefix}.name.sorted $bam
         bampe_rm_orphan.py ${prefix}.name.sorted.bam ${prefix}.bam $ioptions.args
+        if grep -q 'Total Output Pairs = 0' ${prefix}.bam; then
+            rm ${prefix}.bam
+        fi
         """
     } else {
         """

@@ -178,7 +178,8 @@ include { DEEPTOOLS_PLOTPROFILE         } from './modules/nf-core/software/deept
 include { DEEPTOOLS_PLOTHEATMAP         } from './modules/nf-core/software/deeptools/plotheatmap/main'
 include { DEEPTOOLS_PLOTFINGERPRINT     } from './modules/nf-core/software/deeptools/plotfingerprint/main'
 include { PHANTOMPEAKQUALTOOLS          } from './modules/nf-core/software/phantompeakqualtools/main'
-include { MACS2_CALLPEAK                } from './modules/nf-core/software/macs2/callpeak/main'
+include { MACS2_CALLPEAK as MACS2_CALLPEAK_WITHOUT_CONTROL
+          MACS2_CALLPEAK                } from './modules/nf-core/software/macs2/callpeak/main'
 include { HOMER_ANNOTATEPEAKS as HOMER_ANNOTATEPEAKS_MACS2
           HOMER_ANNOTATEPEAKS as HOMER_ANNOTATEPEAKS_CONSENSUS } from './modules/nf-core/software/homer/annotatepeaks/main'
 include { SUBREAD_FEATURECOUNTS         } from './modules/nf-core/software/subread/featurecounts/main'
@@ -408,6 +409,18 @@ workflow {
         pvalue = params.macs_pvalue ? "--pvalue ${params.macs_pvalue}" : ''
         params.modules['macs2_callpeak'].args += " $pileup $fdr $pvalue"
 
+        // call peaks without input
+        def callpeak_without_input = params.modules['macs2_callpeak']
+        callpeak_without_input.publish_dir += "/macs2_without_control"
+        BAM_CLEAN.out.bam.map{ meta, bam -> [meta, bam, []]}
+                         .set{ch_ip_bam_no_ctl}
+
+        MACS2_CALLPEAK_WITHOUT_CONTROL (
+            ch_ip_bam_no_ctl,
+            params.macs_gsize,
+            callpeak_without_input
+        )
+        
         // Create channel: [ val(meta), ip_bam, control_bam ]
         ch_ip_control_bam_bai
             .map { meta, bams, bais -> [ meta , bams[0], bams[1] ] }

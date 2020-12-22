@@ -8,7 +8,7 @@ process BEDTOOLS_GENOMECOV {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
-    container "quay.io/biocontainers/bedtools:2.29.2--hc088bd4_0"
+    container (params.universalContainer? "${process.container}":"quay.io/biocontainers/bedtools:2.29.2--hc088bd4_0")
     //container "https://depot.galaxyproject.org/singularity/bedtools:2.29.2--hc088bd4_0"
 
     conda (params.conda ? "${params.conda_softwares.bedtools}" : null)

@@ -11,7 +11,6 @@ process JO_MERGE_REP_BAM {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:task.process.toLowerCase(), publish_id:meta.id) }
 
-    container "quay.io/biocontainers/deeptools:3.4.3--py_0"
     conda (params.conda ? "${params.conda_softwares.samtools} ${params.conda_softwares.deeptools}": null)
 
     input:

@@ -6,11 +6,12 @@ def VERSION = '1.2.2'
 process PHANTOMPEAKQUALTOOLS {
     tag "$meta.id"
     label 'process_medium'
+    label 'error_ignore'
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
-    container "quay.io/biocontainers/phantompeakqualtools:1.2.2--0"
+    container (params.universalContainer? "${process.container}":"quay.io/biocontainers/phantompeakqualtools:1.2.2--0")
     //container "https://depot.galaxyproject.org/singularity/phantompeakqualtools:1.2.2--0"
 
     conda (params.conda ? "${params.conda_softwares.rbase}" : null)

@@ -8,7 +8,7 @@ process SUBREAD_FEATURECOUNTS {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
-    container "quay.io/biocontainers/subread:2.0.1--hed695b0_0"
+    container (params.universalContainer? "${process.container}":"quay.io/biocontainers/subread:2.0.1--hed695b0_0")
     //container "https://depot.galaxyproject.org/singularity/subread:2.0.1--hed695b0_0"
 
     conda (params.conda ? "bioconda::subread=2.0.1" : null)
