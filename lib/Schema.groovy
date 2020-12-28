@@ -106,8 +106,6 @@ class Schema {
         if (params.bwa_min_score)         summary['BWA Min Score'] = params.bwa_min_score
         summary['MACS2 Genome Size']      = params.macs_gsize ?: 'Not supplied'
         summary['Min Consensus Reps']     = params.min_reps_consensus
-        if (params.macs_gsize)            summary['MACS2 Narrow Peaks'] = params.narrow_peak ? 'Yes' : 'No'
-        if (!params.narrow_peak)          summary['MACS2 Broad Cutoff'] = params.broad_cutoff
         if (params.macs_fdr)              summary['MACS2 FDR'] = params.macs_fdr
         if (params.macs_pvalue)           summary['MACS2 P-value'] = params.macs_pvalue
         if (params.skip_trimming) {

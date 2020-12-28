@@ -49,6 +49,7 @@ workflow JO_METAGENE_ANALYSIS {
              }
            }
        .set{ch_to_be_merged}
+    ch_to_be_merged.view()
     
     JO_MERGE_REP_BAM(ch_to_be_merged,bam_merge_options)
     JO_MERGE_REP_BAM.out.bw
