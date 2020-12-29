@@ -121,7 +121,8 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
     while True:
         line = fin.readline()
         if line:
-            ifile,colour = line.strip().split('\t')
+            ifile = line.strip()
+            colour = ""
             if sampleDesignDict:
                 kfile = trackhub.helpers.sanitize(os.path.splitext(os.path.basename(ifile))[0].replace(".", "_"), strict=False)
                 if kfile in sampleDesignDict:

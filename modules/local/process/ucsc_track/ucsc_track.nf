@@ -28,8 +28,8 @@ process JO_TRACKHUB {
     def sampleLabel = name.join('___')
     def bws         = bw.join('___')
     """
-    find * -type l -name "*.bigWig" -exec echo -e ""{}"\\t0,0,178" \\; > bigwig.igv.txt
-    find * -type l -name "*Peak" -exec echo -e ""{}"\\t0,0,178" \\; > peaks.igv.txt
+    find * -type l -name "*.bigWig" -exec echo {} \\; > bigwig.igv.txt
+    find * -type l -name "*Peak" -exec echo {} \\; > peaks.igv.txt
 
     cat *.txt > track_files.txt
     
