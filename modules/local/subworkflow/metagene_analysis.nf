@@ -39,13 +39,14 @@ workflow JO_METAGENE_ANALYSIS {
                   'single_end':chip[1][1],
                   'antibody':chip[1][2], 
                   'control':null],
-                 chip[1][3].unique(), []]
+                 chip[1][3].unique{ a, b -> a <=> b }, []]
              }else{
                 [['id':chip[1][0], 
                   'single_end':chip[1][1],
                   'antibody':chip[1][2], 
                   'control':input[0]], 
-                 chip[1][3].unique(), input[1].unique()]
+                 chip[1][3].unique{ a, b -> a <=> b },
+                 input[1].unique{ a, b -> a <=> b }]
              }
            }
        .set{ch_to_be_merged}
