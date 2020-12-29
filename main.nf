@@ -261,7 +261,7 @@ workflow {
         .bam
         .map {
             meta, bam ->
-                fmeta = meta.findAll { it.key != 'read_group' }
+                fmeta = meta.findAll { !(it.key in meta.sample_uniq_keys) }
                 fmeta.id = fmeta.id.split('_')[0..-2].join('_')
                 [ fmeta, bam ] }
        .groupTuple(by: [0])

@@ -35,6 +35,7 @@ def get_samplesheet_paths(LinkedHashMap row, String seq_center) {
     meta.ctrl = row.control
     meta.group = row.sample.split('_')[0..-2].join('_')
     meta.techrep = row.sample.replaceAll("^.*_T(.*?)\$", "T\$1")
+    meta.sample_uniq_keys = ['md5', 'techrep', 'read_group']
 
     def rg = "\'@RG\\tID:${meta.id}\\tSM:${meta.id.split('_')[0..-2].join('_')}\\tPL:ILLUMINA\\tLB:${meta.id}\\tPU:1\'"
     if (seq_center) {
