@@ -7,8 +7,8 @@ include { initOptions; saveFiles; getSoftwareName } from '../functions'
 process JO_DIFFBIND {
     tag "$meta.id"
     label 'process_long'
-    //label 'error_ignore'
-    publishDir "${params.outdir}/${meta.peaktype}",
+    label 'error_ignore'
+    publishDir "${params.outdir}/${meta[0].peaktype}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
