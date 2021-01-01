@@ -1,26 +1,30 @@
-name: Create index file the analysis
-description: Create index file the analysis
+name: Run DiffBind
+description: Differentail binding sites analysis
 keywords:
-    - index
+    - DiffBind
 input:
     -
-        - index:
+        - peaks:
             type: file
-            description: index files
-            pattern: "*.{Rmd}"
+            description: peak files
+            pattern: "*.{narrowPeak,broadPeak}"
         - designTable:
             type: file
             description: csv file
             pattern: ".{csv}"
-        - checksum:
+        - gtf:
             type: file
-            description: md5 checksum
-            pattern: ".{md5}"
+            description: gtf file
+            pattern: ".{gtf}"
+        - blacklist:
+            type: file
+            description: blacklist file
+            pattern: ".{bed}"
 output:
     -
-        - html:
-            type: file
-            description: index files
-            pattern: "index.html"
+        - res:
+            type: folder
+            description: DiffBind results files
+            pattern: "DiffBind/*"
 authors:
     - "@jianhong"

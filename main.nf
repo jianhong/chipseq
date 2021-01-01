@@ -163,6 +163,7 @@ include { JO_METAGENE_ANALYSIS                } from './modules/local/subworkflo
 include { JO_CHECKSUMS                        } from './modules/local/process/checksum/checksum'
 include { JO_TRACKHUB                         } from './modules/local/process/ucsc_track/ucsc_track'
 include { JO_INDEX                            } from './modules/local/process/create_index/create_index'
+include { JO_DIFFBIND                         } from './modules/local/process/diffbind/diffbind'
 
 ////////////////////////////////////////////////////
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
@@ -531,6 +532,8 @@ workflow {
                     fmeta['multiple_groups'] = it[4]['multiple_groups']
                     [ fmeta, it[2], it[5] ] }
             .set { ch_ip_bam }
+        
+        ch_ip_bam.view()
 
         params.modules['subread_featurecounts'].publish_dir += "/consensus"
         SUBREAD_FEATURECOUNTS (
@@ -546,6 +549,20 @@ workflow {
         // ch_deseq2_pca_header = file("$baseDir/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
         // ch_deseq2_clustering_header = file("$baseDir/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
 
+        ch_ip_peak
+            .map{meta, bam, peak -> [meta.antibody, meta]}
+            .groupTuple()
+            .join(ch_ip_peak.map{[it[0].antibody, it[1]]}.groupTuple()
+                    .join(ch_ip_peak.map{[it[0].antibody, it[2]]}.groupTuple()))
+            .map{[it[1], it[2], it[3]]}
+            .set{ch_diffbind}
+        
+        JO_DIFFBIND (
+            ch_diffbind,
+            ch_gtf,
+            ch_blacklist.ifEmpty([]),
+            params.modules['jo_diffbind']
+        )
     }
 
     /*
