@@ -5,6 +5,7 @@ include { initOptions; saveFiles } from '../functions'
  * Create trackhub
  */
 process JO_TRACKHUB {
+    label 'error_ignore'
     publishDir "${params.outdir}",
         mode: 'copyNoFollow',
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:'', publish_id:'') }
