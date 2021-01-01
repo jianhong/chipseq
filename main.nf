@@ -519,7 +519,7 @@ workflow {
         MACS2_CONSENSUS
             .out
             .saf
-            .map { meta, saf -> [ meta.id, meta, saf ] }
+            .map { meta, saf -> [ meta.antibody, meta, saf ] }
             .set { ch_ip_saf }
 
         ch_ip_control_bam
