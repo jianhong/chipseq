@@ -519,12 +519,17 @@ workflow {
         MACS2_CONSENSUS
             .out
             .saf
-            .map { meta, saf -> [ meta.antibody, meta, saf ] }
+            .map { meta, saf -> [ meta.id, meta, saf ] }
             .set { ch_ip_saf }
+        //ch_ip_saf.view()
 
         ch_ip_control_bam
             .map { meta, ip_bam, control_bam -> [ meta.antibody, meta, ip_bam ] }
             .combine(ch_ip_saf)
+            .filter {
+                antibody, meta, bam, ab, meta2, saf ->
+                   ab == meta.antibody
+            }
             .map {
                 it ->
                     fmeta = it[1]
