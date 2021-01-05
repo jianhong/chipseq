@@ -16,7 +16,7 @@
 #  $ mkdir tmp4chipseq
 #  $ docker run -it --rm -v ${PWD}/tmp4chipseq:/work jianhong/chipseq:latest
 ##################################################################
-FROM ubuntu:latest
+FROM ubuntu:20.10
 LABEL authors="Jianhong Ou" \
       description="Docker image containing all software requirements for the jianhong/chipseq pipeline"
 
