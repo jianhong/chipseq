@@ -1,0 +1,26 @@
+{
+    "id": "9E196C88",
+    "path": "~/packages/pipeline/chipseq/bin/diffbind.r",
+    "project_path": "bin/diffbind.r",
+    "type": "r_source",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1609262099919.0,
+    "source_on_save": false,
+    "relative_order": 28,
+    "properties": {
+        "tempName": "Untitled1",
+        "cursorPosition": "110,2",
+        "scrollLine": "0",
+        "disableDependencyDiscovery": "1"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1609857380,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1609857380,
+    "read_only": false,
+    "read_only_alternatives": []
+}

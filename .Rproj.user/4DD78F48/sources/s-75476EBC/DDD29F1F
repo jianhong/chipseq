@@ -1,0 +1,24 @@
+{
+    "id": "DDD29F1F",
+    "path": "~/packages/pipeline/chipseq/modules/local/process/macs2_consensus.nf",
+    "project_path": "modules/local/process/macs2_consensus.nf",
+    "type": "text",
+    "hash": "0",
+    "contents": "",
+    "dirty": false,
+    "created": 1609536323441.0,
+    "source_on_save": false,
+    "relative_order": 7,
+    "properties": {
+        "cursorPosition": "16,4",
+        "scrollLine": "0"
+    },
+    "folds": "",
+    "lastKnownWriteTime": 1607456524,
+    "encoding": "UTF-8",
+    "collab_server": "",
+    "source_window": "",
+    "last_content_update": 1607456524,
+    "read_only": false,
+    "read_only_alternatives": []
+}
