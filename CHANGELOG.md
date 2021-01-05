@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [0.0.1] Init. - 2020-11-20
 
-* fork the pipeline from nf-core/chipseq and create a custom pipeline. 
+* fork the pipeline from nf-core/chipseq and create a custom pipeline.
 
 ## Following are from nf-core/chipseq
 
