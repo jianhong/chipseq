@@ -3,7 +3,7 @@
 # picard-tools, fastQC, bedtools, cutadapt, R, multiqc
 # images
 # Based on Ubuntu
-#  $ cd MintChIP
+#  $ cd chipseq
 #  $ VERSION=0.0.1
 #  $ docker build -t jianhong/chipseq:$VERSION .  ## --no-cache
 #  $ docker images jianhong/chipseq:$VERSION
@@ -16,7 +16,7 @@
 #  $ mkdir tmp4chipseq
 #  $ docker run -it --rm -v ${PWD}/tmp4chipseq:/work jianhong/chipseq:latest
 ##################################################################
-FROM ubuntu:20.10
+FROM ubuntu:latest
 LABEL authors="Jianhong Ou" \
       description="Docker image containing all software requirements for the jianhong/chipseq pipeline"
 
