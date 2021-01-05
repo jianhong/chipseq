@@ -1,0 +1,30 @@
+name: Run DiffBind
+description: Differentail binding sites analysis
+keywords:
+    - DiffBind
+input:
+    -
+        - peaks:
+            type: file
+            description: peak files
+            pattern: "*.{narrowPeak,broadPeak}"
+        - designTable:
+            type: file
+            description: csv file
+            pattern: ".{csv}"
+        - gtf:
+            type: file
+            description: gtf file
+            pattern: ".{gtf}"
+        - blacklist:
+            type: file
+            description: blacklist file
+            pattern: ".{bed}"
+output:
+    -
+        - res:
+            type: folder
+            description: DiffBind results files
+            pattern: "DiffBind/*"
+authors:
+    - "@jianhong"

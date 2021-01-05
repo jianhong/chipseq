@@ -1,0 +1,43 @@
+name: Metagene analysis
+description: Metagene analysis for given bed files. 
+keywords:
+    - metagene
+tools:
+    - deepTools:
+        description: |
+            deepTools is a suite of python tools particularly developed for the 
+            efficient analysis of high-throughput sequencing data, such as 
+            ChIP-seq, RNA-seq or MNase-seq.
+        homepage: https://deeptools.readthedocs.io/
+        documentation: https://deeptools.readthedocs.io/en/develop/
+        doi: 10.1093/nar/gkw257
+input:
+    -
+        - bw:
+            type: file
+            description: bigWig files
+            pattern: "*.{bw}"
+        - bed:
+            type: file
+            description: BED files
+            pattern: "*.{bed}"
+        - designTable:
+            type: file
+            description: csv file
+            pattern: "*.{csv}"
+output:
+    -
+        - count:
+            type: file
+            description: count files
+            pattern: "*.{gz}"
+        - pdf:
+            type: file
+            description: Heatmap plot file
+            pattern: "*.{pdf}"
+        - mat:
+            type: file
+            description: count matrix 
+            pattern: "*.{tab}"
+authors:
+    - "@jianhong"

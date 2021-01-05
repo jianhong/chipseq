@@ -65,56 +65,61 @@ def bampe_rm_orphan(BAMIn,BAMOut,onlyFRPairs=False):
     SAMFin = pysam.AlignmentFile(BAMIn, "rb")
     SAMFout = pysam.AlignmentFile(BAMOut, "wb", header=SAMFin.header)
     iter = SAMFin.fetch(until_eof=True)
-    currRead = next(iter)
-    for read in iter:
-        totalReads += 1
-        if currRead.qname == read.qname:
-            pair1 = currRead; pair2 = read
-
-            ## FILTER FOR READS ON SAME CHROMOSOME IN FR ORIENTATION
-            if onlyFRPairs:
-                if pair1.tid == pair2.tid:
-
-                    ## READ1 FORWARD AND READ2 REVERSE STRAND
-                    if not pair1.is_reverse and pair2.is_reverse:
-                        if pair1.reference_start <= pair2.reference_start:
-                            totalOutputPairs += 1
-                            SAMFout.write(pair1)
-                            SAMFout.write(pair2)
+    try:
+        currRead = next(iter)
+    except:
+        StopIteration
+        EOF = 1
+    if not EOF:
+        for read in iter:
+            totalReads += 1
+            if currRead.qname == read.qname:
+                pair1 = currRead; pair2 = read
+    
+                ## FILTER FOR READS ON SAME CHROMOSOME IN FR ORIENTATION
+                if onlyFRPairs:
+                    if pair1.tid == pair2.tid:
+    
+                        ## READ1 FORWARD AND READ2 REVERSE STRAND
+                        if not pair1.is_reverse and pair2.is_reverse:
+                            if pair1.reference_start <= pair2.reference_start:
+                                totalOutputPairs += 1
+                                SAMFout.write(pair1)
+                                SAMFout.write(pair2)
+                            else:
+                                totalImproperPairs += 1
+    
+                        ## READ1 REVERSE AND READ2 FORWARD STRAND
+                        elif pair1.is_reverse and not pair2.is_reverse:
+                            if pair2.reference_start <= pair1.reference_start:
+                                totalOutputPairs += 1
+                                SAMFout.write(pair1)
+                                SAMFout.write(pair2)
+                            else:
+                                totalImproperPairs += 1
+    
                         else:
                             totalImproperPairs += 1
-
-                    ## READ1 REVERSE AND READ2 FORWARD STRAND
-                    elif pair1.is_reverse and not pair2.is_reverse:
-                        if pair2.reference_start <= pair1.reference_start:
-                            totalOutputPairs += 1
-                            SAMFout.write(pair1)
-                            SAMFout.write(pair2)
-                        else:
-                            totalImproperPairs += 1
-
                     else:
                         totalImproperPairs += 1
                 else:
-                    totalImproperPairs += 1
+                    totalOutputPairs += 1
+                    SAMFout.write(pair1)
+                    SAMFout.write(pair2)
+    
+                ## RESET COUNTER
+                try:
+                    totalReads += 1
+                    currRead = next(iter)
+                except:
+                    StopIteration
+                    EOF = 1
+    
+            ## READS WHERE ONLY ONE OF A PAIR IS IN FILE
             else:
-                totalOutputPairs += 1
-                SAMFout.write(pair1)
-                SAMFout.write(pair2)
-
-            ## RESET COUNTER
-            try:
-                totalReads += 1
-                currRead = next(iter)
-            except:
-                StopIteration
-                EOF = 1
-
-        ## READS WHERE ONLY ONE OF A PAIR IS IN FILE
-        else:
-            totalSingletons += 1
-            pair1 = currRead
-            currRead = read
+                totalSingletons += 1
+                pair1 = currRead
+                currRead = read
 
     if not EOF:
         totalReads += 1

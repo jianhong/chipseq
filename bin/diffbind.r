@@ -1,4 +1,15 @@
 #!/usr/bin/env Rscript
+
+#######################################################################
+#######################################################################
+## Created on Nov. 10, 2020 call DiffBind 3.0
+## Copyright (c) 2020 Jianhong Ou (jianhong.ou@gmail.com)
+#######################################################################
+#######################################################################
+c("optparse", "DiffBind", "ChIPpeakAnno", "rjson",
+  "rtracklayer", "ggplot2", "GenomicFeatures")
+
+library(rjson)
 library(DiffBind)
 library(ChIPpeakAnno)
 library(rtracklayer)
@@ -6,7 +17,8 @@ library(ggplot2)
 library(GenomicFeatures)
 library(optparse)
 
-option_list <- list(make_option(c("-d", "--design"), type="character", default=NULL, help="filename of design table", metavar="path"),
+option_list <- list(make_option(c("-d", "--design"), type="character", default=NULL, help="design table", metavar="path"),
+                    make_option(c("-f", "--bams"), type="character", default=NULL, help="bam files", metavar="string"),
                     make_option(c("-p", "--peaks"), type="character", default=NULL, help="peak files", metavar="string"),
                     make_option(c("-g", "--gtf"), type="character", default=NULL, help="filename of gtf file", metavar="path"),
                     make_option(c("-b", "--blacklist"), type="character", default=NULL, help="filename of blacklist file", metavar="path"),
@@ -24,32 +36,34 @@ if (is.null(opt$peaks)){
   print_help(opt_parser)
   stop("Please provide bam and peak file name.", call.=FALSE)
 }
+if (is.null(opt$bams)){
+  print_help(opt_parser)
+  stop("Please provide bam and peak file name.", call.=FALSE)
+}
 if (is.null(opt$gtf)){
   print_help(opt_parser)
   stop("Please provide gtf file.", call.=FALSE)
 }
 out <- "sample.csv"
 ## create a csv file with SampleID, Condition, Replicate, bamReads Peaks Peakcaller PeakFormat, ScoreCol, Factor, Tissue
-sampleDesign <- read.csv(opt$design)
-sampleDesign <- unique(sampleDesign[, !colnames(sampleDesign) %in% c("fastq_1", "fastq_2")])
-opt$peaks <- unlist(strsplit(opt$peaks, "___"))
-bamReads <- opt$peaks[grepl("bam$", opt$peaks)]
-names(bamReads) <- sub(".mLb.clN.*bam", "", bamReads)
-Peaks <- opt$peaks[grepl("Peak$", opt$peaks)]
-SampleID <- sub("_peaks.*?Peak", "", Peaks)
-if(!all(names(bamReads) %in% SampleID)){
-  stop("some names of bamReads is not in SampleID. names(bamReads)=", 
-       paste(names(bamReads), collapse = "; "),
-       "SampleID=", paste(SampleID, collapse=";"))
-}
-bamReads <- bamReads[SampleID]
-names(Peaks) <- SampleID
-rownames(sampleDesign) <- paste(sampleDesign$group, sampleDesign$replicate, sep="_R")
-Condition <- sampleDesign[SampleID, "group"]
-Replicate <- sampleDesign[SampleID, "replicate"]
-Factor <- sampleDesign[SampleID, "antibody"]
+sampleDesign <- fromJSON(file=opt$design)
+sampleDesign <- do.call(rbind, lapply(sampleDesign, function(.ele){
+  do.call(cbind, .ele[lengths(.ele)==1])
+}))
+sampleDesign <- as.data.frame(sampleDesign)
+rownames(sampleDesign) <- sampleDesign$id
+
+Peaks <- unlist(strsplit(opt$peaks, ","))
+bamReads <- unlist(strsplit(opt$bams, ","))
+stopifnot(all(mapply(grepl, sampleDesign$id, Peaks))) ## check the order
+stopifnot(all(mapply(grepl, sampleDesign$id, bamReads)))
+
+SampleID <- sampleDesign$id
+Condition <- sub("^(.*)_R(\\d+)$", "\\1", sampleDesign$id)
+Replicate <- sub("^.*_R(\\d+)$", "\\1", sampleDesign$id)
+Factor <- sampleDesign$antibody
 Peakcaller <- "macs2"
-PeakFormat <- sub("^.*?_peaks.(.*)$", "\\1", Peaks)
+PeakFormat <- sampleDesign$peaktype
 block <- FALSE
 if(any(grepl("treatment", colnames(sampleDesign), ignore.case = TRUE))){
   Treatment <- sampleDesign[SampleID, which(grepl("treatment",
@@ -99,6 +113,10 @@ l <- lapply(Peaks, readLines)
 keep <- lengths(l)>0
 samples <- samples[keep, , drop=FALSE]
 
+if(nrow(samples)<3 || length(unique(samples$Condition))<2){
+  stop("Not enough samples in the list.")
+}
+
 BLACKLIST <- paste0("DBA_BLACKLIST_", toupper(opt$species))
 if(exists(BLACKLIST)){
   BLACKLIST <- get(BLACKLIST)
@@ -107,9 +125,9 @@ if(exists(BLACKLIST)){
 }
 
 if(nrow(samples)>3){
-  write.csv(samples, file.path(pf, "sample.csv"))
+  write.csv(samples, file.path(pf, out))
   
-  chip <- dba(sampleSheet = file.path(pf, "sample.csv"))
+  chip <- dba(sampleSheet = file.path(pf, out))
   pdf(file.path(pf, "DiffBind.sample.correlation.pdf"), width = 9, height = 9)
   plot(chip)
   dev.off()
@@ -173,12 +191,7 @@ if(nrow(samples)>3){
                              block = DBA_TREATMENT)
       }
       chip <- dba.analyze(chip, bBlacklist = FALSE, bGreylist = FALSE)
-      
-      chip.DB <- dba.report(chip, th=1, DataType=DBA_DATA_FRAME)
-      chip.DB <- chip.DB[!is.na(chip.DB$Chr) & 
-                           !is.na(chip.DB$Start) & 
-                           !is.na(chip.DB$End), , drop=FALSE]
-      chip.DB <- toGRanges(chip.DB)
+      chip.DB <- dba.report(chip, th=1)
       
       # Annotation
       chip.anno <- annotatePeakInBatch(chip.DB, AnnotationData = anno,
@@ -202,7 +215,7 @@ if(nrow(samples)>3){
       dev.off()
       
       pdf(file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".Volcano.plot.pdf")))
-      tryCatch(dba.plotVolcano(chip, bUsePval = TRUE), error=function(.e) message(.e))
+      dba.plotVolcano(chip, bUsePval = TRUE)
       dev.off()
       
       png(file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".MA.plot.png")))
@@ -210,7 +223,7 @@ if(nrow(samples)>3){
       dev.off()
       
       png(file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".Volcano.plot.png")))
-      tryCatch(dba.plotVolcano(chip, bUsePval = TRUE), error=function(.e) message(.e))
+      dba.plotVolcano(chip, bUsePval = TRUE)
       dev.off()
       
       # export counts table

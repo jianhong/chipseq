@@ -3,10 +3,12 @@
 #######################################################################
 #######################################################################
 ## Created on Nov. 10, 2020 to create UCSC trackhub file from file list
+## Copyright (c) 2020 Jianhong Ou (jianhong.ou@gmail.com)
 #######################################################################
 #######################################################################
 
 import os
+import sys
 import glob
 import errno
 import argparse
@@ -18,22 +20,25 @@ import trackhub
 ############################################
 ############################################
 
-Description = 'Create UCSC trackhub file from a list of files and associated colours - ".bed", ".narrowPeak", ".broadPeak", ".bw", ".bigwig" files currently supported.'
-Epilog = """Example usage: python create_trackhub.py <OUTPUT_FOLDER> <LIST_FILE> <GENOME>"""
+def parse_args(args=None):
+    Description = 'Create UCSC trackhub file from a list of files and associated colours - ".bed", ".narrowPeak", ".broadPeak", ".bw", ".bigwig" files currently supported.'
+    Epilog = """Example usage: python create_trackhub.py <OUTPUT_FOLDER> <LIST_FILE> <GENOME>"""
 
-argParser = argparse.ArgumentParser(description=Description, epilog=Epilog)
+    argParser = argparse.ArgumentParser(description=Description, epilog=Epilog)
+    
+    ## REQUIRED PARAMETERS
+    argParser.add_argument('OUTPUT_FOLDER', help="Folder for UCSC trackhub files")
+    argParser.add_argument('LIST_FILE', help="Tab-delimited file containing two columns i.e. file_name\tcolour. Header isnt required.")
+    argParser.add_argument('GENOME', help="Full path to genome fasta file or shorthand for genome available in UCSC e.g. hg19.")
+    argParser.add_argument('EMAIL', help="email address")
+    argParser.add_argument('DESIGN_FILE', help="design file")
+    argParser.add_argument("POSTFIX", help="Postfix of the bigWig file")
+    
+    ## OPTIONAL PARAMETERS
+    argParser.add_argument('-pp', '--path_prefix', type=str, dest="PATH_PREFIX", default='', help="Path prefix to be added at beginning of all files in input list file.")
 
-## REQUIRED PARAMETERS
-argParser.add_argument('OUTPUT_FOLDER', help="Folder for UCSC trackhub files")
-argParser.add_argument('LIST_FILE', help="Tab-delimited file containing two columns i.e. file_name\tcolour. Header isnt required.")
-argParser.add_argument('GENOME', help="Full path to genome fasta file or shorthand for genome available in UCSC e.g. hg19.")
-argParser.add_argument('EMAIL', help="email address")
-argParser.add_argument('DESIGN_FILE', help="design file")
-argParser.add_argument("POSTFIX", help="Postfix of the bigWig file")
+    return argParser.parse_args(args)
 
-## OPTIONAL PARAMETERS
-argParser.add_argument('-pp', '--path_prefix', type=str, dest="PATH_PREFIX", default='', help="Path prefix to be added at beginning of all files in input list file.")
-args = argParser.parse_args()
 
 ############################################
 ############################################
@@ -84,7 +89,7 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
 
     paramColn = {}
     for i in range(len(header)):
-      if header[i][:6]=="track_":
+      if header[i][:6]=="track_": # header start with track_
         paramColn[header[i][6:]]=i
 
     sampleDesignDict = {}
@@ -116,7 +121,8 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
     while True:
         line = fin.readline()
         if line:
-            ifile,colour = line.strip().split('\t')
+            ifile = line.strip()
+            colour = ""
             if sampleDesignDict:
                 kfile = trackhub.helpers.sanitize(os.path.splitext(os.path.basename(ifile))[0].replace(".", "_"), strict=False)
                 if kfile in sampleDesignDict:
@@ -176,7 +182,7 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
         if extension in ['bed','broadpeak','narrowpeak']:
           pass
         elif extension in TrackType.keys():
-          if filename in sampleDesignDict:
+          if sampleDesignDict:
             track = trackhub.Track(
               name=filename,
               source=ifile,
@@ -208,10 +214,18 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
 ## RUN FUNCTION
 ############################################
 ############################################
+def main(args=None):
+    args = parse_args(args)
+    create_trackhub(
+      OutFolder=args.OUTPUT_FOLDER,
+      ListFile=args.LIST_FILE,
+      Genome=args.GENOME,
+      EMAIL=args.EMAIL,
+      DesignFile=args.DESIGN_FILE,
+      Postfix=args.POSTFIX.split('__'),
+      PathPrefix=args.PATH_PREFIX)
 
-create_trackhub(OutFolder=args.OUTPUT_FOLDER,ListFile=args.LIST_FILE,Genome=args.GENOME,EMAIL=args.EMAIL,DesignFile=args.DESIGN_FILE,Postfix=args.POSTFIX.split('__'),PathPrefix=args.PATH_PREFIX)
+if __name__ == "__main__":
+    sys.exit(main())
 
-############################################
-############################################
-############################################
-############################################
+

@@ -1,0 +1,24 @@
+name: checksum
+description: check the md5 for fastq gz files and create md5 for unzipped files. 
+keywords:
+    - checksum
+tools:
+    - md5sum:
+        description: |
+            Print or check MD5 (128-bit) checksums..
+        homepage: https://www.gnu.org/software/coreutils/
+        documentation: https://www.gnu.org/software/coreutils/md5sum
+input:
+    -
+        - fastq:
+            type: file
+            description: fastq gz files
+            pattern: "*.{gz}"
+output:
+    -
+        - md5:
+            type: file
+            description: MD5 checksums file
+            pattern: "*.{txt}"
+authors:
+    - "@jianhong"
