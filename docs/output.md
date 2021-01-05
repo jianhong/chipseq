@@ -1,4 +1,4 @@
-# ![QiuBio Pipeline/chipseq](images/chipseqlogo.png)
+# ![QiuBio nf-core/chipseq](images/chipseqlogo.png)
 
 This document describes the output produced by the pipeline. The pipeline was build from [nf-core/chipseq](https://github.com/nf-core/chipseq).
 

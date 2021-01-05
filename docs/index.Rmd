@@ -20,7 +20,7 @@ library(DT)
 library(yaml)
 ```
 
-# ![QiuBio Pipeline/chipseq](images/chipseqlogo.png)
+# ![QiuBio nf-core/chipseq](images/chipseqlogo.png)
 
 This document describes the output produced by the chipseq analysis pipeline. Most of the plots are taken from the [MultiQC report](multiqc/multiqc_report.html), which summaries results at the end of the pipeline.
 
