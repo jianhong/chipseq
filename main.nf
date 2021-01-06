@@ -8,6 +8,10 @@
  https://github.com/jianhong/chipseq
 ----------------------------------------------------------------------------------------
 */
+if( !nextflow.version.matches('20.04+') ) {
+    println "This workflow requires Nextflow version 20.04 or greater -- You are running version $nextflow.version"
+    exit 1
+}
 
 nextflow.enable.dsl = 2
 
@@ -17,7 +21,7 @@ nextflow.enable.dsl = 2
 if (params.help) {
     def command = "nextflow run jianhong/chipseq -r dev --input design.csv --genome GRCh37 -profile docker"
     log.info Headers.nf_core(workflow, params.monochrome_logs)
-    log.info Schema.params_help("$baseDir/nextflow_schema.json", command)
+    log.info Schema.params_help("$projectDir/nextflow_schema.json", command)
     exit 0
 }
 
@@ -93,30 +97,30 @@ Checks.macs2_warn(params, log)         // Show a big warning message if we're no
 /*
  * Stage config files
  */
-ch_multiqc_config = file("$baseDir/assets/multiqc_config.yaml", checkIfExists: true)
+ch_multiqc_config = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
 ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
-ch_output_docs = file("$baseDir/docs/output.md", checkIfExists: true)
-ch_output_docs_images = file("$baseDir/docs/images/", checkIfExists: true)
+ch_output_docs = file("$projectDir/docs/output.md", checkIfExists: true)
+ch_output_docs_images = file("$projectDir/docs/images/", checkIfExists: true)
 
 // JSON files required by BAMTools for alignment filtering
 ch_bamtools_filter_se_config = file(params.bamtools_filter_se_config, checkIfExists: true)
 ch_bamtools_filter_pe_config = file(params.bamtools_filter_pe_config, checkIfExists: true)
 
 // Header files for MultiQC
-ch_spp_nsc_header = file("$baseDir/assets/multiqc/spp_nsc_header.txt", checkIfExists: true)
-ch_spp_rsc_header = file("$baseDir/assets/multiqc/spp_rsc_header.txt", checkIfExists: true)
-ch_spp_correlation_header = file("$baseDir/assets/multiqc/spp_correlation_header.txt", checkIfExists: true)
-ch_peak_count_header = file("$baseDir/assets/multiqc/peak_count_header.txt", checkIfExists: true)
-ch_frip_score_header = file("$baseDir/assets/multiqc/frip_score_header.txt", checkIfExists: true)
-ch_peak_annotation_header = file("$baseDir/assets/multiqc/peak_annotation_header.txt", checkIfExists: true)
-ch_deseq2_pca_header = file("$baseDir/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
-ch_deseq2_clustering_header = file("$baseDir/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
+ch_spp_nsc_header = file("$projectDir/assets/multiqc/spp_nsc_header.txt", checkIfExists: true)
+ch_spp_rsc_header = file("$projectDir/assets/multiqc/spp_rsc_header.txt", checkIfExists: true)
+ch_spp_correlation_header = file("$projectDir/assets/multiqc/spp_correlation_header.txt", checkIfExists: true)
+ch_peak_count_header = file("$projectDir/assets/multiqc/peak_count_header.txt", checkIfExists: true)
+ch_frip_score_header = file("$projectDir/assets/multiqc/frip_score_header.txt", checkIfExists: true)
+ch_peak_annotation_header = file("$projectDir/assets/multiqc/peak_annotation_header.txt", checkIfExists: true)
+ch_deseq2_pca_header = file("$projectDir/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
+ch_deseq2_clustering_header = file("$projectDir/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
 
 // deepTools genomic elements bed files
 ch_genomic_elements_bed = params.genomicElements? Channel.fromPath(params.genomicElements, checkIfExists: true) : Channel.empty()
 
 // index.Rmd
-ch_index_docs = file("$baseDir/docs/index.Rmd", checkIfExists: true)
+ch_index_docs = file("$projectDir/docs/index.Rmd", checkIfExists: true)
 
 ////////////////////////////////////////////////////
 /* --          PARAMETER SUMMARY               -- */
@@ -538,7 +542,7 @@ workflow {
                     [ fmeta, it[2], it[5] ] }
             .set { ch_ip_bam }
         
-        ch_ip_bam.view()
+        //ch_ip_bam.view()
 
         params.modules['subread_featurecounts'].publish_dir += "/consensus"
         SUBREAD_FEATURECOUNTS (
@@ -551,8 +555,8 @@ workflow {
         // DESEQ2_FEATURECOUNTS (
         //     params.modules['deseq2_featurecounts']
         // )
-        // ch_deseq2_pca_header = file("$baseDir/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
-        // ch_deseq2_clustering_header = file("$baseDir/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
+        // ch_deseq2_pca_header = file("$projectDir/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
+        // ch_deseq2_clustering_header = file("$projectDir/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
 
         ch_ip_peak
             .map{meta, bam, peak -> [meta.antibody, meta]}
@@ -683,7 +687,7 @@ workflow {
 
 workflow.onComplete {
     def multiqc_report = []
-    Completion.email(workflow, params, summary, run_name, baseDir, multiqc_report, log)
+    Completion.email(workflow, params, summary, run_name, projectDir, multiqc_report, log)
     Completion.summary(workflow, params, log)
 }
 
