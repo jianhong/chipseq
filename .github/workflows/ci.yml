@@ -14,35 +14,35 @@ jobs:
     # Only run on push if this is the master branch (merged PRs)
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'jianhong/chipseq') }}
     runs-on: ubuntu-latest
+    env:
+      NXF_VER: ${{ matrix.nxf_ver }}
+      NXF_ANSI_LOG: false
     strategy:
       matrix:
         # Nextflow versions: check pipeline minimum and current latest
-        nxf_ver: ['1.0.0', '']
+        nxf_ver: ['20.07.1', '']
     steps:
-      - name: Define env variables
-        run: |
-          echo "NXF_VER=1.0.0" >> $GITHUB_ENV
-          echo "NXF_ANSI_LOG=false" >> $GITHUB_ENV
-          
       - name: Check out pipeline code
         uses: actions/checkout@v2
 
       - name: Check if Dockerfile or Conda environment changed
-        uses: technote-space/get-diff-action@v1
+        uses: technote-space/get-diff-action@v4
         with:
-          PREFIX_FILTER: |
+          FILES: |
             Dockerfile
 
       - name: Build new docker image
-        if: env.GIT_DIFF
+        if: env.MATCHED_FILES
         run: docker build --no-cache . -t jianhong/chipseq:master
 
       - name: Pull docker image
-        if: ${{ !env.GIT_DIFF }}
+        if: ${{ !env.MATCHED_FILES }}
         run: |
           docker pull jianhong/chipseq:master
 
       - name: Install Nextflow
+        env:
+          CAPSULE_LOG: none
         run: |
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
@@ -55,22 +55,20 @@ jobs:
     name: Test workflow parameters
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'jianhong/chipseq') }}
     runs-on: ubuntu-latest
+    env:
+      NXF_VER: '20.07.1'
+      NXF_ANSI_LOG: false
     strategy:
       matrix:
         parameters: [--skip_trimming, --skip_consensus_peaks]
     steps:
-      - name: Define env variables
-        run: |
-          echo "NXF_VER=1.0.0" >> $GITHUB_ENV
-          echo "NXF_ANSI_LOG=false" >> $GITHUB_ENV
-          
       - name: Check out pipeline code
         uses: actions/checkout@v2
 
       - name: Check if Dockerfile or Conda environment changed
-        uses: technote-space/get-diff-action@v1
+        uses: technote-space/get-diff-action@v4
         with:
-          PREFIX_FILTER: |
+          FILES: |
             Dockerfile
 
       - name: Build new docker image
@@ -80,7 +78,7 @@ jobs:
       - name: Pull docker image
         if: ${{ !env.GIT_DIFF }}
         run: |
-          docker pull jianhong/chipseq:master
+          docker pull nfcore/chipseq:master
 
       - name: Install Nextflow
         run: |
