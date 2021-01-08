@@ -4,7 +4,7 @@
 # images
 # Based on Ubuntu
 #  $ cd chipseq
-#  $ VERSION=0.0.1
+#  $ VERSION=master
 #  $ docker build -t jianhong/chipseq:$VERSION .  ## --no-cache
 #  $ docker images jianhong/chipseq:$VERSION
 #  $ docker push jianhong/chipseq:$VERSION
@@ -25,10 +25,11 @@ ENV DEBIAN_FRONTEND="noninteractive" TZ="America/New_York"
 # Install software from source
 RUN cd ~ && \
     apt-get update --fix-missing && \
-    apt-get install --yes rsync wget bzip2 gcc libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools && \
+    apt-get install --yes rsync wget bzip2 gcc libssl-dev libxml2-dev libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev librsvg2-dev libv8-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN ln -s python3 /usr/bin/python
+RUN wget https://raw.githubusercontent.com/jianhong/chipseq/master/bin/picard -P /usr/bin/
 
 #RUN cd ~ && \
 #    wget https://github.com/samtools/samtools/releases/download/1.11/samtools-1.11.tar.bz2 && \
@@ -51,7 +52,7 @@ RUN ln -s python3 /usr/bin/python
 #    make && make install && \
 #    cd ../.. && rm -rf v2.5.1.tar.gz && rm -rf bamtools-2.5.1
 
-RUN pip install pysam deeptools MACS2 cutadapt
+RUN pip install pysam deeptools MACS2 cutadapt pymdown-extensions
 
 RUN mkdir /homer && cd /homer && \
     wget http://homer.ucsd.edu/homer/configureHomer.pl && \
