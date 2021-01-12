@@ -29,7 +29,8 @@ RUN cd ~ && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN ln -s python3 /usr/bin/python
-RUN wget https://raw.githubusercontent.com/jianhong/chipseq/master/bin/picard -P /usr/bin/
+RUN wget https://raw.githubusercontent.com/jianhong/chipseq/master/bin/picard -P /usr/bin/ && \
+    chmod +x /usr/bin/picard
 
 #RUN cd ~ && \
 #    wget https://github.com/samtools/samtools/releases/download/1.11/samtools-1.11.tar.bz2 && \
@@ -84,3 +85,4 @@ RUN touch .Rprofile
 RUN touch .Renviron
 
 WORKDIR /work
+ENV JAVA_HOME="/usr"

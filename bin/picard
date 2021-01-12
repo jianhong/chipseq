@@ -2,7 +2,7 @@
 # Picard executable shell script
 set -eu -o pipefail
 
-export LC_ALL=en_US.UTF-8
+#export LC_ALL=en_US.UTF-8
 
 # Find original directory of bash script, resolving symlinks
 # http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in/246128#246128
@@ -23,6 +23,9 @@ java="$ENV_PREFIX/bin/java"
 if [ -n "${JAVA_HOME:=}" ]; then
   if [ -e "$JAVA_HOME/bin/java" ]; then
       java="$JAVA_HOME/bin/java"
+  fi
+  if [ -e "$JAVA_HOME/share/java/picard.jar" ]; then
+    JAR_DIR="$JAVA_HOME/share/java"
   fi
 fi
 
