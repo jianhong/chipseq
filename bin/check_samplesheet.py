@@ -44,7 +44,7 @@ def check_samplesheet(file_in, file_out):
     
     PEAKTYPES = {'narrowPeak':['h2afz', 'h3ac', 'h3k4me2', 'h3k4me3',
                                'h3k9ac', 'h3k27ac'], 
-                 'broadPeak':['h2afz', "h3f3a", 'h3k4me1', 
+                 'broadPeak':["h3f3a", 'h3k4me1', 
                               'h3k9me1', 'h3k9me2', 'h3k9me3', 'h3k14ac', 
                               'h4k20me1', 'h3k27me3', 'h3k36me3', 
                               'h3k79me2', 'h3k79me3']}

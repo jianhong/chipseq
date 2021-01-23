@@ -167,7 +167,8 @@ include { JO_METAGENE_ANALYSIS                } from './modules/local/subworkflo
 include { JO_CHECKSUMS                        } from './modules/local/process/checksum/checksum'
 include { JO_TRACKHUB                         } from './modules/local/process/ucsc_track/ucsc_track'
 include { JO_INDEX                            } from './modules/local/process/create_index/create_index'
-include { JO_DIFFBIND                         } from './modules/local/process/diffbind/diffbind'
+include { JO_DIFFBIND
+          JO_DIFFBIND as JO_DIFFBIND_HOMER    } from './modules/local/process/diffbind/diffbind'
 
 ////////////////////////////////////////////////////
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
@@ -192,6 +193,8 @@ include { SUBREAD_FEATURECOUNTS         } from './modules/nf-core/software/subre
 include { FASTQC_TRIMGALORE             } from './modules/nf-core/subworkflow/fastqc_trimgalore'
 include { MAP_BWA_MEM                   } from './modules/nf-core/subworkflow/map_bwa_mem'
 include { MARK_DUPLICATES_PICARD        } from './modules/nf-core/subworkflow/mark_duplicates_picard'
+include { HOMER_CALLPEAK as HOMER_CALLPEAK_WITHOUT_CONTROL
+          HOMER_CALLPEAK                } from './modules/nf-core/subworkflow/findpeak_homer'
 
 ////////////////////////////////////////////////////
 /* --           RUN MAIN WORKFLOW              -- */
@@ -574,6 +577,67 @@ workflow {
         )
     }
 
+    if(params.homer){
+        /*
+         * Call peaks
+         */
+        // call peaks without input
+        def callpeak_without_input = params.modules['homer_callpeak']
+        callpeak_without_input.publish_dir += "/homer_without_control"
+        BAM_CLEAN.out.bam.map{ meta, bam -> [meta, bam, []]}
+                         .set{ch_ip_bam_no_ctl}
+
+        HOMER_CALLPEAK_WITHOUT_CONTROL (
+            ch_ip_bam_no_ctl,
+            ch_fasta,
+            ch_gtf,
+            params.modules['homer_maketagdirecotry'],
+            params.modules['homer_findpeaks'],
+            params.modules['homer_annotatepeaks'],
+            params.modules['homer_pos2bed'],
+            callpeak_without_input
+        )
+        
+        // Create channel: [ val(meta), ip_bam, control_bam ]
+        ch_ip_control_bam_bai
+            .map { meta, bams, bais -> [ meta , bams[0], bams[1] ] }
+            .set { ch_ip_control_bam }
+
+        HOMER_CALLPEAK (
+            ch_ip_control_bam,
+            ch_fasta,
+            ch_gtf,
+            params.modules['homer_maketagdirecotry'],
+            params.modules['homer_findpeaks'],
+            params.modules['homer_annotatepeaks'],
+            params.modules['homer_pos2bed'],
+            params.modules['homer_callpeak']
+        )
+        ch_software_versions = ch_software_versions.mix(HOMER_CALLPEAK.out.homer_version.first().ifEmpty(null))
+
+        ch_ip_control_bam
+            .join(HOMER_CALLPEAK.out.bed, by: [0])
+            .map { it -> [ it[0], it[1], it[3] ] }
+            .set { ch_ip_peak }
+
+        ch_ip_peak
+            .map{meta, bam, peak -> [meta.antibody, meta]}
+            .groupTuple()
+            .join(ch_ip_peak.map{[it[0].antibody, it[1]]}.groupTuple()
+                    .join(ch_ip_peak.map{[it[0].antibody, it[2]]}.groupTuple()))
+            .map{[it[1], it[2], it[3]]}
+            .set{ch_diffbind}
+        
+        def jo_diffbind_homer = params.modules['jo_diffbind']
+        jo_diffbind_homer.publish_dir = "homer/mergedLibrary"
+        JO_DIFFBIND_HOMER (
+            ch_diffbind,
+            ch_gtf,
+            ch_blacklist.ifEmpty([]),
+            jo_diffbind_homer
+        )
+    
+    }
     /*
      * Create IGV session
      */
