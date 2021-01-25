@@ -20,13 +20,10 @@ workflow HOMER_CALLPEAK {
 
 
     main:
-    findpeaks_options.publish_dir = homer_callpeak_options.publish_dir
-    annotationpeaks_options.publish_dir = homer_callpeak_options.publish_dir
-    pos2bed_options.publish_dir = homer_callpeak_options.publish_dir
     HOMER_MAKETAGDIRECTORY(ch_bam, maketagdirectory_options)
-    HOMER_FINDPEAKS(HOMER_MAKETAGDIRECTORY.out.tagdir, findpeaks_options)
-    HOMER_POS2BED(HOMER_FINDPEAKS.out.peak, pos2bed_options)
-    HOMER_ANNOTATEPEAKS(HOMER_FINDPEAKS.out.peak, fasta, gtf, annotationpeaks_options)
+    HOMER_FINDPEAKS(HOMER_MAKETAGDIRECTORY.out.tagdir, findpeaks_options, homer_callpeak_options.publish_dir)
+    HOMER_POS2BED(HOMER_FINDPEAKS.out.peak, pos2bed_options, homer_callpeak_options.publish_dir)
+    HOMER_ANNOTATEPEAKS(HOMER_FINDPEAKS.out.peak, fasta, gtf, annotationpeaks_options, homer_callpeak_options.publish_dir)
 
     emit:
     peak = HOMER_FINDPEAKS.out.peak                    // channel: [ val(meta), [ peak ] ]

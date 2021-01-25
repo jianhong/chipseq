@@ -8,7 +8,7 @@ process HOMER_FINDPEAKS {
     label 'process_medium'
     publishDir "${params.outdir}/${meta.peaktype}",
         mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
+        saveAs: { filename -> saveFiles(filename:filename, options:options, subfolder:subfolder, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
     container (params.universalContainer? "${params.container}":"quay.io/biocontainers/homer:4.11--pl526h9a982cc_2")
     //container "https://depot.galaxyproject.org/singularity/homer:4.11--pl526h9a982cc_2"
@@ -18,6 +18,7 @@ process HOMER_FINDPEAKS {
     input:
     tuple val(meta), path(tagdir), path(controltagdir)
     val options
+    val subfolder
 
     output:
     tuple val(meta), path("${meta.id}_homer_${meta.peaktype}.txt"), emit: peak
@@ -28,7 +29,7 @@ process HOMER_FINDPEAKS {
     def ioptions = initOptions(options)
     def args     = ioptions.args.find{it.key == "meta.antibody"}?.value
     if(!args) args = meta.peaktype == "narrowPeak"?"-style factor":"-style histone" 
-    def control  = controltagdir.list().isEmpty() ? '' : "-i $controltagdir"
+    def control  = controltagdir.isDirectory() ? "-i $controltagdir" : ""
     """
     findPeaks ${tagdir} ${args} $control -o ${meta.id}_homer_${meta.peaktype}.txt
 

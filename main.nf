@@ -418,15 +418,13 @@ workflow {
         params.modules['macs2_callpeak'].args += " $pileup $fdr $pvalue"
 
         // call peaks without input
-        def callpeak_without_input = params.modules['macs2_callpeak']
-        callpeak_without_input.publish_dir += "/macs2_without_control"
         BAM_CLEAN.out.bam.map{ meta, bam -> [meta, bam, []]}
                          .set{ch_ip_bam_no_ctl}
 
         MACS2_CALLPEAK_WITHOUT_CONTROL (
             ch_ip_bam_no_ctl,
             params.macs_gsize,
-            callpeak_without_input
+            params.modules['macs2_callpeak_without_control']
         )
         
         // Create channel: [ val(meta), ip_bam, control_bam ]
@@ -471,7 +469,8 @@ workflow {
             MACS2_CALLPEAK.out.peak,
             ch_fasta,
             ch_gtf,
-            params.modules['homer_annotatepeaks_macs2']
+            params.modules['homer_annotatepeaks_macs2'],
+            false
         )
         ch_software_versions = ch_software_versions.mix(HOMER_ANNOTATEPEAKS_MACS2.out.version.first().ifEmpty(null))
 
@@ -517,7 +516,8 @@ workflow {
             MACS2_CONSENSUS.out.bed,
             ch_fasta,
             ch_gtf,
-            params.modules['homer_annotatepeaks_consensus']
+            params.modules['homer_annotatepeaks_consensus'],
+            false
         )
         // cut -f2- ${prefix}.annotatePeaks.txt | awk 'NR==1; NR > 1 {print \$0 | "sort -T '.' -k1,1 -k2,2n"}' | cut -f6- > tmp.txt
         // paste $bool tmp.txt > ${prefix}.boolean.annotatePeaks.txt
@@ -573,7 +573,7 @@ workflow {
             ch_diffbind,
             ch_gtf,
             ch_blacklist.ifEmpty([]),
-            params.modules['jo_diffbind']
+            params.modules['jo_diffbind_macs2']
         )
     }
 
@@ -582,59 +582,55 @@ workflow {
          * Call peaks
          */
         // call peaks without input
-        def callpeak_without_input = params.modules['homer_callpeak']
-        callpeak_without_input.publish_dir += "/homer_without_control"
         BAM_CLEAN.out.bam.map{ meta, bam -> [meta, bam, []]}
-                         .set{ch_ip_bam_no_ctl}
+                         .set{ch_ip_bam_no_ctl_homer}
 
         HOMER_CALLPEAK_WITHOUT_CONTROL (
-            ch_ip_bam_no_ctl,
+            ch_ip_bam_no_ctl_homer,
             ch_fasta,
             ch_gtf,
             params.modules['homer_maketagdirecotry'],
             params.modules['homer_findpeaks'],
             params.modules['homer_annotatepeaks'],
             params.modules['homer_pos2bed'],
-            callpeak_without_input
+            [publish_dir:"peaks_without_control"]
         )
         
         // Create channel: [ val(meta), ip_bam, control_bam ]
         ch_ip_control_bam_bai
             .map { meta, bams, bais -> [ meta , bams[0], bams[1] ] }
-            .set { ch_ip_control_bam }
-
+            .set { ch_ip_control_bam_homer }
+            
         HOMER_CALLPEAK (
-            ch_ip_control_bam,
+            ch_ip_control_bam_homer,
             ch_fasta,
             ch_gtf,
             params.modules['homer_maketagdirecotry'],
             params.modules['homer_findpeaks'],
             params.modules['homer_annotatepeaks'],
             params.modules['homer_pos2bed'],
-            params.modules['homer_callpeak']
+            [publish_dir:"peaks_with_control"]
         )
-        ch_software_versions = ch_software_versions.mix(HOMER_CALLPEAK.out.homer_version.first().ifEmpty(null))
+        
+        ch_ip_control_bam_homer
+            .map { it -> [it[0].id, it[0], it[1]]}
+            .join(HOMER_CALLPEAK.out.bed.map{[it[0].id, it[0], it[1]]}, by: [0])
+            .map { it -> [ it[1], it[2], it[4] ] }
+            .set { ch_ip_peak_homer }
 
-        ch_ip_control_bam
-            .join(HOMER_CALLPEAK.out.bed, by: [0])
-            .map { it -> [ it[0], it[1], it[3] ] }
-            .set { ch_ip_peak }
-
-        ch_ip_peak
+        ch_ip_peak_homer
             .map{meta, bam, peak -> [meta.antibody, meta]}
             .groupTuple()
-            .join(ch_ip_peak.map{[it[0].antibody, it[1]]}.groupTuple()
-                    .join(ch_ip_peak.map{[it[0].antibody, it[2]]}.groupTuple()))
+            .join(ch_ip_peak_homer.map{[it[0].antibody, it[1]]}.groupTuple()
+                    .join(ch_ip_peak_homer.map{[it[0].antibody, it[2]]}.groupTuple()))
             .map{[it[1], it[2], it[3]]}
-            .set{ch_diffbind}
+            .set{ch_diffbind_homer}
         
-        def jo_diffbind_homer = params.modules['jo_diffbind']
-        jo_diffbind_homer.publish_dir = "homer/mergedLibrary"
         JO_DIFFBIND_HOMER (
-            ch_diffbind,
+            ch_diffbind_homer,
             ch_gtf,
             ch_blacklist.ifEmpty([]),
-            jo_diffbind_homer
+            params.modules['jo_diffbind_homer']
         )
     
     }

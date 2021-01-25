@@ -262,7 +262,13 @@ if(nrow(samples)>3){
     }
     if(length(samples$Peaks)>0){
       peaks <- mapply(samples$Peaks, samples$PeakFormat, 
-                      FUN=function(.ele, .format) toGRanges(.ele, format=.format), 
+                      FUN=function(.ele, .format) {
+                        if(.format %in% c("BED", "GFF", "GTF", "MACS", "MACS2", "MACS2.broad", "narrowPeak", "broadPeak")){
+                          toGRanges(.ele, format=.format)
+                        }else{
+                          import(.ele)
+                        }
+                      }, 
                       SIMPLIFY = FALSE)
       names(peaks) <- samples$SampleID
       peaks <- GRangesList(peaks)

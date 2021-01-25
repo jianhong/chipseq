@@ -41,6 +41,7 @@ def saveFiles(Map args) {
     if (!args.filename.endsWith('.version.txt')) {
         def ioptions = initOptions(args.options)
         def path_list = [ ioptions.publish_dir ?: args.publish_dir ]
+        if(args.subfolder) path_list += "/"+ args.subfolder
         if (ioptions.publish_by_id) {
             path_list.add(args.publish_id)
         }

@@ -8,7 +8,7 @@ process HOMER_POS2BED {
     label 'process_medium'
     publishDir "${params.outdir}/${meta.peaktype}",
         mode: params.publish_dir_mode,
-        saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
+        saveAs: { filename -> saveFiles(filename:filename, options:options, subfolder:subfolder, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
     container (params.universalContainer? "${params.container}":"quay.io/biocontainers/homer:4.11--pl526h9a982cc_2")
     //container "https://depot.galaxyproject.org/singularity/homer:4.11--pl526h9a982cc_2"
@@ -18,6 +18,7 @@ process HOMER_POS2BED {
     input:
     tuple val(meta), path(peak)
     val options
+    val subfolder
 
     output:
     tuple val(meta), path("${meta.id}_homer_${meta.peaktype}.bed"), emit: bed
@@ -27,7 +28,7 @@ process HOMER_POS2BED {
     def software = getSoftwareName(task.process)
     def ioptions = initOptions(options)
     """
-    pos2bed ${peak} -o ${meta.id}_homer_${meta.peaktype}.bed -track ${meta.id}
+    pos2bed.pl ${peak} -o ${meta.id}_homer_${meta.peaktype}.bed -track ${meta.id}
 
     echo $VERSION > ${software}.version.txt
     """
