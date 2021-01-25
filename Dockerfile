@@ -29,7 +29,7 @@ RUN cd ~ && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN ln -s python3 /usr/bin/python
-RUN wget https://raw.githubusercontent.com/jianhong/chipseq/master/bin/picard -P /usr/bin/ && \
+RUN wget https://raw.githubusercontent.com/jianhong/chipseq/master/assets/picard -P /usr/bin/ && \
     chmod +x /usr/bin/picard
 
 #RUN cd ~ && \
