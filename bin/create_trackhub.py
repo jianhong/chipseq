@@ -27,16 +27,12 @@ def parse_args(args=None):
     argParser = argparse.ArgumentParser(description=Description, epilog=Epilog)
     
     ## REQUIRED PARAMETERS
-    argParser.add_argument('OUTPUT_FOLDER', help="Folder for UCSC trackhub files")
-    argParser.add_argument('LIST_FILE', help="Tab-delimited file containing two columns i.e. file_name\tcolour. Header isnt required.")
+    argParser.add_argument('LIST_FILE', help="Tab-delimited file containing two columns i.e. samplename\tsignalfile. Header isnt required.")
     argParser.add_argument('GENOME', help="Full path to genome fasta file or shorthand for genome available in UCSC e.g. hg19.")
+    argParser.add_argument('CHROM_SIZE', help="Full path to chrom size")
     argParser.add_argument('EMAIL', help="email address")
     argParser.add_argument('DESIGN_FILE', help="design file")
-    argParser.add_argument("POSTFIX", help="Postfix of the bigWig file")
     
-    ## OPTIONAL PARAMETERS
-    argParser.add_argument('-pp', '--path_prefix', type=str, dest="PATH_PREFIX", default='', help="Path prefix to be added at beginning of all files in input list file.")
-
     return argParser.parse_args(args)
 
 
@@ -63,9 +59,44 @@ tracktypes = ['bigWig', 'bam', 'bigBed', 'vcfTabix', 'bigNarrowPeak',
               'bigBarChart', 'bigChain', 'bigGenePred', 'bigBroadPeak',
               'bigMaf', 'bigPsl', 'halSnake']
 TrackType = {'bw':'bigWig', 'bb':'bigBed', 'bed':'bigBed', 
-             'narrowpeak':'bigNarrowPeak', 'broadpeak':'bigBroadPeak'}
+             'narrowpeak':'bigBed 6+4', 'broadpeak':'bigBed 6+3'}
 Visibility = {'bw':'full', 'bb':'dense', 'bed':'dense',
              'narrowpeak':'dense', 'broadpeak':'dense'}
+
+bigNarrowPeak=open("narrowPeak.as", "w")
+bigNarrowPeak.write('''table bigNarrowPeak
+"BED6+4 Peaks of signal enrichment based on pooled, normalized (interpreted) data."
+(
+    string chrom;        "Reference sequence chromosome or scaffold"
+    uint   chromStart;   "Start position in chromosome"
+    uint   chromEnd;     "End position in chromosome"
+    string name;	 "Name given to a region (preferably unique). Use . if no name is assigned"
+    uint   score;        "Indicates how dark the peak will be displayed in the browser (0-1000) "
+    char[1]  strand;     "+ or - or . for unknown"
+    float  signalValue;  "Measurement of average enrichment for the region"
+    float  pValue;       "Statistical significance of signal value (-log10). Set to -1 if not used."
+    float  qValue;       "Statistical significance with multiple-test correction applied (FDR -log10). Set to -1 if not used."
+    int   peak;         "Point-source called for this peak; 0-based offset from chromStart. Set to -1 if no point-source called."
+)
+''')
+bigNarrowPeak.close()
+bigBroadPeak=open("broadPeak.as", "w")
+bigBroadPeak.write('''table bigBroadPeak
+"BED6+4 Peaks of signal enrichment based on pooled, normalized (interpreted) data."
+(
+    string chrom;        "Reference sequence chromosome or scaffold"
+    uint   chromStart;   "Start position in chromosome"
+    uint   chromEnd;     "End position in chromosome"
+    string name;	 "Name given to a region (preferably unique). Use . if no name is assigned"
+    uint   score;        "Indicates how dark the peak will be displayed in the browser (0-1000) "
+    char[1]  strand;     "+ or - or . for unknown"
+    float  signalValue;  "Measurement of average enrichment for the region"
+    float  pValue;       "Statistical significance of signal value (-log10). Set to -1 if not used."
+    float  qValue;       "Statistical significance with multiple-test correction applied (FDR -log10). Set to -1 if not used."
+)
+''')
+bigBroadPeak.close()
+
 for tt in tracktypes:
     TrackType[tt.lower()] = tt
     if tt in ['bam', 'bigBed', 'vcfTabix', 'bigNarrowPeak',
@@ -75,7 +106,7 @@ for tt in tracktypes:
     else:
       Visibility[tt.lower()] = 'full'
 
-def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefix=''):
+def create_trackhub(OutFolder,ListFile,Genome,ChrSize, EMAIL,DesignFile):
     ERROR_STR = 'ERROR: Please check design file'
     HEADER = ['group', 'replicate', 'fastq_1', 'fastq_2']
 
@@ -112,7 +143,7 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
               designDict[k] = {lspl[paramColn[k]]:lspl[paramColn[k]]}
         else:
           break
-
+    
     
     dIn.close()
     
@@ -121,21 +152,23 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
     while True:
         line = fin.readline()
         if line:
-            ifile = line.strip()
+            ifile = [x.strip() for x in line.strip().split('\t')]
             colour = ""
             if sampleDesignDict:
-                kfile = trackhub.helpers.sanitize(os.path.splitext(os.path.basename(ifile))[0].replace(".", "_"), strict=False)
+                kfile = trackhub.helpers.sanitize(ifile[0].replace(".", "_"), strict=False)
                 if kfile in sampleDesignDict:
                   if "color" in sampleDesignDict[kfile]:
                     h = sampleDesignDict[kfile]["color"].lstrip('#')
                     colour = ','.join(str(x) for x in tuple(int(h[i:i+2], 16) for i in (0, 2, 4)))
             if len(colour.strip()) == 0:
               colour = '0,0,178'
-            fileList.append((PathPrefix.strip()+ifile,colour))
+            fileList.append((ifile[1],colour,ifile[0]))
         else:
             break
             fin.close()
 
+    fileList = sorted(fileList, key=lambda x: x[2])
+    
     # Initialize the components of a track hub, already connected together
     hub, genomes_file, genome, trackdb = trackhub.default_hub(
         hub_name="RNISRS_hub",
@@ -176,16 +209,33 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
           short_label='Regions')
       composite.add_view(regions_view)
     
-    for ifile,color in fileList:
+    for ifile,color,id in fileList:
         extension = os.path.splitext(ifile)[1].replace(".", "").lower()
         filename = trackhub.helpers.sanitize(os.path.splitext(os.path.basename(ifile))[0].replace(".", "_"), strict=False)
         if extension in ['bed','broadpeak','narrowpeak']:
-          pass
-        elif extension in TrackType.keys():
+          # convert bed to bigbed
+          # sort bed file
+          cmd = "sort -k1,1 -k2,2n " + ifile +" >" + ifile + "_sorted.bed"
+          os.system(cmd)
+          # bedToBigBed
+          os.system("awk '$1 != \"track\" {$5=($5>1000)?1000:$5; print ;}' "+ifile+"_sorted.bed > "+ifile+"_srt.bed")
+          if extension == "bed":
+            cmd = "bedToBigBed "+ifile+"_srt.bed"+" "+ChrSize+" "+ifile+".bb"
+            extension = "bb"
+          if extension == "broadpeak":
+            cmd = "bedToBigBed -type=bed6+3 -as=broadPeak.as "+ifile+"_srt.bed"+" "+ChrSize+" "+ifile+".bb"
+          if extension == "narrowpeak":
+            cmd = "bedToBigBed -type=bed6+4 -as=narrowPeak.as "+ifile+"_srt.bed"+" "+ChrSize+" "+ifile+".bb"
+          os.system(cmd)
+          # change ifile to new bigbed file
+          ifile = ifile+".bb"
+        if extension in TrackType.keys():
           if sampleDesignDict:
             track = trackhub.Track(
               name=filename,
-              source=ifile,
+              source=filename,
+              short_label=id,
+              long_label=filename,
               color=color,
               visibility=Visibility[extension],
               tracktype=TrackType[extension],
@@ -195,15 +245,17 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
           else:
             track = trackhub.Track(
               name=filename,
-              source=ifile,
+              source=filename,
+              short_label=id,
+              long_label=filename,
               color=color,
               visibility=Visibility[extension],
               tracktype=TrackType[extension],
               autoScale='on')
             trackdb.add_tracks(track)
-          linkname=os.path.join(OutFolder, Genome, filename+"."+TrackType[extension])
+          linkname=os.path.join(OutFolder, Genome, filename+"."+TrackType[extension].split()[0])
           makedir(os.path.join(OutFolder, Genome))
-          os.symlink(ifile, linkname)
+          os.symlink("../../"+ifile, linkname)
         else:
           pass
     
@@ -217,13 +269,12 @@ def create_trackhub(OutFolder,ListFile,Genome,EMAIL,DesignFile,Postfix,PathPrefi
 def main(args=None):
     args = parse_args(args)
     create_trackhub(
-      OutFolder=args.OUTPUT_FOLDER,
+      OutFolder="trackhub",
       ListFile=args.LIST_FILE,
       Genome=args.GENOME,
+      ChrSize=args.CHROM_SIZE,
       EMAIL=args.EMAIL,
-      DesignFile=args.DESIGN_FILE,
-      Postfix=args.POSTFIX.split('__'),
-      PathPrefix=args.PATH_PREFIX)
+      DesignFile=args.DESIGN_FILE)
 
 if __name__ == "__main__":
     sys.exit(main())

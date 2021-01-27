@@ -27,8 +27,7 @@ process HOMER_FINDPEAKS {
     script:
     def software = getSoftwareName(task.process)
     def ioptions = initOptions(options)
-    def args     = ioptions.args.find{it.key == "meta.antibody"}?.value
-    if(!args) args = meta.peaktype == "narrowPeak"?"-style factor":"-style histone" 
+    def args     = ioptions.args[meta.antibody]?:meta.peaktype == "narrowPeak"?"-style factor":"-style histone"
     def control  = controltagdir.isDirectory() ? "-i $controltagdir" : ""
     """
     findPeaks ${tagdir} ${args} $control -o ${meta.id}_homer_${meta.peaktype}.txt

@@ -19,6 +19,7 @@ process JO_TRACKHUB {
     val name
     path bw
     path designtab
+    path size
     val options
 
     output:
@@ -26,15 +27,18 @@ process JO_TRACKHUB {
     path "*.version.txt", emit: version
     
     script:
-    def sampleLabel = name.join('___')
-    def bws         = bw.join('___')
+    def sampleLabel = name.join(' ')
+    def bws         = bw.join(' ')
     """
-    find * -type l -name "*.bigWig" -exec echo {} \\; > bigwig.igv.txt
-    find * -type l -name "*Peak" -exec echo {} \\; > peaks.igv.txt
-
-    cat *.txt > track_files.txt
+    n=($sampleLabel)
+    s=($bws)
+    paste <(printf '%s\n' "\${n[@]}") <(printf '%s\n' "\${s[@]}") > track_files.txt
     
-    create_trackhub.py trackhub track_files.txt $params.species $params.email $designtab '.mLb.clN__.mRp.clN' --path_prefix '../../../../'
+    create_trackhub.py track_files.txt $params.species $size $params.email $designtab
+    
+    rsync trackhub/${params.species} tmp -a --copy-links -v
+    rm -r trackhub/${params.species}
+    mv tmp/${params.species} trackhub/
     
     python -c "import trackhub; print(trackhub.__version__)" > trackhub.version.txt
     """

@@ -53,7 +53,7 @@ RUN wget https://raw.githubusercontent.com/jianhong/chipseq/master/assets/picard
 #    make && make install && \
 #    cd ../.. && rm -rf v2.5.1.tar.gz && rm -rf bamtools-2.5.1
 
-RUN pip install pysam deeptools MACS2 cutadapt pymdown-extensions
+RUN pip install pysam deeptools MACS2 cutadapt pymdown-extensions trackhub
 
 RUN mkdir /homer && cd /homer && \
     wget http://homer.ucsd.edu/homer/configureHomer.pl && \

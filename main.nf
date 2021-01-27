@@ -46,7 +46,7 @@ params.macs_gsize = params.genome ? params.genomes[ params.genome ].macs_gsize ?
 params.deep_gsize = params.genome ? params.genomes[ params.genome ].deep_gsize ?: false : false
 params.blacklist = params.genome ? params.genomes[ params.genome ].blacklist ?: false : false
 anno_readme = params.genome ? params.genomes[ params.genome ].readme ?: false : false
-params.species = params.genome ? params.genomes[ params.genome ].species ?: params.genome : false
+params.species = params.genome ? params.genomes[ params.genome ].species ?: params.genome : params.species?:false
 
 ////////////////////////////////////////////////////
 /* --          VALIDATE INPUTS                 -- */
@@ -167,8 +167,10 @@ include { JO_METAGENE_ANALYSIS                } from './modules/local/subworkflo
 include { JO_CHECKSUMS                        } from './modules/local/process/checksum/checksum'
 include { JO_TRACKHUB                         } from './modules/local/process/ucsc_track/ucsc_track'
 include { JO_INDEX                            } from './modules/local/process/create_index/create_index'
-include { JO_DIFFBIND
-          JO_DIFFBIND as JO_DIFFBIND_HOMER    } from './modules/local/process/diffbind/diffbind'
+include { JO_DIFFBIND as JO_DIFFBIND_HOMER
+          JO_DIFFBIND as JO_DIFFBIND_WITHOUT_CONTROL
+          JO_DIFFBIND as JO_DIFFBIND_HOMER_WITHOUT_CONTROL
+          JO_DIFFBIND                         } from './modules/local/process/diffbind/diffbind'
 
 ////////////////////////////////////////////////////
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
@@ -427,6 +429,23 @@ workflow {
             params.modules['macs2_callpeak_without_control']
         )
         
+        BAM_CLEAN.out.bam
+            .join(MACS2_CALLPEAK_WITHOUT_CONTROL.out.peak, by: [0])
+            .set { ch_ip_peak_no_control }
+        ch_ip_peak_no_control
+            .map{meta, bam, peak -> [meta.antibody, meta]}
+            .groupTuple()
+            .join(ch_ip_peak_no_control.map{[it[0].antibody, it[1]]}.groupTuple()
+                    .join(ch_ip_peak_no_control.map{[it[0].antibody, it[2]]}.groupTuple()))
+            .map{[it[1], it[2], it[3]]}
+            .set{ch_diffbind_without_control}
+        JO_DIFFBIND_WITHOUT_CONTROL (
+            ch_diffbind_without_control,
+            ch_gtf,
+            ch_blacklist.ifEmpty([]),
+            params.modules['jo_diffbind_macs2_without_control']
+        )
+        
         // Create channel: [ val(meta), ip_bam, control_bam ]
         ch_ip_control_bam_bai
             .map { meta, bams, bais -> [ meta , bams[0], bams[1] ] }
@@ -595,6 +614,22 @@ workflow {
             params.modules['homer_pos2bed'],
             [publish_dir:"peaks_without_control"]
         )
+        BAM_CLEAN.out.bam
+            .join(HOMER_CALLPEAK_WITHOUT_CONTROL.out.bed, by: [0])
+            .set { ch_ip_peak_homer_no_control }
+        ch_ip_peak_homer_no_control
+            .map{meta, bam, peak -> [meta.antibody, meta]}
+            .groupTuple()
+            .join(ch_ip_peak_homer_no_control.map{[it[0].antibody, it[1]]}.groupTuple()
+                    .join(ch_ip_peak_homer_no_control.map{[it[0].antibody, it[2]]}.groupTuple()))
+            .map{[it[1], it[2], it[3]]}
+            .set{ch_diffbind_homer_without_control}
+        JO_DIFFBIND_HOMER_WITHOUT_CONTROL (
+            ch_diffbind_homer_without_control,
+            ch_gtf,
+            ch_blacklist.ifEmpty([]),
+            params.modules['jo_diffbind_homer_without_control']
+        )
         
         // Create channel: [ val(meta), ip_bam, control_bam ]
         ch_ip_control_bam_bai
@@ -652,18 +687,22 @@ workflow {
      * Create ucsc trackhub
      */
    
-   JO_METAGENE_ANALYSIS.out.bw.collect()
-        .concat(UCSC_BEDRAPHTOBIGWIG.out.bigwig.collect(), 
-                MACS2_CALLPEAK.out.peak.collect(),
-                MACS2_CONSENSUS.out.bed.collect())
+   JO_METAGENE_ANALYSIS.out.bw.map{[it[0], it[1]]}.collect()
+        .concat(UCSC_BEDRAPHTOBIGWIG.out.bigwig.map{[it[0], it[1]]}.collect().ifEmpty([]), 
+                MACS2_CALLPEAK.out.peak.map{[it[0], it[1]]}.collect().ifEmpty([]),
+                MACS2_CONSENSUS.out.bed.map{[it[0], it[1]]}.collect().ifEmpty([]),
+                HOMER_CALLPEAK.out.bed.map{[it[0], it[1]]}.collect().ifEmpty([]))
+        .flatten()
+        .collate(2)
         .set{ch_trackhub}
    ch_trackhub.map{[it[0].id]}.collect().set{ch_trackhub_name}
    ch_trackhub.map{[it[1]]}.collect().set{ch_trackhub_track}
-   
+
    JO_TRACKHUB(
         ch_trackhub_name,
         ch_trackhub_track,
         ch_input,
+        GET_CHROM_SIZES.out.sizes,
         params.modules['jo_trackhub']
    )
 
