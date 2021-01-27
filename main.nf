@@ -687,7 +687,7 @@ workflow {
      * Create ucsc trackhub
      */
    
-   JO_METAGENE_ANALYSIS.out.bw.map{[it[0], it[1]]}.collect()
+   JO_METAGENE_ANALYSIS.out.bw.map{[it[0], it[1]]}.collect().ifEmpty([])
         .concat(UCSC_BEDRAPHTOBIGWIG.out.bigwig.map{[it[0], it[1]]}.collect().ifEmpty([]), 
                 MACS2_CALLPEAK.out.peak.map{[it[0], it[1]]}.collect().ifEmpty([]),
                 MACS2_CONSENSUS.out.bed.map{[it[0], it[1]]}.collect().ifEmpty([]),
