@@ -1,4 +1,4 @@
-//conda (params.conda ? "${baseDir}/environment.yml" : null)
+//conda (params.conda ? "${projectDir}/environment.yml" : null)
 
 // /*
 //  * STEP 7.4: Differential analysis with DESeq2

@@ -1,11 +1,25 @@
-# [0.0.1] Init. - 2020-11-20
-
-* fork the pipeline from nf-core/chipseq and create a custom pipeline. 
-
-# nf-core/chipseq: Changelog
+# jianhong/chipseq: Changelog
 
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
+## [1.1.0] copy master to dev. - 2021-01-28
+
+* make a copy from master.
+
+## [1.0.1] Release the dev version. - 2021-01-23
+
+* add homer to call peaks.
+
+## [1.0.0] Release the dev version. - 2021-01-05
+
+* move the development brance to master branch.
+
+## [0.0.1] Init. - 2020-11-20
+
+* fork the pipeline from nf-core/chipseq and create a custom pipeline.
+
+## Following are from nf-core/chipseq
 
 ## [1.2.1] - 2020-07-29
 

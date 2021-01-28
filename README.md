@@ -2,30 +2,28 @@
 
 ## Introduction
 
-**qiubio/chipseq** is a bioinformatics analysis pipeline used for Chromatin ImmunopreciPitation sequencing (ChIP-seq) data based on [nfcore/chipseq](https://nf-co.re/chipseq).
+_qiubio/chipseq_ is a bioinformatics analysis pipeline used for Chromatin ImmunopreciPitation sequencing (ChIP-seq) data based on [nfcore/chipseq](https://nf-co.re/chipseq).
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It comes with docker containers making installation trivial and results highly reproducible.
 
 This pipeline will generate the UCSC genome browser track hub and metagene analysis
-resuls in addition to original output of **nfcore/chipseq** pipeline.
+resuls in addition to original output of _nfcore/chipseq_ pipeline.
 
-The most important change for this pipeline from **nfcore/chipseq** pipeline is 
-that I tried to improve the reproducibility of the pipeline depend on conda but 
+The most important change for this pipeline from _nfcore/chipseq_ pipeline is
+that I tried to improve the reproducibility of the pipeline depend on conda but
 not docker for following 2 reasons:
 
-1. I can not use docker in our cluster. 
+1. I can not use docker in our cluster.
 
 2. The memory required for the pipeline is too heavy for personal computer if using docker.
 
-However, conda always throw errors when create environment even I use modules. 
-I add conda_softwares section in module.conf setting to make the pipeline more flexible 
+However, conda always throw errors when create environment even I use modules.
+I add conda_softwares section in module.conf setting to make the pipeline more flexible
 to figure out this issue.
-I also changed the R/Biocondactor package installation methods from conda installation 
-to BiocManager installation, which will be much slower than conda installation. 
+I also changed the R/Biocondactor package installation methods from conda installation
+to BiocManager installation, which will be much slower than conda installation.
 The reason for that is because lots of package in conda is malfunction. By using
 BiocManager to avoid the dependece issues.
-
-
 
 ## Pipeline summary
 
@@ -51,17 +49,23 @@ BiocManager to avoid the dependece issues.
     5. Generate gene-body meta-profile from bigWig files ([`deepTools`](https://deeptools.readthedocs.io/en/develop/content/tools/plotProfile.html))
     6. Calculate genome-wide IP enrichment relative to control ([`deepTools`](https://deeptools.readthedocs.io/en/develop/content/tools/plotFingerprint.html))
     7. Calculate strand cross-correlation peak and ChIP-seq quality measures including NSC and RSC ([`phantompeakqualtools`](https://github.com/kundajelab/phantompeakqualtools))
-    8. Call broad/narrow peaks ([`MACS2`](https://github.com/taoliu/MACS))
-    9. Annotate peaks relative to gene features ([`HOMER`](http://homer.ucsd.edu/homer/download.html))
-    10. Create consensus peakset across all samples and create tabular file to aid in the filtering of the data ([`BEDTools`](https://github.com/arq5x/bedtools2/))
-    11. Count reads in consensus peaks ([`featureCounts`](http://bioinf.wehi.edu.au/featureCounts/))
-    12. Differential binding analysis, PCA and clustering ([`R`](https://www.r-project.org/), [`DESeq2`](https://bioconductor.org/packages/release/bioc/html/DESeq2.html))
-6. Visualisation the tracks.
+6. Call broad/narrow peaks
+    1. By ([`MACS2`](https://github.com/taoliu/MACS))
+        1. Call Peaks
+        2. Differentail binding analysis by shell script
+            * Annotate peaks relative to gene features ([`HOMER`](http://homer.ucsd.edu/homer/download.html))
+            * Create consensus peakset across all samples and create tabular file to aid in the filtering of the data ([`BEDTools`](https://github.com/arq5x/bedtools2/))
+            * Count reads in consensus peaks ([`featureCounts`](http://bioinf.wehi.edu.au/featureCounts/))
+            * Differential binding analysis, PCA and clustering ([`R`](https://www.r-project.org/), [`DESeq2`](https://bioconductor.org/packages/release/bioc/html/DESeq2.html))
+        3. Differential binding analysis by [`DiffBind`](https://bioconductor.org/packages/DiffBind/)
+    2. By ([`HOMER`](http://homer.ucsd.edu/homer/download.html))
+        1. Call Peaks
+        2. Differential binding analysis by [`DiffBind`](https://bioconductor.org/packages/DiffBind/)
+7. Visualisation the tracks.
     1. Create IGV session file containing bigWig tracks, peaks and differential sites for data visualisation ([`IGV`](https://software.broadinstitute.org/software/igv/)).
     2. Create UCSC genome browser track hub for bigWig tracks [trackhub](https://daler.github.io/trackhub/quickstart.html).
-7. Present QC for raw read, alignment, peak-calling and differential binding results ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
-     
-
+8. Present QC for raw read, alignment, peak-calling and differential binding results ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
+9. Create index.html ([`R`](https://www.r-project.org/))
 
 ## Installation by conda
 
@@ -88,8 +92,10 @@ conda remove --name chipflow --all
 conda info --envs
 ```
 
-
 ## design table
+
+To make sure DiffBind to be run, antibody must be provided.
+The control could be empty.
 
 | group | replicate | fastq_1 | fastq_2 | antibody | control | track_color | track_group |
 |-------|-----------|---------|---------|----------|---------|-------------|-------------|
@@ -102,11 +108,10 @@ conda info --envs
 
 ## metagene analysis
 
-```
+```bash
 nextflow run jianhong/chipseq -profile test -resume --genomicElements beds/*.bed
 ```
 
 ## Get help
 
 Please create an issue to submit your questions.
-

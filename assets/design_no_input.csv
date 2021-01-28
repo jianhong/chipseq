@@ -1,0 +1,5 @@
+group,replicate,fastq_1,fastq_2,antibody,control,md5_1,md5_2
+SPT5_T0,1,https://raw.githubusercontent.com/nf-core/test-datasets/atacseq/testdata/SRR1822153_1.fastq.gz,https://raw.githubusercontent.com/nf-core/test-datasets/atacseq/testdata/SRR1822153_2.fastq.gz,h3k4me1,,f5ca8a932ed4201ee9e0399f268eaa4c,efdee0bd4b1e17a0732c4a32e706597d
+SPT5_T0,2,https://raw.githubusercontent.com/nf-core/test-datasets/atacseq/testdata/SRR1822154_1.fastq.gz,https://raw.githubusercontent.com/nf-core/test-datasets/atacseq/testdata/SRR1822154_2.fastq.gz,h3k4me1,,c78d776a9fe51a6fbfcd9f0d4ac7ae65,6a59a835e7f26ca5c8831b8a38e7aa04
+SPT5_T15,1,https://raw.githubusercontent.com/nf-core/test-datasets/atacseq/testdata/SRR1822157_1.fastq.gz,https://raw.githubusercontent.com/nf-core/test-datasets/atacseq/testdata/SRR1822157_2.fastq.gz,h3k4me1,,3e2b1e08af5e2a003983a7babced1420,7a0d540ddd5370f1583e83c537813501
+SPT5_T15,2,https://raw.githubusercontent.com/nf-core/test-datasets/atacseq/testdata/SRR1822158_1.fastq.gz,https://raw.githubusercontent.com/nf-core/test-datasets/atacseq/testdata/SRR1822158_2.fastq.gz,h3k4me1,,4d7f49bed9fa62f7e84d185ab29f276a,d23774782e11e458b6314c9f721b613b

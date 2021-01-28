@@ -62,8 +62,14 @@ SampleID <- sampleDesign$id
 Condition <- sub("^(.*)_R(\\d+)$", "\\1", sampleDesign$id)
 Replicate <- sub("^.*_R(\\d+)$", "\\1", sampleDesign$id)
 Factor <- sampleDesign$antibody
-Peakcaller <- "macs2"
-PeakFormat <- sampleDesign$peaktype
+if(!grepl(".bed$", Peaks[1])){
+  Peakcaller <- "macs2"
+  PeakFormat <- sampleDesign$peaktype
+}else{
+  Peakcaller <- "homer"
+  PeakFormat <- "bed"
+}
+
 block <- FALSE
 if(any(grepl("treatment", colnames(sampleDesign), ignore.case = TRUE))){
   Treatment <- sampleDesign[SampleID, which(grepl("treatment",
@@ -256,7 +262,13 @@ if(nrow(samples)>3){
     }
     if(length(samples$Peaks)>0){
       peaks <- mapply(samples$Peaks, samples$PeakFormat, 
-                      FUN=function(.ele, .format) toGRanges(.ele, format=.format), 
+                      FUN=function(.ele, .format) {
+                        if(.format %in% c("BED", "GFF", "GTF", "MACS", "MACS2", "MACS2.broad", "narrowPeak", "broadPeak")){
+                          toGRanges(.ele, format=.format)
+                        }else{
+                          import(.ele)
+                        }
+                      }, 
                       SIMPLIFY = FALSE)
       names(peaks) <- samples$SampleID
       peaks <- GRangesList(peaks)

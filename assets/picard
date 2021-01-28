@@ -1,0 +1,40 @@
+#!/bin/bash
+# Picard executable shell script
+set -eu -o pipefail
+
+# extract memory and system property Java arguments from the list of provided arguments
+# http://java.dzone.com/articles/better-java-shell-script
+default_jvm_mem_opts="-Xms512m -Xmx2g"
+jvm_mem_opts=""
+jvm_prop_opts=""
+pass_args=""
+for arg in "$@"; do
+    case $arg in
+        '-D'*)
+            jvm_prop_opts="$jvm_prop_opts $arg"
+            ;;
+        '-XX'*)
+            jvm_prop_opts="$jvm_prop_opts $arg"
+            ;;
+         '-Xm'*)
+            jvm_mem_opts="$jvm_mem_opts $arg"
+            ;;
+         *)
+            if [[ ${pass_args} == '' ]] #needed to avoid preceeding space on first arg e.g. ' MarkDuplicates'
+                then
+                    pass_args="$arg"
+            else
+                    pass_args="$pass_args \"$arg\"" #quotes later arguments to avoid problem with ()s in MarkDuplicates regex arg
+            fi
+            ;;
+    esac
+done
+
+if [ "$jvm_mem_opts" == "" ] && [ -z ${_JAVA_OPTIONS+x} ]; then
+    jvm_mem_opts="$default_jvm_mem_opts"
+fi
+
+export USE_LIBRARY_PATH=USE_LIBRARY_PATH
+export PICARD_CLASSPATH=/usr/share/java/picard.jar:/usr/share/java/htsjdk.jar:/usr/share/java/guava.jar:/usr/lib/jvm/default-java/lib/tools.jar:/usr/share/java/commons-lang3.jar:/usr/share/java/gkl.jar:/usr/share/java/gatk-native-bindings.jar:/usr/share/java/barclay.jar
+
+eval java $jvm_mem_opts $jvm_prop_opts -cp $PICARD_CLASSPATH picard.cmdline.PicardCommandLine $pass_args

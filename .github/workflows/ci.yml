@@ -11,8 +11,8 @@ on:
 jobs:
   test:
     name: Run workflow tests
-    # Only run on push if this is the nf-core dev branch (merged PRs)
-    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/chipseq') }}
+    # Only run on push if this is the dev branch (merged PRs)
+    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'jianhong/chipseq') }}
     runs-on: ubuntu-latest
     env:
       NXF_VER: ${{ matrix.nxf_ver }}
@@ -26,23 +26,23 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check if Dockerfile or Conda environment changed
-        uses: technote-space/get-diff-action@v1
+        uses: technote-space/get-diff-action@v4
         with:
-          PREFIX_FILTER: |
+          FILES: |
             Dockerfile
-            environment.yml
 
       - name: Build new docker image
-        if: env.GIT_DIFF
-        run: docker build --no-cache . -t nfcore/chipseq:dev
+        if: env.MATCHED_FILES
+        run: docker build --no-cache . -t jianhong/chipseq:dev
 
       - name: Pull docker image
-        if: ${{ !env.GIT_DIFF }}
+        if: ${{ !env.MATCHED_FILES }}
         run: |
-          docker pull nfcore/chipseq:dev
-          docker tag nfcore/chipseq:dev nfcore/chipseq:dev
+          docker pull jianhong/chipseq:dev
 
       - name: Install Nextflow
+        env:
+          CAPSULE_LOG: none
         run: |
           wget -qO- get.nextflow.io | bash
           sudo mv nextflow /usr/local/bin/
@@ -50,10 +50,14 @@ jobs:
       - name: Run pipeline with test data
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker
+          
+      - name: Run pipeline with no control data
+        run: |
+          nextflow run ${GITHUB_WORKSPACE} -profile test_no_input,docker
 
   parameters:
     name: Test workflow parameters
-    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'nf-core/chipseq') }}
+    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'jianhong/chipseq') }}
     runs-on: ubuntu-latest
     env:
       NXF_VER: '20.07.1'
@@ -66,21 +70,19 @@ jobs:
         uses: actions/checkout@v2
 
       - name: Check if Dockerfile or Conda environment changed
-        uses: technote-space/get-diff-action@v1
+        uses: technote-space/get-diff-action@v4
         with:
-          PREFIX_FILTER: |
+          FILES: |
             Dockerfile
-            environment.yml
 
       - name: Build new docker image
         if: env.GIT_DIFF
-        run: docker build --no-cache . -t nfcore/chipseq:dev
+        run: docker build --no-cache . -t jianhong/chipseq:dev
 
       - name: Pull docker image
         if: ${{ !env.GIT_DIFF }}
         run: |
           docker pull nfcore/chipseq:dev
-          docker tag nfcore/chipseq:dev nfcore/chipseq:dev
 
       - name: Install Nextflow
         run: |

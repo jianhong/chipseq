@@ -8,6 +8,10 @@
  https://github.com/jianhong/chipseq
 ----------------------------------------------------------------------------------------
 */
+if( !nextflow.version.matches('20.04+') ) {
+    println "This workflow requires Nextflow version 20.04 or greater -- You are running version $nextflow.version"
+    exit 1
+}
 
 nextflow.enable.dsl = 2
 
@@ -17,7 +21,7 @@ nextflow.enable.dsl = 2
 if (params.help) {
     def command = "nextflow run jianhong/chipseq -r dev --input design.csv --genome GRCh37 -profile docker"
     log.info Headers.nf_core(workflow, params.monochrome_logs)
-    log.info Schema.params_help("$baseDir/nextflow_schema.json", command)
+    log.info Schema.params_help("$projectDir/nextflow_schema.json", command)
     exit 0
 }
 
@@ -42,7 +46,7 @@ params.macs_gsize = params.genome ? params.genomes[ params.genome ].macs_gsize ?
 params.deep_gsize = params.genome ? params.genomes[ params.genome ].deep_gsize ?: false : false
 params.blacklist = params.genome ? params.genomes[ params.genome ].blacklist ?: false : false
 anno_readme = params.genome ? params.genomes[ params.genome ].readme ?: false : false
-params.species = params.genome ? params.genomes[ params.genome ].species ?: params.genome : false
+params.species = params.genome ? params.genomes[ params.genome ].species ?: params.genome : params.species?:false
 
 ////////////////////////////////////////////////////
 /* --          VALIDATE INPUTS                 -- */
@@ -93,30 +97,30 @@ Checks.macs2_warn(params, log)         // Show a big warning message if we're no
 /*
  * Stage config files
  */
-ch_multiqc_config = file("$baseDir/assets/multiqc_config.yaml", checkIfExists: true)
+ch_multiqc_config = file("$projectDir/assets/multiqc_config.yaml", checkIfExists: true)
 ch_multiqc_custom_config = params.multiqc_config ? Channel.fromPath(params.multiqc_config, checkIfExists: true) : Channel.empty()
-ch_output_docs = file("$baseDir/docs/output.md", checkIfExists: true)
-ch_output_docs_images = file("$baseDir/docs/images/", checkIfExists: true)
+ch_output_docs = file("$projectDir/docs/output.md", checkIfExists: true)
+ch_output_docs_images = file("$projectDir/docs/images/", checkIfExists: true)
 
 // JSON files required by BAMTools for alignment filtering
 ch_bamtools_filter_se_config = file(params.bamtools_filter_se_config, checkIfExists: true)
 ch_bamtools_filter_pe_config = file(params.bamtools_filter_pe_config, checkIfExists: true)
 
 // Header files for MultiQC
-ch_spp_nsc_header = file("$baseDir/assets/multiqc/spp_nsc_header.txt", checkIfExists: true)
-ch_spp_rsc_header = file("$baseDir/assets/multiqc/spp_rsc_header.txt", checkIfExists: true)
-ch_spp_correlation_header = file("$baseDir/assets/multiqc/spp_correlation_header.txt", checkIfExists: true)
-ch_peak_count_header = file("$baseDir/assets/multiqc/peak_count_header.txt", checkIfExists: true)
-ch_frip_score_header = file("$baseDir/assets/multiqc/frip_score_header.txt", checkIfExists: true)
-ch_peak_annotation_header = file("$baseDir/assets/multiqc/peak_annotation_header.txt", checkIfExists: true)
-ch_deseq2_pca_header = file("$baseDir/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
-ch_deseq2_clustering_header = file("$baseDir/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
+ch_spp_nsc_header = file("$projectDir/assets/multiqc/spp_nsc_header.txt", checkIfExists: true)
+ch_spp_rsc_header = file("$projectDir/assets/multiqc/spp_rsc_header.txt", checkIfExists: true)
+ch_spp_correlation_header = file("$projectDir/assets/multiqc/spp_correlation_header.txt", checkIfExists: true)
+ch_peak_count_header = file("$projectDir/assets/multiqc/peak_count_header.txt", checkIfExists: true)
+ch_frip_score_header = file("$projectDir/assets/multiqc/frip_score_header.txt", checkIfExists: true)
+ch_peak_annotation_header = file("$projectDir/assets/multiqc/peak_annotation_header.txt", checkIfExists: true)
+ch_deseq2_pca_header = file("$projectDir/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
+ch_deseq2_clustering_header = file("$projectDir/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
 
 // deepTools genomic elements bed files
 ch_genomic_elements_bed = params.genomicElements? Channel.fromPath(params.genomicElements, checkIfExists: true) : Channel.empty()
 
 // index.Rmd
-ch_index_docs = file("$baseDir/docs/index.Rmd", checkIfExists: true)
+ch_index_docs = file("$projectDir/docs/index.Rmd", checkIfExists: true)
 
 ////////////////////////////////////////////////////
 /* --          PARAMETER SUMMARY               -- */
@@ -163,7 +167,10 @@ include { JO_METAGENE_ANALYSIS                } from './modules/local/subworkflo
 include { JO_CHECKSUMS                        } from './modules/local/process/checksum/checksum'
 include { JO_TRACKHUB                         } from './modules/local/process/ucsc_track/ucsc_track'
 include { JO_INDEX                            } from './modules/local/process/create_index/create_index'
-include { JO_DIFFBIND                         } from './modules/local/process/diffbind/diffbind'
+include { JO_DIFFBIND as JO_DIFFBIND_HOMER
+          JO_DIFFBIND as JO_DIFFBIND_WITHOUT_CONTROL
+          JO_DIFFBIND as JO_DIFFBIND_HOMER_WITHOUT_CONTROL
+          JO_DIFFBIND                         } from './modules/local/process/diffbind/diffbind'
 
 ////////////////////////////////////////////////////
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
@@ -188,6 +195,8 @@ include { SUBREAD_FEATURECOUNTS         } from './modules/nf-core/software/subre
 include { FASTQC_TRIMGALORE             } from './modules/nf-core/subworkflow/fastqc_trimgalore'
 include { MAP_BWA_MEM                   } from './modules/nf-core/subworkflow/map_bwa_mem'
 include { MARK_DUPLICATES_PICARD        } from './modules/nf-core/subworkflow/mark_duplicates_picard'
+include { HOMER_CALLPEAK as HOMER_CALLPEAK_WITHOUT_CONTROL
+          HOMER_CALLPEAK                } from './modules/nf-core/subworkflow/findpeak_homer'
 
 ////////////////////////////////////////////////////
 /* --           RUN MAIN WORKFLOW              -- */
@@ -317,6 +326,7 @@ workflow {
     )
     ch_software_versions = ch_software_versions.mix(PHANTOMPEAKQUALTOOLS.out.version.first().ifEmpty(null))
 
+    params.modules['multiqc_custom_phantompeakqualtools'].publish_dir += "/$run_name/multiqc_data"
     MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS (
         PHANTOMPEAKQUALTOOLS.out.spp.join(PHANTOMPEAKQUALTOOLS.out.rdata, by: [0]),
         ch_spp_nsc_header,
@@ -411,15 +421,30 @@ workflow {
         params.modules['macs2_callpeak'].args += " $pileup $fdr $pvalue"
 
         // call peaks without input
-        def callpeak_without_input = params.modules['macs2_callpeak']
-        callpeak_without_input.publish_dir += "/macs2_without_control"
         BAM_CLEAN.out.bam.map{ meta, bam -> [meta, bam, []]}
                          .set{ch_ip_bam_no_ctl}
 
         MACS2_CALLPEAK_WITHOUT_CONTROL (
             ch_ip_bam_no_ctl,
             params.macs_gsize,
-            callpeak_without_input
+            params.modules['macs2_callpeak_without_control']
+        )
+        
+        BAM_CLEAN.out.bam
+            .join(MACS2_CALLPEAK_WITHOUT_CONTROL.out.peak, by: [0])
+            .set { ch_ip_peak_no_control }
+        ch_ip_peak_no_control
+            .map{meta, bam, peak -> [meta.antibody, meta]}
+            .groupTuple()
+            .join(ch_ip_peak_no_control.map{[it[0].antibody, it[1]]}.groupTuple()
+                    .join(ch_ip_peak_no_control.map{[it[0].antibody, it[2]]}.groupTuple()))
+            .map{[it[1], it[2], it[3]]}
+            .set{ch_diffbind_without_control}
+        JO_DIFFBIND_WITHOUT_CONTROL (
+            ch_diffbind_without_control,
+            ch_gtf,
+            ch_blacklist.ifEmpty([]),
+            params.modules['jo_diffbind_macs2_without_control']
         )
         
         // Create channel: [ val(meta), ip_bam, control_bam ]
@@ -447,6 +472,8 @@ workflow {
             .join(FRIP_SCORE.out.txt, by: [0])
             .map { it -> [ it[0], it[2], it[3] ] }
             .set { ch_ip_peak_frip }
+            
+        params.modules['multiqc_custom_peaks'].publish_dir += "/$run_name/multiqc_data" 
         MULTIQC_CUSTOM_PEAKS (
             ch_ip_peak_frip,
             ch_peak_count_header,
@@ -464,7 +491,8 @@ workflow {
             MACS2_CALLPEAK.out.peak,
             ch_fasta,
             ch_gtf,
-            params.modules['homer_annotatepeaks_macs2']
+            params.modules['homer_annotatepeaks_macs2'],
+            false
         )
         ch_software_versions = ch_software_versions.mix(HOMER_ANNOTATEPEAKS_MACS2.out.version.first().ifEmpty(null))
 
@@ -510,7 +538,8 @@ workflow {
             MACS2_CONSENSUS.out.bed,
             ch_fasta,
             ch_gtf,
-            params.modules['homer_annotatepeaks_consensus']
+            params.modules['homer_annotatepeaks_consensus'],
+            false
         )
         // cut -f2- ${prefix}.annotatePeaks.txt | awk 'NR==1; NR > 1 {print \$0 | "sort -T '.' -k1,1 -k2,2n"}' | cut -f6- > tmp.txt
         // paste $bool tmp.txt > ${prefix}.boolean.annotatePeaks.txt
@@ -538,7 +567,7 @@ workflow {
                     [ fmeta, it[2], it[5] ] }
             .set { ch_ip_bam }
         
-        ch_ip_bam.view()
+        //ch_ip_bam.view()
 
         params.modules['subread_featurecounts'].publish_dir += "/consensus"
         SUBREAD_FEATURECOUNTS (
@@ -551,8 +580,8 @@ workflow {
         // DESEQ2_FEATURECOUNTS (
         //     params.modules['deseq2_featurecounts']
         // )
-        // ch_deseq2_pca_header = file("$baseDir/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
-        // ch_deseq2_clustering_header = file("$baseDir/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
+        // ch_deseq2_pca_header = file("$projectDir/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
+        // ch_deseq2_clustering_header = file("$projectDir/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
 
         ch_ip_peak
             .map{meta, bam, peak -> [meta.antibody, meta]}
@@ -566,10 +595,83 @@ workflow {
             ch_diffbind,
             ch_gtf,
             ch_blacklist.ifEmpty([]),
-            params.modules['jo_diffbind']
+            params.modules['jo_diffbind_macs2']
         )
     }
 
+    if(params.homer){
+        /*
+         * Call peaks
+         */
+        // call peaks without input
+        BAM_CLEAN.out.bam.map{ meta, bam -> [meta, bam, []]}
+                         .set{ch_ip_bam_no_ctl_homer}
+
+        HOMER_CALLPEAK_WITHOUT_CONTROL (
+            ch_ip_bam_no_ctl_homer,
+            ch_fasta,
+            ch_gtf,
+            params.modules['homer_maketagdirecotry'],
+            params.modules['homer_findpeaks'],
+            params.modules['homer_annotatepeaks'],
+            params.modules['homer_pos2bed'],
+            [publish_dir:"peaks_without_control"]
+        )
+        BAM_CLEAN.out.bam
+            .join(HOMER_CALLPEAK_WITHOUT_CONTROL.out.bed, by: [0])
+            .set { ch_ip_peak_homer_no_control }
+        ch_ip_peak_homer_no_control
+            .map{meta, bam, peak -> [meta.antibody, meta]}
+            .groupTuple()
+            .join(ch_ip_peak_homer_no_control.map{[it[0].antibody, it[1]]}.groupTuple()
+                    .join(ch_ip_peak_homer_no_control.map{[it[0].antibody, it[2]]}.groupTuple()))
+            .map{[it[1], it[2], it[3]]}
+            .set{ch_diffbind_homer_without_control}
+        JO_DIFFBIND_HOMER_WITHOUT_CONTROL (
+            ch_diffbind_homer_without_control,
+            ch_gtf,
+            ch_blacklist.ifEmpty([]),
+            params.modules['jo_diffbind_homer_without_control']
+        )
+        
+        // Create channel: [ val(meta), ip_bam, control_bam ]
+        ch_ip_control_bam_bai
+            .map { meta, bams, bais -> [ meta , bams[0], bams[1] ] }
+            .set { ch_ip_control_bam_homer }
+            
+        HOMER_CALLPEAK (
+            ch_ip_control_bam_homer,
+            ch_fasta,
+            ch_gtf,
+            params.modules['homer_maketagdirecotry'],
+            params.modules['homer_findpeaks'],
+            params.modules['homer_annotatepeaks'],
+            params.modules['homer_pos2bed'],
+            [publish_dir:"peaks_with_control"]
+        )
+        
+        ch_ip_control_bam_homer
+            .map { it -> [it[0].id, it[0], it[1]]}
+            .join(HOMER_CALLPEAK.out.bed.map{[it[0].id, it[0], it[1]]}, by: [0])
+            .map { it -> [ it[1], it[2], it[4] ] }
+            .set { ch_ip_peak_homer }
+
+        ch_ip_peak_homer
+            .map{meta, bam, peak -> [meta.antibody, meta]}
+            .groupTuple()
+            .join(ch_ip_peak_homer.map{[it[0].antibody, it[1]]}.groupTuple()
+                    .join(ch_ip_peak_homer.map{[it[0].antibody, it[2]]}.groupTuple()))
+            .map{[it[1], it[2], it[3]]}
+            .set{ch_diffbind_homer}
+        
+        JO_DIFFBIND_HOMER (
+            ch_diffbind_homer,
+            ch_gtf,
+            ch_blacklist.ifEmpty([]),
+            params.modules['jo_diffbind_homer']
+        )
+    
+    }
     /*
      * Create IGV session
      */
@@ -588,18 +690,25 @@ workflow {
      * Create ucsc trackhub
      */
    
-   JO_METAGENE_ANALYSIS.out.bw.collect()
-        .concat(UCSC_BEDRAPHTOBIGWIG.out.bigwig.collect(), 
-                MACS2_CALLPEAK.out.peak.collect(),
-                MACS2_CONSENSUS.out.bed.collect())
+   JO_METAGENE_ANALYSIS.out.bw.collect().ifEmpty([])
+        .concat(UCSC_BEDRAPHTOBIGWIG.out.bigwig.collect().ifEmpty([]), 
+                MACS2_CALLPEAK.out.peak.collect().ifEmpty([]),
+                MACS2_CONSENSUS.out.bed.collect().ifEmpty([]),
+                HOMER_CALLPEAK.out.bed.collect().ifEmpty([]))
+        .map{ele ->
+            bw = [Collection, Object[]].any{ it.isAssignableFrom(ele[1].getClass()) } ? ele[1][0] : ele[1]
+            [ele[0].id, bw]}
+        .flatten()
+        .collate(2)
         .set{ch_trackhub}
-   ch_trackhub.map{[it[0].id]}.collect().set{ch_trackhub_name}
+   ch_trackhub.map{[it[0]]}.collect().set{ch_trackhub_name}
    ch_trackhub.map{[it[1]]}.collect().set{ch_trackhub_track}
-   
+
    JO_TRACKHUB(
         ch_trackhub_name,
         ch_trackhub_track,
         ch_input,
+        GET_CHROM_SIZES.out.sizes,
         params.modules['jo_trackhub']
    )
 
@@ -683,7 +792,7 @@ workflow {
 
 workflow.onComplete {
     def multiqc_report = []
-    Completion.email(workflow, params, summary, run_name, baseDir, multiqc_report, log)
+    Completion.email(workflow, params, summary, run_name, projectDir, multiqc_report, log)
     Completion.summary(workflow, params, log)
 }
 

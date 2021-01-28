@@ -44,7 +44,7 @@ def check_samplesheet(file_in, file_out):
     
     PEAKTYPES = {'narrowPeak':['h2afz', 'h3ac', 'h3k4me2', 'h3k4me3',
                                'h3k9ac', 'h3k27ac'], 
-                 'broadPeak':['h2afz', "h3f3a", 'h3k4me1', 
+                 'broadPeak':["h3f3a", 'h3k4me1', 
                               'h3k9me1', 'h3k9me2', 'h3k9me3', 'h3k14ac', 
                               'h4k20me1', 'h3k27me3', 'h3k36me3', 
                               'h3k79me2', 'h3k79me3']}
@@ -117,8 +117,8 @@ def check_samplesheet(file_in, file_out):
             if antibody:
                 if antibody.find(' ') != -1:
                     print_error("Antibody id contains spaces!", line)
-                if not control:
-                    print_error("Both antibody and control columns must be specified!", 'Line', line)
+                #if not control:
+                #    print_error("Both antibody and control columns must be specified!", 'Line', line)
             if control:
                 if control.find(' ') != -1:
                     print_error("Control id contains spaces!", line)
@@ -126,6 +126,8 @@ def check_samplesheet(file_in, file_out):
                     print_error("Both antibody and control columns must be specified!", 'Line', line)
             if antibody and control:
                 antibody_dict[sample] = (antibody,control)
+            else:
+                antibody_dict[sample] = (antibody,"")
 
             ## Auto-detect paired-end/single-end
             sample_info = []  ## [single_end, fastq_1, fastq_2]
@@ -148,8 +150,8 @@ def check_samplesheet(file_in, file_out):
                     sample_run_dict[sample][replicate].append(sample_info)
 
     ## Check if antibody and control columns have been specified at least once
-    if len(antibody_dict) == 0:
-        print_error("Antibody and control must be specified at least once!", '', '')
+    #if len(antibody_dict) == 0:
+    #    print_error("Antibody and control must be specified at least once!", '', '')
 
     ## Write validated samplesheet with appropriate columns
     antibody_group_dict = {}
@@ -185,7 +187,7 @@ def check_samplesheet(file_in, file_out):
                                     control_id = "{}_R{}".format(control,replicate)
                                 oList += [antibody, control_id]
                             else:
-                                print_error("Control id not a valid group: {}!".format(control), 'Valid Groups', sorted(sample_run_dict.keys()))
+                                oList += [antibody, '']
                         else:
                             oList += 2 * ['']
                         fout.write(','.join(oList) + '\n')

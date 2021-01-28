@@ -3,8 +3,8 @@
 # picard-tools, fastQC, bedtools, cutadapt, R, multiqc
 # images
 # Based on Ubuntu
-#  $ cd MintChIP
-#  $ VERSION=0.0.1
+#  $ cd chipseq
+#  $ VERSION=master
 #  $ docker build -t jianhong/chipseq:$VERSION .  ## --no-cache
 #  $ docker images jianhong/chipseq:$VERSION
 #  $ docker push jianhong/chipseq:$VERSION
@@ -25,10 +25,12 @@ ENV DEBIAN_FRONTEND="noninteractive" TZ="America/New_York"
 # Install software from source
 RUN cd ~ && \
     apt-get update --fix-missing && \
-    apt-get install --yes rsync wget bzip2 gcc libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools && \
+    apt-get install --yes rsync wget bzip2 gcc libssl-dev libxml2-dev libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev librsvg2-dev libv8-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools subread && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN ln -s python3 /usr/bin/python
+RUN wget https://raw.githubusercontent.com/jianhong/chipseq/master/assets/picard -P /usr/bin/ && \
+    chmod +x /usr/bin/picard
 
 #RUN cd ~ && \
 #    wget https://github.com/samtools/samtools/releases/download/1.11/samtools-1.11.tar.bz2 && \
@@ -51,7 +53,7 @@ RUN ln -s python3 /usr/bin/python
 #    make && make install && \
 #    cd ../.. && rm -rf v2.5.1.tar.gz && rm -rf bamtools-2.5.1
 
-RUN pip install pysam deeptools MACS2 cutadapt
+RUN pip install pysam deeptools MACS2 cutadapt pymdown-extensions trackhub
 
 RUN mkdir /homer && cd /homer && \
     wget http://homer.ucsd.edu/homer/configureHomer.pl && \
@@ -76,10 +78,12 @@ RUN Rscript -e "install.packages('BiocManager')"
 RUN Rscript -e 'BiocManager::install(c("optparse", "rjson", "DiffBind", "ChIPpeakAnno", \
                 "rtracklayer", "ggplot2", "GenomicFeatures", "DESeq2", "vsn", \
                 "RColorBrewer", "pheatmap", "lattice", "BiocParallel", \
-                "reshape2", "scales", "UpSetR", "caTools"))'
+                "reshape2", "scales", "UpSetR", "caTools", \
+                "rmarkdown", "DT"))'
 
 # Instruct R processes to use these empty files instead of clashing with a local version
 RUN touch .Rprofile
 RUN touch .Renviron
 
 WORKDIR /work
+ENV JAVA_HOME="/usr"

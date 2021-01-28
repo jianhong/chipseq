@@ -3,7 +3,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 
 def VERSION = '4.11'
 
-process HOMER_ANNOTATEPEAKS {
+process HOMER_POS2BED {
     tag "$meta.id"
     label 'process_medium'
     publishDir "${params.outdir}/${meta.peaktype}",
@@ -17,27 +17,18 @@ process HOMER_ANNOTATEPEAKS {
 
     input:
     tuple val(meta), path(peak)
-    path fasta
-    path gtf
     val options
     val subfolder
 
     output:
-    tuple val(meta), path("*annotatePeaks.txt"), emit: txt
+    tuple val(meta), path("${meta.id}_homer_${meta.peaktype}.bed"), emit: bed
     path "*.version.txt", emit: version
 
     script:
     def software = getSoftwareName(task.process)
     def ioptions = initOptions(options)
-    def prefix   = ioptions.suffix ? "${meta.id}${ioptions.suffix}" : "${meta.id}"
     """
-    annotatePeaks.pl \\
-        $peak \\
-        $fasta \\
-        $ioptions.args \\
-        -gtf $gtf \\
-        -cpu $task.cpus \\
-        > ${prefix}.annotatePeaks.txt
+    pos2bed.pl ${peak} -o ${meta.id}_homer_${meta.peaktype}.bed -track ${meta.id}
 
     echo $VERSION > ${software}.version.txt
     """

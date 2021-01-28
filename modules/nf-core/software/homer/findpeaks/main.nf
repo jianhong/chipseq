@@ -3,7 +3,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 
 def VERSION = '4.11'
 
-process HOMER_ANNOTATEPEAKS {
+process HOMER_FINDPEAKS {
     tag "$meta.id"
     label 'process_medium'
     publishDir "${params.outdir}/${meta.peaktype}",
@@ -16,28 +16,21 @@ process HOMER_ANNOTATEPEAKS {
     conda (params.conda ? "${params.conda_softwares.homer}" : null)
 
     input:
-    tuple val(meta), path(peak)
-    path fasta
-    path gtf
+    tuple val(meta), path(tagdir), path(controltagdir)
     val options
     val subfolder
 
     output:
-    tuple val(meta), path("*annotatePeaks.txt"), emit: txt
+    tuple val(meta), path("${meta.id}_homer_${meta.peaktype}.txt"), emit: peak
     path "*.version.txt", emit: version
 
     script:
     def software = getSoftwareName(task.process)
     def ioptions = initOptions(options)
-    def prefix   = ioptions.suffix ? "${meta.id}${ioptions.suffix}" : "${meta.id}"
+    def args     = ioptions.args[meta.antibody]?:meta.peaktype == "narrowPeak"?"-style factor":"-style histone"
+    def control  = controltagdir.isDirectory() ? "-i $controltagdir" : ""
     """
-    annotatePeaks.pl \\
-        $peak \\
-        $fasta \\
-        $ioptions.args \\
-        -gtf $gtf \\
-        -cpu $task.cpus \\
-        > ${prefix}.annotatePeaks.txt
+    findPeaks ${tagdir} ${args} $control -o ${meta.id}_homer_${meta.peaktype}.txt
 
     echo $VERSION > ${software}.version.txt
     """
