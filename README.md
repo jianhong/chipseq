@@ -86,6 +86,9 @@ conda info --envs
 
 ## design table
 
+To make sure DiffBind to be run, antibody must be provided. 
+The control could be empty.
+
 | group | replicate | fastq_1 | fastq_2 | antibody | control | track_color | track_group |
 |-------|-----------|---------|---------|----------|---------|-------------|-------------|
 | WT | 1 | fastq/WT1.fastq.gz| | ANT1 | Input | #E69F00 | SAMPLE |

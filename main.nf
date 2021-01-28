@@ -326,6 +326,7 @@ workflow {
     )
     ch_software_versions = ch_software_versions.mix(PHANTOMPEAKQUALTOOLS.out.version.first().ifEmpty(null))
 
+    params.modules['multiqc_custom_phantompeakqualtools'].publish_dir += "/$run_name/multiqc_data"
     MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS (
         PHANTOMPEAKQUALTOOLS.out.spp.join(PHANTOMPEAKQUALTOOLS.out.rdata, by: [0]),
         ch_spp_nsc_header,
@@ -471,6 +472,8 @@ workflow {
             .join(FRIP_SCORE.out.txt, by: [0])
             .map { it -> [ it[0], it[2], it[3] ] }
             .set { ch_ip_peak_frip }
+            
+        params.modules['multiqc_custom_peaks'].publish_dir += "/$run_name/multiqc_data" 
         MULTIQC_CUSTOM_PEAKS (
             ch_ip_peak_frip,
             ch_peak_count_header,
@@ -687,15 +690,18 @@ workflow {
      * Create ucsc trackhub
      */
    
-   JO_METAGENE_ANALYSIS.out.bw.map{[it[0], it[1]]}.collect().ifEmpty([])
-        .concat(UCSC_BEDRAPHTOBIGWIG.out.bigwig.map{[it[0], it[1]]}.collect().ifEmpty([]), 
-                MACS2_CALLPEAK.out.peak.map{[it[0], it[1]]}.collect().ifEmpty([]),
-                MACS2_CONSENSUS.out.bed.map{[it[0], it[1]]}.collect().ifEmpty([]),
-                HOMER_CALLPEAK.out.bed.map{[it[0], it[1]]}.collect().ifEmpty([]))
+   JO_METAGENE_ANALYSIS.out.bw.collect().ifEmpty([])
+        .concat(UCSC_BEDRAPHTOBIGWIG.out.bigwig.collect().ifEmpty([]), 
+                MACS2_CALLPEAK.out.peak.collect().ifEmpty([]),
+                MACS2_CONSENSUS.out.bed.collect().ifEmpty([]),
+                HOMER_CALLPEAK.out.bed.collect().ifEmpty([]))
+        .map{ele ->
+            bw = [Collection, Object[]].any{ it.isAssignableFrom(ele[1].getClass()) } ? ele[1][0] : ele[1]
+            [ele[0].id, bw]}
         .flatten()
         .collate(2)
         .set{ch_trackhub}
-   ch_trackhub.map{[it[0].id]}.collect().set{ch_trackhub_name}
+   ch_trackhub.map{[it[0]]}.collect().set{ch_trackhub_name}
    ch_trackhub.map{[it[1]]}.collect().set{ch_trackhub_track}
 
    JO_TRACKHUB(

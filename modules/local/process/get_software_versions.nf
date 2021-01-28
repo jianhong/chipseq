@@ -21,6 +21,9 @@ process GET_SOFTWARE_VERSIONS {
     """
     echo $workflow.manifest.version > pipeline.version.txt
     echo $workflow.nextflow.version > nextflow.version.txt
+    echo $workflow.manifest.name > pipelinename.version.txt
+    echo $workflow.manifest.homePage > pipelienurl.version.txt
+    
     scrape_software_versions.py &> software_versions_mqc.yaml
     """
 }
