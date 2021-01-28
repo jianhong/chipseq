@@ -690,11 +690,11 @@ workflow {
      * Create ucsc trackhub
      */
    
-   JO_METAGENE_ANALYSIS.out.bw.collect().ifEmpty([])
-        .concat(UCSC_BEDRAPHTOBIGWIG.out.bigwig.collect().ifEmpty([]), 
-                MACS2_CALLPEAK.out.peak.collect().ifEmpty([]),
-                MACS2_CONSENSUS.out.bed.collect().ifEmpty([]),
-                HOMER_CALLPEAK.out.bed.collect().ifEmpty([]))
+   JO_METAGENE_ANALYSIS.out.bw.collect()
+        .concat(UCSC_BEDRAPHTOBIGWIG.out.bigwig.collect(), 
+                MACS2_CALLPEAK.out.peak.collect(),
+                MACS2_CONSENSUS.out.bed.collect(),
+                HOMER_CALLPEAK.out.bed.collect())
         .map{ele ->
             bw = [Collection, Object[]].any{ it.isAssignableFrom(ele[1].getClass()) } ? ele[1][0] : ele[1]
             [ele[0].id, bw]}
