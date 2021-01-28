@@ -49,15 +49,23 @@ BiocManager to avoid the dependece issues.
     5. Generate gene-body meta-profile from bigWig files ([`deepTools`](https://deeptools.readthedocs.io/en/develop/content/tools/plotProfile.html))
     6. Calculate genome-wide IP enrichment relative to control ([`deepTools`](https://deeptools.readthedocs.io/en/develop/content/tools/plotFingerprint.html))
     7. Calculate strand cross-correlation peak and ChIP-seq quality measures including NSC and RSC ([`phantompeakqualtools`](https://github.com/kundajelab/phantompeakqualtools))
-    8. Call broad/narrow peaks ([`MACS2`](https://github.com/taoliu/MACS))
-    9. Annotate peaks relative to gene features ([`HOMER`](http://homer.ucsd.edu/homer/download.html))
-    10. Create consensus peakset across all samples and create tabular file to aid in the filtering of the data ([`BEDTools`](https://github.com/arq5x/bedtools2/))
-    11. Count reads in consensus peaks ([`featureCounts`](http://bioinf.wehi.edu.au/featureCounts/))
-    12. Differential binding analysis, PCA and clustering ([`R`](https://www.r-project.org/), [`DESeq2`](https://bioconductor.org/packages/release/bioc/html/DESeq2.html))
-6. Visualisation the tracks.
+6. Call broad/narrow peaks
+    1. By ([`MACS2`](https://github.com/taoliu/MACS))
+        1. Call Peaks
+        2. Differentail binding analysis by shell script
+            * Annotate peaks relative to gene features ([`HOMER`](http://homer.ucsd.edu/homer/download.html))
+            * Create consensus peakset across all samples and create tabular file to aid in the filtering of the data ([`BEDTools`](https://github.com/arq5x/bedtools2/))
+            * Count reads in consensus peaks ([`featureCounts`](http://bioinf.wehi.edu.au/featureCounts/))
+            * Differential binding analysis, PCA and clustering ([`R`](https://www.r-project.org/), [`DESeq2`](https://bioconductor.org/packages/release/bioc/html/DESeq2.html))
+        3. Differential binding analysis by [`DiffBind`](https://bioconductor.org/packages/DiffBind/)
+    2. By ([`HOMER`](http://homer.ucsd.edu/homer/download.html))
+        1. Call Peaks
+        2. Differential binding analysis by [`DiffBind`](https://bioconductor.org/packages/DiffBind/)
+7. Visualisation the tracks.
     1. Create IGV session file containing bigWig tracks, peaks and differential sites for data visualisation ([`IGV`](https://software.broadinstitute.org/software/igv/)).
     2. Create UCSC genome browser track hub for bigWig tracks [trackhub](https://daler.github.io/trackhub/quickstart.html).
-7. Present QC for raw read, alignment, peak-calling and differential binding results ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
+8. Present QC for raw read, alignment, peak-calling and differential binding results ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
+9. Create index.html ([`R`](https://www.r-project.org/))
 
 ## Installation by conda
 
@@ -86,7 +94,7 @@ conda info --envs
 
 ## design table
 
-To make sure DiffBind to be run, antibody must be provided. 
+To make sure DiffBind to be run, antibody must be provided.
 The control could be empty.
 
 | group | replicate | fastq_1 | fastq_2 | antibody | control | track_color | track_group |

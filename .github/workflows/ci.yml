@@ -50,6 +50,10 @@ jobs:
       - name: Run pipeline with test data
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker
+          
+      - name: Run pipeline with no control data
+        run: |
+          nextflow run ${GITHUB_WORKSPACE} -profile test_no_input,docker
 
   parameters:
     name: Test workflow parameters
