@@ -50,6 +50,19 @@ jobs:
       - name: Run pipeline with test data
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker
+          mkdir docs
+          cp index.html docs/
+          mv pipeline_info docs/
+          mv multiqc docs/
+          mv igv docs/
+          mv trackhub docs/
+      
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: docs # The folder the action should deploy.
           
       - name: Run pipeline with no control data
         run: |
