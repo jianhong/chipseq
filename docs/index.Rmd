@@ -17,7 +17,7 @@ params:
 ---
 
 ```{r setup, include=FALSE, message=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 library(DT)
 library(yaml)
 library(ggplot2)
@@ -28,7 +28,9 @@ library(reshape2)
 
 This document describes the output produced by the chipseq analysis pipeline. Most of the plots are taken from the [MultiQC report](multiqc/multiqc_report.html), which summaries results at the end of the pipeline.
 
-## Experiment design
+## Pipeline overview
+
+### Pipeline parameters
 
 ```{r, results = 'asis', echo=FALSE}
 data <- yaml::yaml.load_file(params$summary)
@@ -46,78 +48,34 @@ data <- read.csv(params$design)
 datatable(data)
 ```
 
-### Pipeline Report table
-
-This table show the summary of the running status of pipeline.
-
-```{r, echo=FALSE}
-loadExecInfo <- function(exec_info, launchdir){
-  if(!grepl("^\\/", exec_info)) exec_info <- file.path(launchdir, exec_info)
-  data <- read.delim(exec_info)
-  data <- data[, c("name", "status", "exit")]
-  datatable(data) %>% formatStyle(
-    'exit',
-    backgroundColor = styleInterval(c(-Inf, 1, Inf), c('green', 'red'))
-  )
-}
-tryCatch({
-  loadExecInfo(params$exec_info, params$launchdir)
-}, error=function(e){
-  message("No data available.")
-  message(e)
-})
-
-```
 
 ### Experiment quality overview
 
 The quality control is following 
-[ENCODE standards](https://www.encodeproject.org/chip-seq/histone/#standards)
-Code for each sample:
-1. usableFragments(
-    * narrowPeak: all samples will be considered as narrowPeak samples
-        * over 20 million, PASS;
-        * over 10 million, Margin;
-        * less 10 million, Failed;
-    * broadPeak: 
-        * over 45 million, PASS;
-        * over 20 million, Margin;
-        * less 20 million, Failed),
-2. libraryComplexity:
-    * NRF: 
-      * over 0.9, PASS;
-      * over 0.5, Margin;
-      * less 0.5, Failed;
-    * PBC1: 
-      * over 0.9, PASS;
-      * over 0.5, Margin;
-      * less 0.5, Failed;
-    * PBC2: 
-      * over 10, PASS;
-      * over  1, Margin;
-      * less  1, Failed;
-3. Fraction of reads in peaks (FRiP)
-    * over 5%, PASS;
-    * over 1%, Margin;
-    * less 1%, Failed;
-4. Normalized Strand Cross-correlation coefficient (NSC)
-    * over 1.1, PASS;
-    * over 1.05, Margin;
-    * less 1.05, Failed;
-5. Relative Strand Cross-correlation coefficient (RSC)
-    * over 1, PASS;
-    * over 0.8, Margin;
-    * less 0.8, Failed;
-    
-Color code: Green, PASS; Yellow, Margin; Red, Failed; Gray, N/A;
+[ENCODE standards](https://www.encodeproject.org/chip-seq/histone/#standards).
 
 ```{r, echo=FALSE}
+peaktypes <- read.delim("peaktype_files.txt", header=FALSE)
+broadPeaks <- 
+  peaktypes[grepl("broadPeak", peaktypes[, 2], ignore.case = TRUE), 1]
+
+readTab <- function(files, cn){
+  if(length(files)>0){
+    x <- do.call(rbind, lapply(files, read.delim, comment.char="#", header=FALSE))
+    colnames(x) <- cn
+  }else{
+    x <- matrix(ncol = 2, dimnames = list(rownames="a", colnames=cn))
+    x <- x[!is.na(x[1]), , drop=FALSE]
+    mode(x) <- "numeric"
+  }
+  x
+}
 rsc_files <- dir(".", "spp_rsc_mqc.tsv", recursive = TRUE, full.names = TRUE)
-rsc <- do.call(rbind, lapply(rsc_files, read.delim, comment.char="#", header=FALSE))
-colnames(rsc) <- c("ID", "RSC")
+rsc <- readTab(rsc_files, c("ID", "RSC"))
+
 nsc_files <- dir(".", "spp_nsc_mqc.tsv", recursive = TRUE, full.names = TRUE)
-nsc <- do.call(rbind, lapply(nsc_files, read.delim, comment.char="#", header=FALSE))
-colnames(nsc) <- c("ID", "NSC")
+nsc <- readTab(nsc_files, c("ID", "NSC"))
+
 preseq_logs <- dir(".", "\\.command.log", recursive = TRUE, full.names = TRUE)
 if(length(preseq_logs)>0){
   qc <- do.call(rbind, lapply(preseq_logs, read.delim, comment.char="#", header=FALSE))
@@ -133,17 +91,20 @@ if(length(preseq_logs)>0){
 }
 
 flagstat <- dir(".", "flagstat", recursive = TRUE, full.names = TRUE)
-totalReads <- sapply(flagstat, function(.ele) {
-  .ele <- readLines(.ele)
-  .ele <- .ele[grepl("total", .ele)][1]
-  .ele <- sub("\\s+\\+.*total.*$", "", .ele)
-  as.numeric(.ele)
-})
-names(totalReads) <- sub("\\.mLb.*.flagstat", "", basename(names(totalReads)))
+if(length(flagstat)>0){
+  totalReads <- sapply(flagstat, function(.ele) {
+    .ele <- readLines(.ele)
+    .ele <- .ele[grepl("total", .ele)][1]
+    .ele <- sub("\\s+\\+.*total.*$", "", .ele)
+    as.numeric(.ele)
+  })
+  names(totalReads) <- sub("\\.mLb.*.flagstat", "", basename(names(totalReads)))
+}else{
+  totalReads <- c()
+}
 FRiP_files <-dir(".", "FRiP", recursive = TRUE, full.names = TRUE)
-FRiP <- lapply(FRiP_files, read.delim, comment.char="#", header=FALSE)
-FRiP <- do.call(rbind, FRiP)
-colnames(FRiP) <- c("ID", "FRiP")
+FRiP <- readTab(FRiP_files, c("ID", "FRiP"))
+
 rn <- sort(unique(c(rsc[, "ID"], nsc[, "ID"], 
                     rownames(qc), names(totalReads), 
                     FRiP[, "ID"])))
@@ -154,7 +115,8 @@ qc_table <- list(usableFragments=totalReads[match(rn, names(totalReads))],
                        FRiP=FRiP[match(rn, FRiP[, "ID"]), "FRiP"],
                        NSC=nsc[match(rn, nsc[, "ID"]), "NSC"],
                        RSC=rsc[match(rn, rsc[, "ID"]), "RSC"])
-breaks <- list("usableFragments"=c(0, 10000000, 20000000, Inf),
+breaks <- list("narrowPeak"=c(0, 10000000, 20000000, Inf),
+               "broadPeak"=c(0, 10000000, 20000000, Inf),
                NRF=c(0, .5, .9, Inf),
                PBC1=c(0, .5, .9, Inf),
                PBC2=c(0, 1, 10, Inf),
@@ -162,20 +124,93 @@ breaks <- list("usableFragments"=c(0, 10000000, 20000000, Inf),
                NSC=c(0, 1.05, 1.1, Inf),
                RSC=c(0, .8, 1, Inf))
 colors <- c("PASS"="green", "Margin"="yellow", "Failed"="red", "NA"="gray")
-col_tab <- mapply(function(dat, point){
-  if(length(dat)>0) cut(dat, point, labels=c("Failed", "Margin", "PASS"))
-  else dat
-}, qc_table, breaks, SIMPLIFY=FALSE)
+col_tab <- mapply(function(dat, n){
+  if(length(dat)>0){
+    if(all(is.na(dat))){
+      NULL
+    }else{
+      mode(dat) <- "numeric"
+      if(n=="usableFragments"){
+        n <- rep("narrowPeak", length(dat))
+        n[rn %in% broadPeaks] <- "broadPeak"
+        mapply(dat, breaks[n], FUN = function(.ele, .bks){
+          cut(.ele, .bks, labels=c("Failed", "Margin", "PASS"))
+        })
+      }else{
+        cut(dat, breaks[[n]], labels=c("Failed", "Margin", "PASS"))
+      }
+    }
+  }else dat
+}, qc_table, names(qc_table), SIMPLIFY=FALSE)
 col_tab <- lapply(col_tab, as.character)
 col_tab <- do.call(cbind, col_tab)
 rownames(col_tab) <- rn
 col_tab <- melt(col_tab)
 col_tab[is.na(col_tab)] <- "NA"
-ggplot(col_tab, aes(x=Var2, y=Var1, color=value)) + geom_point(size=5) + 
+ggplot(col_tab, aes(x=Var2, y=Var1, color=value)) + geom_point(size=10) + 
   scale_color_manual(values = colors) + theme_bw() + xlab("") + ylab("")
 ```
 
-## Pipeline overview
+
+Code for QC:
+
+|  Controls                | PASS     | Margin  | Failed  | N/A |
+|--------------------------|--------- |---------|---------|-----|
+|usableFragments           |          |         |         |     |
+| narrowPeak               | &gt;20M  | &gt;10M | &lt;10M |     |
+| broadPeak                | &gt;45M  | &gt;20M | &lt;20M |     |
+|libraryComplexity         |          |         |         |     |
+| NRF                      | &gt;0.9  | &gt;0.5 | &lt;0.5 |     |
+| PBC1                     | &gt;0.9  | &gt;0.5 | &lt;0.5 |     |
+| PBC2                     | &gt;10   | &gt;1   | &lt;1   |     |
+|Signals vs Noise          |          |         |         |     |
+| FRiP                     | &gt;5%   | &gt;1%  | &lt;1%  |     |
+| NSC                      | &gt;1.1  | &gt;1.05| &lt;1.05|     |
+| RSC                      | &gt;1    | &gt;0.8 | &lt;0.8 |     |
+| Color code               | Green    | Yellow  | Red     | Gray|
+
+### Plots for peaks
+
+The sample correlation is shown, if available, by Sample similarity plots of peaks
+called by MACS2 and Homer by DiffBind for the samples without control setting.
+
+`r if(file.exists("macs2DiffBind/DiffBind.sample.correlation.png")){"![MACS2 peaks for samples without control](macs2DiffBind/DiffBind.sample.correlation.png)"}`
+
+`r if(file.exists("homerDiffBind/DiffBind.sample.correlation.png")){"![Homer peaks for samples without control](homerDiffBind/DiffBind.sample.correlation.png)"}`
+
+The genomic element distribution is shown, if available, for peaks
+called MACS2 and Homer for the samples without control setting.
+
+`r if(file.exists("macs2DiffBind/genomicElementDistribuitonOfEachPeakList.png")){"![Genomic Element Distribuiton for MACS2 peaks for samples without control](macs2DiffBind/genomicElementDistribuitonOfEachPeakList.png)"}`
+
+`r if(file.exists("homerDiffBind/genomicElementDistribuitonOfEachPeakList.png")){"![Genomic Element Distribuiton for Homer peaks for samples without control](homerDiffBind/genomicElementDistribuitonOfEachPeakList.png)"}`
+
+### Pipeline Report table
+
+This table show the summary of the running status of pipeline.
+
+```{r, echo=FALSE}
+loadExecInfo <- function(exec_info, launchdir){
+  if(!grepl("^\\/", exec_info)) exec_info <- file.path(launchdir, exec_info)
+  data <- read.delim(file.path(exec_info, "execution_trace.txt"))
+  data <- data[, c("name", "status", "exit")]
+  datatable(data, options=list(order=list(list(2, 'desc')))) %>% formatStyle(
+    'status',
+    backgroundColor = styleEqual(c("CACHED", "COMPLETED", "FAILED"), c('darkgreen', 'green', 'red'))
+  )
+}
+tryCatch({
+  loadExecInfo(params$exec_info, params$launchdir)
+}, error=function(e){
+  message("No data available in ", 
+          file.path(params$launchdir, params$exec_info))
+  message(e)
+})
+
+```
+
+
+## Pipeline description
 
 The pipeline is built based on [nf-core/chipseq](https://github.com/nf-core/chipseq) using [Nextflow](https://www.nextflow.io/). See [`main README.md`](https://github.com/jianhong/chipseq) for a condensed overview of the steps in the pipeline, and the bioinformatics tools used at each step.
 
@@ -246,7 +281,7 @@ filename <- sapply(files, function(.ele) {
 filename <- gsub("svg", "png", filename)
 ```
 
-## I need a table here to replace the figures.
+## Signals vs noises
 
 Normalized strand coefficient (NSC) is the normalized ratio between the fragment-length cross-correlation peak and the background cross-correlation. NSC values range from a minimum of 1 to larger positive numbers. 1.1 is the critical threshold. Dataset with NSC values much less than 1.1 (< 1.05) tend to have low signal to noise or few peaks (this could be biological e.g. a factor that truly binds only a few sites in a particular tissue type OR it could be due to poor quality). ENCODE cut-off: **NSC > 1.05**.
 
@@ -363,6 +398,7 @@ and a UCSC Genome Browser is pointed to the served URL for viewing.
 </details>
 
 [MACS2](https://github.com/taoliu/MACS) is one of the most popular peak-calling algorithms for ChIP-seq data.  See [MACS2 outputs](https://github.com/taoliu/MACS#output-files) for a description of the output files generated by MACS2.
+
 > **NB:** If the sample name is not listed in the MACS2 total peak count plot or Homer annotatePeaks peak-to-gene feature ratio plot, the peak calling is failed in that sample.
 
 ![MultiQC - MACS2 total peak count plot](`r ifelse(file.exists("multiqc_plots/png/mqc_macs2_peak_count_plot.png"), "multiqc_plots/png/mqc_macs2_peak_count_plot.png", "images/mqc_macs2_peak_count_plot.png")`)
@@ -465,15 +501,14 @@ By default, all possible pairwise comparisons across the groups from a particula
 In this pipeline, [ChIPpeakAnno](https://bioconductor.org/packages/ChIPpeakAnno/) is used for
 peak annotation and quality control. And in downstream, DiffBind is used. [DiffBind](https://bioconductor.org/packages/DiffBind/) is a Bioconductor package to do differential binding analysis of ChIP-seq peak data.
 
-![MultiQC - DiffBind PCA plot](`r ifelse(file.exists("DiffBind/DiffBind.PCA.plot.png"), "DiffBind/DiffBind.PCA.plot.png", "images/mqc_deseq2_pca_plot.png")`)
+Here will show several figures if the DiffBind results for MACS2 peaks without 
+control are available. Otherwise, the sample figure will be listed here.
 
-![MultiQC - DiffBind sample similarity plot](`r ifelse(file.exists("DiffBind/DiffBind.sample.correlation.png"), "DiffBind/DiffBind.sample.correlation.png", "images/mqc_deseq2_sample_similarity_plot.png")`)
+![DiffBind - PCA plot](`r ifelse(file.exists("macs2DiffBind/DiffBind.PCA.plot.png"), "macs2DiffBind/DiffBind.PCA.plot.png", "images/mqc_deseq2_pca_plot.png")`)
 
-![MultiQC - Genomic Element Distribuiton of DiffBind peaks](`r ifelse(file.exists("DiffBind/genomicElementDistribuitonOfDiffBind.png"), "DiffBind/genomicElementDistribuitonOfDiffBind.png", "images/mqc_deseq2_sample_similarity_plot.png")`)
+![ChIPpeakAnno - Genomic Element Distribuiton of DiffBind peaks](`r ifelse(file.exists("macs2DiffBind/genomicElementDistribuitonOfDiffBind.png"), "macs2DiffBind/genomicElementDistribuitonOfDiffBind.png", "images/mqc_deseq2_sample_similarity_plot.png")`)
 
-![MultiQC - genomic Element Distribuiton Of all input peaks](`r ifelse(file.exists("DiffBind/genomicElementDistribuitonOfEachPeakList.png"), "DiffBind/genomicElementDistribuitonOfEachPeakList.png", "images/mqc_deseq2_sample_similarity_plot.png")`)
-
-![MultiQC - Diffbind volcano plot](`r f<-dir("DiffBind", "*Volcano.plot.png", full.names=TRUE);ifelse(length(f), f[1], "images/r_deseq2_volcano_plot.png")`)
+![DiffBind - Volcano plot](`r f<-dir("macs2DiffBind", "*Volcano.plot.png", full.names=TRUE);ifelse(length(f), f[1], "images/r_deseq2_volcano_plot.png")`)
 
 
 ## Call peaks by Homer
@@ -511,6 +546,18 @@ peak annotation and quality control. And in downstream, DiffBind is used. [DiffB
 
 </details>
 
+[ChIPpeakAnno](https://bioconductor.org/packages/ChIPpeakAnno/) is used for
+peak annotation and quality control for the output of peak calling results of Homer. And in downstream, DiffBind is used. [DiffBind](https://bioconductor.org/packages/DiffBind/) is a Bioconductor package to do differential binding analysis of ChIP-seq peak data.
+
+Here will show several figures if the DiffBind results for Homer peaks without 
+control are available. Otherwise, the sample figure will be listed here.
+
+![DiffBind - PCA plot](`r ifelse(file.exists("homerDiffBind/DiffBind.PCA.plot.png"), "homerDiffBind/DiffBind.PCA.plot.png", "images/mqc_deseq2_pca_plot.png")`)
+
+
+![ChIPpeakAnno - Genomic Element Distribuiton of DiffBind peaks](`r ifelse(file.exists("homerDiffBind/genomicElementDistribuitonOfDiffBind.png"), "homerDiffBind/genomicElementDistribuitonOfDiffBind.png", "images/mqc_deseq2_sample_similarity_plot.png")`)
+
+![DiffBind - Volcano plot](`r f<-dir("homerDiffBind", "*Volcano.plot.png", full.names=TRUE);ifelse(length(f), f[1], "images/r_deseq2_volcano_plot.png")`)
 
 ## Pipeline information
 
