@@ -12,12 +12,16 @@ params:
   design: ""
   genome: ""
   summary: ""
+  exec_info: ""
+  launchdir: ""
 ---
 
 ```{r setup, include=FALSE, message=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 library(DT)
 library(yaml)
+library(ggplot2)
+library(reshape2)
 ```
 
 # ![QiuBio nf-core/chipseq](images/chipseqlogo.png)
@@ -42,6 +46,125 @@ data <- read.csv(params$design)
 datatable(data)
 ```
 
+### Pipeline Report table
+
+This table show the summary of the running status of pipeline.
+
+```{r, echo=FALSE}
+loadExecInfo <- function(exec_info, launchdir){
+  if(!grepl("^\\/", exec_info)) exec_info <- file.path(launchdir, exec_info)
+  data <- read.delim(exec_info)
+  data <- data[, c("name", "status", "exit")]
+  datatable(data) %>% formatStyle(
+    'exit',
+    backgroundColor = styleInterval(c(-Inf, 1, Inf), c('green', 'red'))
+  )
+}
+tryCatch({
+  loadExecInfo(exec_info, launchdir)
+}, error=function(e){
+  message("No data available.")
+  message(e)
+})
+
+```
+
+### Experiment quality overview
+
+The quality control is following 
+[ENCODE standards](https://www.encodeproject.org/chip-seq/histone/#standards)
+Code for each sample:
+1. usableFragments(
+    * narrowPeak: all samples will be considered as narrowPeak samples
+        * over 20 million, PASS;
+        * over 10 million, Margin;
+        * less 10 million, Failed;
+    * broadPeak: 
+        * over 45 million, PASS;
+        * over 20 million, Margin;
+        * less 20 million, Failed),
+2. libraryComplexity:
+    * NRF: 
+      * over 0.9, PASS;
+      * over 0.5, Margin;
+      * less 0.5, Failed;
+    * PBC1: 
+      * over 0.9, PASS;
+      * over 0.5, Margin;
+      * less 0.5, Failed;
+    * PBC2: 
+      * over 10, PASS;
+      * over  1, Margin;
+      * less  1, Failed;
+3. Fraction of reads in peaks (FRiP)
+    * over 5%, PASS;
+    * over 1%, Margin;
+    * less 1%, Failed;
+4. Normalized Strand Cross-correlation coefficient (NSC)
+    * over 1.1, PASS;
+    * over 1.05, Margin;
+    * less 1.05, Failed;
+5. Relative Strand Cross-correlation coefficient (RSC)
+    * over 1, PASS;
+    * over 0.8, Margin;
+    * less 0.8, Failed;
+    
+Color code: Green, PASS; Yellow, Margin; Red, Failed; Gray, N/A;
+
+```{r, echo=FALSE}
+rsc_files <- dir(".", "spp_rsc_mqc.tsv", recursive = TRUE, full.names = TRUE)
+rsc <- do.call(rbind, lapply(rsc_files, read.delim, comment.char="#", header=FALSE))
+colnames(rsc) <- c("ID", "RSC")
+nsc_files <- dir(".", "spp_nsc_mqc.tsv", recursive = TRUE, full.names = TRUE)
+nsc <- do.call(rbind, lapply(nsc_files, read.delim, comment.char="#", header=FALSE))
+colnames(nsc) <- c("ID", "NSC")
+preseq_logs <- dir(".", "", recursive = TRUE, full.names = TRUE)
+qc <- do.call(rbind, lapply(preseq_logs, read.delim, comment.char="#", header=FALSE))
+rownames(qc) <- gsub("\\.command.log", "", basename(names(preseq_logs)))
+NRF <- qc[, 5]
+PBC1 <- qc[, 6]
+PBC2 <- qc[, 7]
+flagstat <- dir(".", "flagstat", recursive = TRUE, full.names = TRUE)
+totalReads <- sapply(flagstat, function(.ele) {
+  .ele <- readLines(.ele)
+  .ele <- .ele[grepl("total", .ele)][1]
+  .ele <- sub("\\s+\\+.*total.*$", "", .ele)
+  as.numeric(.ele)
+})
+names(totalReads) <- sub("\\.mLb.*.flagstat", "", basename(names(totalReads)))
+FRiP_files <-dir(".", "FRiP", recursive = TRUE, full.names = TRUE)
+FRiP <- lapply(FRiP_files, read.delim, comment.char="#", header=FALSE)
+FRiP <- do.call(rbind, FRiP)
+colnames(FRiP) <- c("ID", "FRiP")
+rn <- sort(unique(c(rsc[, "ID"], nsc[, "ID"], 
+                    rownames(qc), names(totalReads), 
+                    FRiP[, "ID"])))
+qc_table <- list(usableFragments=totalReads[match(rn, names(totalReads))],
+                       NRF=NRF[match(rn, rownames(qc))],
+                       PBC1=PBC1[match(rn, rownames(qc))],
+                       PBC2=PBC2[match(rn, rownames(qc))],
+                       FRiP=FRiP[match(rn, FRiP[, "ID"]), "FRiP"],
+                       NSC=nsc[match(rn, nsc[, "ID"]), "NSC"],
+                       RSC=rsc[match(rn, rsc[, "ID"]), "RSC"])
+breaks <- list("usableFragments"=c(0, 10000000, 20000000, Inf),
+               NRF=c(0, .5, .9, Inf),
+               PBC1=c(0, .5, .9, Inf),
+               PBC2=c(0, 1, 10, Inf),
+               FRiP=c(0, 0.01, 0.05, Inf),
+               NSC=c(0, 1.05, 1.1, Inf),
+               RSC=c(0, .8, 1, Inf))
+colors <- c("PASS"="green", "Margin"="yellow", "Failed"="red", "NA"="gray")
+col_tab <- mapply(function(dat, point){
+  cut(dat, point, labels=c("Failed", "Margin", "PASS"))
+}, qc_table, breaks, SIMPLIFY=FALSE)
+col_tab <- lapply(col_tab, as.character)
+col_tab <- do.call(cbind, col_tab)
+rownames(col_tab) <- rn
+col_tab <- melt(col_tab)
+col_tab[is.na(col_tab)] <- "NA"
+ggplot(col_tab, aes(x=Var2, y=Var1, color=value)) + geom_point(size=5) + 
+  scale_color_manual(values = colors) + theme_bw() + xlab("") + ylab("")
+```
 
 ## Pipeline overview
 

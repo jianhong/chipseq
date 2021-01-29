@@ -772,13 +772,17 @@ workflow {
         params.modules['multiqc']
     )
     
-    
     JO_INDEX (
         ch_index_docs,
         ch_input,
         ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'),
         MULTIQC.out.plots,
         ch_output_docs_images,
+        MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS.out.nsc.collect{it[1]}.ifEmpty([]),
+        MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS.out.rsc.collect{it[1]}.ifEmpty([]),
+        MULTIQC_CUSTOM_PEAKS.out.frip.collect{it[1]}.ifEmpty([]),
+        PRESEQ_LCEXTRAP.out.log.collect{it[1]}.ifEmpty([]),
+        BAM_CLEAN.out.flagstat.collect{it[1]}.ifEmpty([]),
         JO_CHECKSUMS.out.md5.collect(),
         GET_SOFTWARE_VERSIONS.out.yaml.collect(),
         [:]

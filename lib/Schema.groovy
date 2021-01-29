@@ -166,10 +166,10 @@ class Schema {
 
     static String params_mqc_summary(summary) {
         String yaml_file_text  = """
-        id: 'nf-core-chipseq-summary'
+        id: 'qiubio-chipseq-summary'
         description: " - this information is collected when the pipeline is started."
-        section_name: 'nf-core/chipseq Workflow Summary'
-        section_href: 'https://github.com/nf-core/chipseq'
+        section_name: 'QiuBio nf-core/chipseq Workflow Summary'
+        section_href: 'https://github.com/jianhong/chipseq'
         plot_type: 'html'
         data: |
             <dl class=\"dl-horizontal\">
