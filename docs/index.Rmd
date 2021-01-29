@@ -61,7 +61,7 @@ loadExecInfo <- function(exec_info, launchdir){
   )
 }
 tryCatch({
-  loadExecInfo(exec_info, launchdir)
+  loadExecInfo(params$exec_info, params$launchdir)
 }, error=function(e){
   message("No data available.")
   message(e)
@@ -118,12 +118,20 @@ colnames(rsc) <- c("ID", "RSC")
 nsc_files <- dir(".", "spp_nsc_mqc.tsv", recursive = TRUE, full.names = TRUE)
 nsc <- do.call(rbind, lapply(nsc_files, read.delim, comment.char="#", header=FALSE))
 colnames(nsc) <- c("ID", "NSC")
-preseq_logs <- dir(".", "", recursive = TRUE, full.names = TRUE)
-qc <- do.call(rbind, lapply(preseq_logs, read.delim, comment.char="#", header=FALSE))
-rownames(qc) <- gsub("\\.command.log", "", basename(names(preseq_logs)))
-NRF <- qc[, 5]
-PBC1 <- qc[, 6]
-PBC2 <- qc[, 7]
+preseq_logs <- dir(".", "\\.command.log", recursive = TRUE, full.names = TRUE)
+if(length(preseq_logs)>0){
+  qc <- do.call(rbind, lapply(preseq_logs, read.delim, comment.char="#", header=FALSE))
+  rownames(qc) <- gsub("\\.command.log", "", basename(names(preseq_logs)))
+  NRF <- qc[, 5]
+  PBC1 <- qc[, 6]
+  PBC2 <- qc[, 7]
+}else{
+  qc <- data.frame()
+  NRF <- c()
+  PBC1 <- c()
+  PBC2 <- c()
+}
+
 flagstat <- dir(".", "flagstat", recursive = TRUE, full.names = TRUE)
 totalReads <- sapply(flagstat, function(.ele) {
   .ele <- readLines(.ele)
@@ -155,7 +163,8 @@ breaks <- list("usableFragments"=c(0, 10000000, 20000000, Inf),
                RSC=c(0, .8, 1, Inf))
 colors <- c("PASS"="green", "Margin"="yellow", "Failed"="red", "NA"="gray")
 col_tab <- mapply(function(dat, point){
-  cut(dat, point, labels=c("Failed", "Margin", "PASS"))
+  if(length(dat)>0) cut(dat, point, labels=c("Failed", "Margin", "PASS"))
+  else dat
 }, qc_table, breaks, SIMPLIFY=FALSE)
 col_tab <- lapply(col_tab, as.character)
 col_tab <- do.call(cbind, col_tab)
