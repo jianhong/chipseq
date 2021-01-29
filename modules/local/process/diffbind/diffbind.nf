@@ -28,8 +28,8 @@ process JO_DIFFBIND {
     blacklist_params = params.blacklist ? "-b ${blacklist}" : '-b FALSE'
     def metadata = new groovy.json.JsonBuilder(meta).toPrettyString()
     """
-    install_packages.r rjson DiffBind ChIPpeakAnno rtracklayer ggplot2 GenomicFeatures optparse
     echo '${metadata}' > designtab.txt
+    install_packages.r rjson DiffBind ChIPpeakAnno rtracklayer ggplot2 GenomicFeatures optparse
     diffbind.r -d 'designtab.txt' \\
         -f ${bams.join(',')} \\
         -p ${peaks.join(',')} \\

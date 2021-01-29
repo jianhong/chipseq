@@ -786,8 +786,8 @@ workflow {
         JO_CHECKSUMS.out.md5.collect(),
         MARK_DUPLICATES_PICARD.out.bam.collect{it[0].id},
         MARK_DUPLICATES_PICARD.out.bam.collect{it[0].peaktype},
-        JO_DIFFBIND_WITHOUT_CONTROL.out.res,
-        JO_DIFFBIND_HOMER_WITHOUT_CONTROL.out.res,
+        JO_DIFFBIND_WITHOUT_CONTROL.out.res.ifEmpty([]),
+        JO_DIFFBIND_HOMER_WITHOUT_CONTROL.out.res.ifEmpty([]),
         GET_SOFTWARE_VERSIONS.out.yaml.collect(),
         [:]
     )
