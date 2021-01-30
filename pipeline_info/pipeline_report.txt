@@ -4,15 +4,15 @@
   |\ | |__  __ /  ` /  \ |__) |__         }  {
   | \| |       \__, \__/ |  \ |___     \`-._,-`-,
                                         `._,._,'
-  jianhong/chipseq v1.1.2
+  jianhong/chipseq v1.1.3
 ----------------------------------------------------
 
-Run Name: curious_monod
+Run Name: insane_stone
 
 ## jianhong/chipseq execution completed successfully! ##
 
 
-The workflow was completed at 2021-01-30T02:53:19.446Z (duration: 37m 2s)
+The workflow was completed at 2021-01-30T03:04:28.011Z (duration: 33m 15s)
 
 The command used to launch the workflow was as follows:
 
@@ -22,7 +22,7 @@ The command used to launch the workflow was as follows:
 
 Pipeline Configuration:
 -----------------------
- - Run Name: curious_monod
+ - Run Name: insane_stone
  - Design File: https://raw.githubusercontent.com/jianhong/chipseq/master/assets/design.csv
  - Genome: Not supplied
  - Fasta File: https://raw.githubusercontent.com/nf-core/test-datasets/atacseq/reference/genome.fa
@@ -47,13 +47,13 @@ Pipeline Configuration:
  - Config Profile: test,docker
  - Config Profile Descr: Minimal test dataset to check pipeline function
  - Config Files: /home/runner/work/chipseq/chipseq/nextflow.config
- - Date Started: 2021-01-30T02:16:16.961Z
- - Date Completed: 2021-01-30T02:53:19.446Z
+ - Date Started: 2021-01-30T02:31:12.880Z
+ - Date Completed: 2021-01-30T03:04:28.011Z
  - Pipeline script file path: /home/runner/work/chipseq/chipseq/main.nf
  - Pipeline script hash ID: 64295bfde55cfc8387e6d82a861e75e7
- - Nextflow Version: 20.10.0
- - Nextflow Build: 5430
- - Nextflow Compile Timestamp: 01-11-2020 15:14 UTC
+ - Nextflow Version: 20.07.1
+ - Nextflow Build: 5412
+ - Nextflow Compile Timestamp: 24-07-2020 15:18 UTC
 
 --
 jianhong/chipseq

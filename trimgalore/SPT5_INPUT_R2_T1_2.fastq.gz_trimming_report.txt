@@ -20,7 +20,7 @@ Output file will be GZIP compressed
 This is cutadapt 3.2 with Python 3.8.6
 Command line parameters: -j 1 -e 0.1 -q 20 -O 1 -a AGATCGGAAGAGC SPT5_INPUT_R2_T1_2.fastq.gz
 Processing reads on 1 core in single-end mode ...
-Finished in 1.87 s (19 µs/read; 3.21 M reads/minute).
+Finished in 1.64 s (16 µs/read; 3.66 M reads/minute).
 
 === Summary ===
 
