@@ -72,7 +72,7 @@ BiocManager to avoid the dependece issues.
 ```bash
 conda update conda
 nextflow pull jianhong/chipseq -r dev
-srun --mem 60G -c 2 nextflow run jianhong/chipseq -profile test -r dev --conda
+srun --mem 60G -c 2 nextflow run jianhong/chipseq -profile test,conda -r dev
 ```
 
 ## Update
@@ -95,7 +95,8 @@ conda info --envs
 ## design table
 
 To make sure DiffBind to be run, antibody must be provided.
-The control could be empty.
+The control could be empty. `track_` columes are optional.
+save the design table as a csv file. See samples in assets/design*.
 
 | group | replicate | fastq_1 | fastq_2 | antibody | control | track_color | track_group |
 |-------|-----------|---------|---------|----------|---------|-------------|-------------|
@@ -106,10 +107,40 @@ The control could be empty.
 | Input | 1 | fastq/KD1.fastq.gz| |  |  | #000000 | SAMPLE |
 | Input | 2 | fastq/KD2.fastq.gz| |  |  | #000000 | SAMPLE |
 
-## metagene analysis
+## Metagene analysis
+
+The pipeline can do metagene analysis for predefined bed files.
 
 ```bash
 nextflow run jianhong/chipseq -profile test -resume --genomicElements beds/*.bed
+```
+
+## Example profile
+
+Here is the example profile file named as sample.config for human samples.
+
+```
+params {
+  config_profile_name = 'Full test profile'
+  config_profile_description = 'Full test dataset to check pipeline function'
+
+  // Input data
+  input = 'path_to_design.csv'
+
+  // Genome references
+  genome = 'GRCh38'
+}
+```
+
+And run the pipeline by:
+
+```bash
+nextflow run jianhong/chipseq -c sample.config --conda
+```
+
+Or by docker:
+```bash
+nextflow run jianhong/chipseq -c sample.config --docker
 ```
 
 ## Get help
