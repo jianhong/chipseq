@@ -114,7 +114,7 @@ filename <- sapply(files, function(.ele) {
 filename <- gsub("svg", "png", filename)
 ```
 
-## I need a table here to replace the figures.
+## Signals vs Noises
 
 Normalized strand coefficient (NSC) is the normalized ratio between the fragment-length cross-correlation peak and the background cross-correlation. NSC values range from a minimum of 1 to larger positive numbers. 1.1 is the critical threshold. Dataset with NSC values much less than 1.1 (< 1.05) tend to have low signal to noise or few peaks (this could be biological e.g. a factor that truly binds only a few sites in a particular tissue type OR it could be due to poor quality). ENCODE cut-off: **NSC > 1.05**.
 
