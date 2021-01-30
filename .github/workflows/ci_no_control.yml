@@ -1,4 +1,4 @@
-name: docker test
+name: docker test no input
 # This workflow runs the pipeline with the minimal test dataset to check that it completes without any syntax errors
 on:
   push:
@@ -51,14 +51,7 @@ jobs:
 
       - name: Run pipeline with test data
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker
-      
-      - name: Deploy 🚀
-        uses: JamesIves/github-pages-deploy-action@releases/v3
-        with:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          BRANCH: gh-pages # The branch the action should deploy to.
-          FOLDER: results # The folder the action should deploy.
+          nextflow run ${GITHUB_WORKSPACE} -profile test_no_input,docker
 
   parameters:
     name: Test workflow parameters
@@ -96,4 +89,4 @@ jobs:
 
       - name: Run pipeline with various parameters
         run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test,docker ${{ matrix.parameters }}
+          nextflow run ${GITHUB_WORKSPACE} -profile test_no_input,docker ${{ matrix.parameters }}
