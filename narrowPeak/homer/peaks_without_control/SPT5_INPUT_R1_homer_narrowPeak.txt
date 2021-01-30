@@ -1,0 +1,39 @@
+# HOMER Peaks
+# Peak finding parameters:
+# tag directory = SPT5_INPUT_R1_Tagdir
+#
+# total peaks = 4
+# peak size = 82
+# peaks found using tags on both strands
+# minimum distance between peaks = 164
+# fragment length = 58
+# genome size = 12127627
+# Total tags = 82802.5
+# Total tags in peaks = 105.0
+# Approximate IP efficiency = 0.13%
+# tags per bp = 0.006827
+# expected tags per peak = 0.560
+# maximum tags considered per bp = 1.0
+# effective number of tags used for normalization = 10000000.0
+# Peaks have been centered at maximum tag pile-up
+# FDR rate threshold = 0.001000000
+# FDR effective poisson threshold = 9.003698e-09
+# FDR tag threshold = 9.0
+# number of putative peaks = 4
+#
+# size of region used for local filtering = 10000
+# Fold over local region required = 4.00
+# Poisson p-value over local region required = 1.00e-04
+# Putative peaks filtered by local signal = 0
+#
+# Maximum fold under expected unique positions for tags = 2.00
+# Putative peaks filtered for being too clonal = 0
+#
+# cmd = findPeaks SPT5_INPUT_R1_Tagdir -style factor -o SPT5_INPUT_R1_homer_narrowPeak.txt
+#
+# Column Headers:
+#PeakID	chr	start	end	strand	Normalized Tag Count	focus ratio	findPeaks Score	Fold Change vs Local	p-value vs Local	Clonal Fold Change
+XII-1	XII	460150	460232	+	6702.7	0.623	56.000000	22.34	3.76e-53	0.74
+XII-2	XII	459911	459993	+	3381.5	0.585	28.500000	10.33	3.25e-19	0.85
+MT-1	MT	59902	59984	+	1570.0	0.667	14.000000	32.09	8.48e-16	0.93
+MT-2	MT	16641	16723	+	1026.5	0.645	9.000000	12.31	6.42e-07	0.90

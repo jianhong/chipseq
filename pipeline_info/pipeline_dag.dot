@@ -1,0 +1,2438 @@
+digraph "pipeline_dag" {
+p0 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p22 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p0 -> p22 [label="ch_blacklist"];
+
+p1 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p472 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p1 -> p472 [label="ch_multiqc_custom_config"];
+
+p2 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p220 [label="JO_METAGENE_ANALYSIS:JO_METAGENE"];
+p2 -> p220 [label="ch_bed"];
+
+p3 [shape=point,label="",fixedsize=true,width=0.1];
+p5 [label="INPUT_CHECK:SAMPLESHEET_CHECK"];
+p3 -> p5 [label="samplesheet"];
+
+p4 [shape=point,label="",fixedsize=true,width=0.1];
+p5 [label="INPUT_CHECK:SAMPLESHEET_CHECK"];
+p4 -> p5 [label="options"];
+
+p5 [label="INPUT_CHECK:SAMPLESHEET_CHECK"];
+p6 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="splitCsv"];
+p5 -> p6;
+
+p6 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="splitCsv"];
+p7 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p6 -> p7;
+
+p7 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p9 [label="JO_CHECKSUMS"];
+p7 -> p9 [label="ch_trim_reads"];
+
+p8 [shape=point,label="",fixedsize=true,width=0.1];
+p9 [label="JO_CHECKSUMS"];
+p8 -> p9 [label="options"];
+
+p9 [label="JO_CHECKSUMS"];
+p540 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p9 -> p540;
+
+p10 [shape=point,label="",fixedsize=true,width=0.1];
+p12 [label="BWA_INDEX"];
+p10 -> p12 [label="fasta"];
+
+p11 [shape=point,label="",fixedsize=true,width=0.1];
+p12 [label="BWA_INDEX"];
+p11 -> p12 [label="options"];
+
+p12 [label="BWA_INDEX"];
+p57 [label="MAP_BWA_MEM:BWA_MEM"];
+p12 -> p57 [label="ch_index"];
+
+p12 [label="BWA_INDEX"];
+p13 [shape=point];
+p12 -> p13;
+
+p14 [shape=point,label="",fixedsize=true,width=0.1];
+p16 [label="GTF2BED"];
+p14 -> p16 [label="gtf"];
+
+p15 [shape=point,label="",fixedsize=true,width=0.1];
+p16 [label="GTF2BED"];
+p15 -> p16 [label="options"];
+
+p16 [label="GTF2BED"];
+p172 [label="DEEPTOOLS_COMPUTEMATRIX"];
+p16 -> p172;
+
+p17 [shape=point,label="",fixedsize=true,width=0.1];
+p19 [label="GET_CHROM_SIZES"];
+p17 -> p19 [label="fasta"];
+
+p18 [shape=point,label="",fixedsize=true,width=0.1];
+p19 [label="GET_CHROM_SIZES"];
+p18 -> p19 [label="options"];
+
+p19 [label="GET_CHROM_SIZES"];
+p24 [label="MAKE_GENOME_FILTER"];
+p19 -> p24;
+
+p19 [label="GET_CHROM_SIZES"];
+p21 [shape=point];
+p19 -> p21;
+
+p19 [label="GET_CHROM_SIZES"];
+p20 [shape=point];
+p19 -> p20;
+
+p22 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p24 [label="MAKE_GENOME_FILTER"];
+p22 -> p24;
+
+p23 [shape=point,label="",fixedsize=true,width=0.1];
+p24 [label="MAKE_GENOME_FILTER"];
+p23 -> p24 [label="options"];
+
+p24 [label="MAKE_GENOME_FILTER"];
+p108 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p24 -> p108;
+
+p24 [label="MAKE_GENOME_FILTER"];
+p26 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p24 -> p26;
+
+p25 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p28 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p25 -> p28 [label="ch_software_versions"];
+
+p26 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p27 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p26 -> p27;
+
+p27 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p28 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p27 -> p28;
+
+p28 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p51 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p28 -> p51 [label="ch_software_versions"];
+
+p29 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p30 [shape=point];
+p29 -> p30 [label="fastqc_html"];
+
+p31 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p32 [shape=point];
+p31 -> p32 [label="fastqc_zip"];
+
+p33 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p34 [shape=point];
+p33 -> p34 [label="fastqc_version"];
+
+p7 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p36 [label="FASTQC_TRIMGALORE:FASTQC"];
+p7 -> p36 [label="ch_trim_reads"];
+
+p35 [shape=point,label="",fixedsize=true,width=0.1];
+p36 [label="FASTQC_TRIMGALORE:FASTQC"];
+p35 -> p36 [label="options"];
+
+p36 [label="FASTQC_TRIMGALORE:FASTQC"];
+p37 [shape=point];
+p36 -> p37 [label="fastqc_html"];
+
+p36 [label="FASTQC_TRIMGALORE:FASTQC"];
+p477 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p36 -> p477 [label="fastqc_zip"];
+
+p36 [label="FASTQC_TRIMGALORE:FASTQC"];
+p49 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p36 -> p49 [label="fastqc_version"];
+
+p38 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p39 [shape=point];
+p38 -> p39 [label="trim_html"];
+
+p40 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p41 [shape=point];
+p40 -> p41 [label="trim_zip"];
+
+p42 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p43 [shape=point];
+p42 -> p43 [label="trim_log"];
+
+p44 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p45 [shape=point];
+p44 -> p45 [label="trimgalore_version"];
+
+p7 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p47 [label="FASTQC_TRIMGALORE:TRIMGALORE"];
+p7 -> p47 [label="ch_trim_reads"];
+
+p46 [shape=point,label="",fixedsize=true,width=0.1];
+p47 [label="FASTQC_TRIMGALORE:TRIMGALORE"];
+p46 -> p47 [label="options"];
+
+p47 [label="FASTQC_TRIMGALORE:TRIMGALORE"];
+p57 [label="MAP_BWA_MEM:BWA_MEM"];
+p47 -> p57 [label="ch_reads"];
+
+p47 [label="FASTQC_TRIMGALORE:TRIMGALORE"];
+p48 [shape=point];
+p47 -> p48 [label="trim_html"];
+
+p47 [label="FASTQC_TRIMGALORE:TRIMGALORE"];
+p481 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p47 -> p481 [label="trim_zip"];
+
+p47 [label="FASTQC_TRIMGALORE:TRIMGALORE"];
+p479 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p47 -> p479 [label="trim_log"];
+
+p47 [label="FASTQC_TRIMGALORE:TRIMGALORE"];
+p52 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p47 -> p52 [label="trimgalore_version"];
+
+p49 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p50 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p49 -> p50;
+
+p50 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p51 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p50 -> p51;
+
+p51 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p54 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p51 -> p54 [label="ch_software_versions"];
+
+p52 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p53 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p52 -> p53;
+
+p53 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p54 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p53 -> p54;
+
+p54 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p76 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p54 -> p76 [label="ch_software_versions"];
+
+p55 [shape=point,label="",fixedsize=true,width=0.1];
+p57 [label="MAP_BWA_MEM:BWA_MEM"];
+p55 -> p57 [label="fasta"];
+
+p56 [shape=point,label="",fixedsize=true,width=0.1];
+p57 [label="MAP_BWA_MEM:BWA_MEM"];
+p56 -> p57 [label="options"];
+
+p57 [label="MAP_BWA_MEM:BWA_MEM"];
+p59 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p57 -> p59 [label="ch_bam"];
+
+p57 [label="MAP_BWA_MEM:BWA_MEM"];
+p75 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p57 -> p75 [label="bwa_version"];
+
+p58 [shape=point,label="",fixedsize=true,width=0.1];
+p59 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p58 -> p59 [label="options"];
+
+p59 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p61 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:SAMTOOLS_INDEX"];
+p59 -> p61 [label="bam"];
+
+p59 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p77 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p59 -> p77 [label="samtools_version"];
+
+p60 [shape=point,label="",fixedsize=true,width=0.1];
+p61 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:SAMTOOLS_INDEX"];
+p60 -> p61 [label="options"];
+
+p61 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:SAMTOOLS_INDEX"];
+p63 [shape=point];
+p61 -> p63 [label="bai"];
+
+p61 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:SAMTOOLS_INDEX"];
+p62 [shape=point];
+p61 -> p62;
+
+p64 [shape=point,label="",fixedsize=true,width=0.1];
+p65 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p64 -> p65;
+
+p59 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p65 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p59 -> p65 [label="bam"];
+
+p65 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p67 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
+p65 -> p67 [label="ch_bam_bai"];
+
+p66 [shape=point,label="",fixedsize=true,width=0.1];
+p67 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
+p66 -> p67 [label="options"];
+
+p67 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
+p483 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p67 -> p483 [label="stats"];
+
+p67 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
+p68 [shape=point];
+p67 -> p68 [label="samtools_version"];
+
+p65 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p70 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p65 -> p70 [label="ch_bam_bai"];
+
+p69 [shape=point,label="",fixedsize=true,width=0.1];
+p70 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p69 -> p70 [label="options"];
+
+p70 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p484 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p70 -> p484 [label="flagstat"];
+
+p70 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p71 [shape=point];
+p70 -> p71;
+
+p65 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p73 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
+p65 -> p73 [label="ch_bam_bai"];
+
+p72 [shape=point,label="",fixedsize=true,width=0.1];
+p73 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
+p72 -> p73 [label="options"];
+
+p73 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
+p485 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p73 -> p485 [label="idxstats"];
+
+p73 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
+p74 [shape=point];
+p73 -> p74;
+
+p75 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p76 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p75 -> p76;
+
+p76 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p79 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p76 -> p79 [label="ch_software_versions"];
+
+p77 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p78 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p77 -> p78;
+
+p78 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p79 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p78 -> p79;
+
+p79 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p87 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p79 -> p87 [label="ch_software_versions"];
+
+p59 [label="MAP_BWA_MEM:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p80 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p59 -> p80 [label="bam"];
+
+p80 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p81 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p80 -> p81;
+
+p81 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p82 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p81 -> p82;
+
+p82 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p84 [label="PICARD_MERGESAMFILES"];
+p82 -> p84 [label="ch_sort_bam"];
+
+p83 [shape=point,label="",fixedsize=true,width=0.1];
+p84 [label="PICARD_MERGESAMFILES"];
+p83 -> p84 [label="options"];
+
+p84 [label="PICARD_MERGESAMFILES"];
+p89 [label="MARK_DUPLICATES_PICARD:PICARD_MARKDUPLICATES"];
+p84 -> p89 [label="ch_bam"];
+
+p84 [label="PICARD_MERGESAMFILES"];
+p85 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p84 -> p85;
+
+p85 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p86 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p85 -> p86;
+
+p86 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p87 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p86 -> p87;
+
+p87 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p135 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p87 -> p135 [label="ch_software_versions"];
+
+p88 [shape=point,label="",fixedsize=true,width=0.1];
+p89 [label="MARK_DUPLICATES_PICARD:PICARD_MARKDUPLICATES"];
+p88 -> p89 [label="options"];
+
+p89 [label="MARK_DUPLICATES_PICARD:PICARD_MARKDUPLICATES"];
+p92 [label="MARK_DUPLICATES_PICARD:SAMTOOLS_INDEX"];
+p89 -> p92 [label="bam"];
+
+p89 [label="MARK_DUPLICATES_PICARD:PICARD_MARKDUPLICATES"];
+p492 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p89 -> p492 [label="metrics"];
+
+p89 [label="MARK_DUPLICATES_PICARD:PICARD_MARKDUPLICATES"];
+p90 [shape=point];
+p89 -> p90 [label="picard_version"];
+
+p91 [shape=point,label="",fixedsize=true,width=0.1];
+p92 [label="MARK_DUPLICATES_PICARD:SAMTOOLS_INDEX"];
+p91 -> p92 [label="options"];
+
+p92 [label="MARK_DUPLICATES_PICARD:SAMTOOLS_INDEX"];
+p94 [shape=point];
+p92 -> p94 [label="bai"];
+
+p92 [label="MARK_DUPLICATES_PICARD:SAMTOOLS_INDEX"];
+p93 [shape=point];
+p92 -> p93 [label="samtools_version"];
+
+p95 [shape=point,label="",fixedsize=true,width=0.1];
+p96 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p95 -> p96;
+
+p89 [label="MARK_DUPLICATES_PICARD:PICARD_MARKDUPLICATES"];
+p96 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p89 -> p96 [label="bam"];
+
+p96 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p98 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
+p96 -> p98 [label="ch_bam_bai"];
+
+p97 [shape=point,label="",fixedsize=true,width=0.1];
+p98 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
+p97 -> p98 [label="options"];
+
+p98 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
+p486 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p98 -> p486 [label="stats"];
+
+p98 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
+p99 [shape=point];
+p98 -> p99 [label="samtools_version"];
+
+p96 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p101 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p96 -> p101 [label="ch_bam_bai"];
+
+p100 [shape=point,label="",fixedsize=true,width=0.1];
+p101 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p100 -> p101 [label="options"];
+
+p101 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p488 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p101 -> p488 [label="flagstat"];
+
+p101 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p102 [shape=point];
+p101 -> p102;
+
+p96 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p104 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
+p96 -> p104 [label="ch_bam_bai"];
+
+p103 [shape=point,label="",fixedsize=true,width=0.1];
+p104 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
+p103 -> p104 [label="options"];
+
+p104 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
+p490 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p104 -> p490 [label="idxstats"];
+
+p104 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
+p105 [shape=point];
+p104 -> p105;
+
+p106 [shape=point,label="",fixedsize=true,width=0.1];
+p107 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p106 -> p107;
+
+p89 [label="MARK_DUPLICATES_PICARD:PICARD_MARKDUPLICATES"];
+p107 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p89 -> p107 [label="bam"];
+
+p107 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p112 [label="BAM_CLEAN:BAM_FILTER"];
+p107 -> p112 [label="ch_bam_bai"];
+
+p108 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p112 [label="BAM_CLEAN:BAM_FILTER"];
+p108 -> p112 [label="ch_bed"];
+
+p109 [shape=point,label="",fixedsize=true,width=0.1];
+p112 [label="BAM_CLEAN:BAM_FILTER"];
+p109 -> p112 [label="bamtools_filter_se_config"];
+
+p110 [shape=point,label="",fixedsize=true,width=0.1];
+p112 [label="BAM_CLEAN:BAM_FILTER"];
+p110 -> p112 [label="bamtools_filter_pe_config"];
+
+p111 [shape=point,label="",fixedsize=true,width=0.1];
+p112 [label="BAM_CLEAN:BAM_FILTER"];
+p111 -> p112 [label="options"];
+
+p112 [label="BAM_CLEAN:BAM_FILTER"];
+p114 [label="BAM_CLEAN:BAM_REMOVE_ORPHANS"];
+p112 -> p114;
+
+p112 [label="BAM_CLEAN:BAM_FILTER"];
+p133 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p112 -> p133 [label="bamtools_version"];
+
+p113 [shape=point,label="",fixedsize=true,width=0.1];
+p114 [label="BAM_CLEAN:BAM_REMOVE_ORPHANS"];
+p113 -> p114 [label="options"];
+
+p114 [label="BAM_CLEAN:BAM_REMOVE_ORPHANS"];
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p114 -> p116 [label="name_bam"];
+
+p115 [shape=point,label="",fixedsize=true,width=0.1];
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p115 -> p116 [label="options"];
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p119 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_INDEX"];
+p116 -> p119 [label="ch_clean_bam"];
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p117 [shape=point];
+p116 -> p117 [label="samtools_version"];
+
+p118 [shape=point,label="",fixedsize=true,width=0.1];
+p119 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_INDEX"];
+p118 -> p119 [label="options"];
+
+p119 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_INDEX"];
+p121 [shape=point];
+p119 -> p121 [label="bai"];
+
+p119 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_INDEX"];
+p120 [shape=point];
+p119 -> p120;
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p123 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p116 -> p123 [label="ch_clean_bam"];
+
+p122 [shape=point,label="",fixedsize=true,width=0.1];
+p123 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p122 -> p123;
+
+p123 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p125 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
+p123 -> p125 [label="ch_bam_bai"];
+
+p124 [shape=point,label="",fixedsize=true,width=0.1];
+p125 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
+p124 -> p125 [label="options"];
+
+p125 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
+p494 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p125 -> p494 [label="stats"];
+
+p125 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
+p126 [shape=point];
+p125 -> p126 [label="samtools_version"];
+
+p123 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p128 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p123 -> p128 [label="ch_bam_bai"];
+
+p127 [shape=point,label="",fixedsize=true,width=0.1];
+p128 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p127 -> p128 [label="options"];
+
+p128 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p496 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p128 -> p496 [label="flagstat"];
+
+p128 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p129 [shape=point];
+p128 -> p129;
+
+p123 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p131 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
+p123 -> p131 [label="ch_bam_bai"];
+
+p130 [shape=point,label="",fixedsize=true,width=0.1];
+p131 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
+p130 -> p131 [label="options"];
+
+p131 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
+p498 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p131 -> p498 [label="idxstats"];
+
+p131 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
+p132 [shape=point];
+p131 -> p132;
+
+p133 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p134 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p133 -> p134;
+
+p134 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p135 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p134 -> p135;
+
+p135 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p145 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p135 -> p145 [label="ch_software_versions"];
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p138 [label="PICARD_COLLECTMULTIPLEMETRICS"];
+p116 -> p138 [label="ch_clean_bam"];
+
+p136 [shape=point,label="",fixedsize=true,width=0.1];
+p138 [label="PICARD_COLLECTMULTIPLEMETRICS"];
+p136 -> p138 [label="fasta"];
+
+p137 [shape=point,label="",fixedsize=true,width=0.1];
+p138 [label="PICARD_COLLECTMULTIPLEMETRICS"];
+p137 -> p138 [label="options"];
+
+p138 [label="PICARD_COLLECTMULTIPLEMETRICS"];
+p500 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p138 -> p500;
+
+p138 [label="PICARD_COLLECTMULTIPLEMETRICS"];
+p140 [shape=point];
+p138 -> p140;
+
+p138 [label="PICARD_COLLECTMULTIPLEMETRICS"];
+p139 [shape=point];
+p138 -> p139;
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p142 [label="PRESEQ_LCEXTRAP"];
+p116 -> p142 [label="ch_clean_bam"];
+
+p141 [shape=point,label="",fixedsize=true,width=0.1];
+p142 [label="PRESEQ_LCEXTRAP"];
+p141 -> p142 [label="options"];
+
+p142 [label="PRESEQ_LCEXTRAP"];
+p502 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p142 -> p502;
+
+p142 [label="PRESEQ_LCEXTRAP"];
+p536 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p142 -> p536;
+
+p142 [label="PRESEQ_LCEXTRAP"];
+p143 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p142 -> p143;
+
+p143 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p144 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p143 -> p144;
+
+p144 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p145 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p144 -> p145;
+
+p145 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p152 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p145 -> p152 [label="ch_software_versions"];
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p147 [label="PHANTOMPEAKQUALTOOLS"];
+p116 -> p147 [label="ch_clean_bam"];
+
+p146 [shape=point,label="",fixedsize=true,width=0.1];
+p147 [label="PHANTOMPEAKQUALTOOLS"];
+p146 -> p147 [label="options"];
+
+p147 [label="PHANTOMPEAKQUALTOOLS"];
+p154 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p147 -> p154;
+
+p147 [label="PHANTOMPEAKQUALTOOLS"];
+p149 [shape=point];
+p147 -> p149;
+
+p147 [label="PHANTOMPEAKQUALTOOLS"];
+p148 [shape=point];
+p147 -> p148;
+
+p147 [label="PHANTOMPEAKQUALTOOLS"];
+p150 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p147 -> p150;
+
+p150 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p151 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p150 -> p151;
+
+p151 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p152 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p151 -> p152;
+
+p152 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p170 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p152 -> p170 [label="ch_software_versions"];
+
+p153 [shape=point,label="",fixedsize=true,width=0.1];
+p154 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p153 -> p154;
+
+p154 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p159 [label="MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS"];
+p154 -> p159;
+
+p155 [shape=point,label="",fixedsize=true,width=0.1];
+p159 [label="MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS"];
+p155 -> p159 [label="nsc_header"];
+
+p156 [shape=point,label="",fixedsize=true,width=0.1];
+p159 [label="MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS"];
+p156 -> p159 [label="rsc_header"];
+
+p157 [shape=point,label="",fixedsize=true,width=0.1];
+p159 [label="MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS"];
+p157 -> p159 [label="correlation_header"];
+
+p158 [shape=point,label="",fixedsize=true,width=0.1];
+p159 [label="MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS"];
+p158 -> p159 [label="options"];
+
+p159 [label="MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS"];
+p510 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p159 -> p510;
+
+p159 [label="MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS"];
+p512 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p159 -> p512;
+
+p159 [label="MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS"];
+p514 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p159 -> p514;
+
+p160 [shape=point,label="",fixedsize=true,width=0.1];
+p161 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p160 -> p161;
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p161 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p116 -> p161 [label="ch_clean_bam"];
+
+p161 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p163 [label="BEDTOOLS_GENOMECOV"];
+p161 -> p163;
+
+p162 [shape=point,label="",fixedsize=true,width=0.1];
+p163 [label="BEDTOOLS_GENOMECOV"];
+p162 -> p163 [label="options"];
+
+p163 [label="BEDTOOLS_GENOMECOV"];
+p167 [label="UCSC_BEDRAPHTOBIGWIG"];
+p163 -> p167;
+
+p163 [label="BEDTOOLS_GENOMECOV"];
+p165 [shape=point];
+p163 -> p165;
+
+p163 [label="BEDTOOLS_GENOMECOV"];
+p164 [shape=point];
+p163 -> p164;
+
+p19 [label="GET_CHROM_SIZES"];
+p167 [label="UCSC_BEDRAPHTOBIGWIG"];
+p19 -> p167 [label="sizes"];
+
+p166 [shape=point,label="",fixedsize=true,width=0.1];
+p167 [label="UCSC_BEDRAPHTOBIGWIG"];
+p166 -> p167 [label="options"];
+
+p167 [label="UCSC_BEDRAPHTOBIGWIG"];
+p172 [label="DEEPTOOLS_COMPUTEMATRIX"];
+p167 -> p172 [label="ch_single_bw"];
+
+p167 [label="UCSC_BEDRAPHTOBIGWIG"];
+p168 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p167 -> p168;
+
+p168 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p169 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p168 -> p169;
+
+p169 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p170 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p169 -> p170;
+
+p170 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p176 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p170 -> p176 [label="ch_software_versions"];
+
+p171 [shape=point,label="",fixedsize=true,width=0.1];
+p172 [label="DEEPTOOLS_COMPUTEMATRIX"];
+p171 -> p172 [label="options"];
+
+p172 [label="DEEPTOOLS_COMPUTEMATRIX"];
+p178 [label="DEEPTOOLS_PLOTPROFILE"];
+p172 -> p178;
+
+p172 [label="DEEPTOOLS_COMPUTEMATRIX"];
+p173 [shape=point];
+p172 -> p173;
+
+p172 [label="DEEPTOOLS_COMPUTEMATRIX"];
+p174 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p172 -> p174;
+
+p174 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p175 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p174 -> p175;
+
+p175 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p176 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p175 -> p176;
+
+p176 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p264 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p176 -> p264 [label="ch_software_versions"];
+
+p177 [shape=point,label="",fixedsize=true,width=0.1];
+p178 [label="DEEPTOOLS_PLOTPROFILE"];
+p177 -> p178 [label="options"];
+
+p178 [label="DEEPTOOLS_PLOTPROFILE"];
+p180 [shape=point];
+p178 -> p180;
+
+p178 [label="DEEPTOOLS_PLOTPROFILE"];
+p504 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p178 -> p504;
+
+p178 [label="DEEPTOOLS_PLOTPROFILE"];
+p179 [shape=point];
+p178 -> p179;
+
+p172 [label="DEEPTOOLS_COMPUTEMATRIX"];
+p182 [label="DEEPTOOLS_PLOTHEATMAP"];
+p172 -> p182;
+
+p181 [shape=point,label="",fixedsize=true,width=0.1];
+p182 [label="DEEPTOOLS_PLOTHEATMAP"];
+p181 -> p182 [label="options"];
+
+p182 [label="DEEPTOOLS_PLOTHEATMAP"];
+p185 [shape=point];
+p182 -> p185;
+
+p182 [label="DEEPTOOLS_PLOTHEATMAP"];
+p184 [shape=point];
+p182 -> p184;
+
+p182 [label="DEEPTOOLS_PLOTHEATMAP"];
+p183 [shape=point];
+p182 -> p183;
+
+p186 [shape=point,label="",fixedsize=true,width=0.1];
+p187 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p186 -> p187;
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p187 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p116 -> p187 [label="ch_clean_bam"];
+
+p187 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p188 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p187 -> p188;
+
+p188 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p189 [shape=point];
+p188 -> p189 [label="ch_control_bam_bai"];
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p191 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p116 -> p191 [label="ch_clean_bam"];
+
+p190 [shape=point,label="",fixedsize=true,width=0.1];
+p191 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p190 -> p191;
+
+p191 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p192 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p191 -> p192;
+
+p192 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p195 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="combine"];
+p192 -> p195;
+
+p193 [shape=point,label="",fixedsize=true,width=0.1];
+p195 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="combine"];
+p193 -> p195;
+
+p194 [shape=point,label="",fixedsize=true,width=0.1];
+p195 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="combine"];
+p194 -> p195;
+
+p195 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="combine"];
+p196 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p195 -> p196;
+
+p196 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p198 [label="DEEPTOOLS_PLOTFINGERPRINT"];
+p196 -> p198 [label="ch_ip_control_bam_bai"];
+
+p197 [shape=point,label="",fixedsize=true,width=0.1];
+p198 [label="DEEPTOOLS_PLOTFINGERPRINT"];
+p197 -> p198 [label="options"];
+
+p198 [label="DEEPTOOLS_PLOTFINGERPRINT"];
+p201 [shape=point];
+p198 -> p201;
+
+p198 [label="DEEPTOOLS_PLOTFINGERPRINT"];
+p506 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p198 -> p506;
+
+p198 [label="DEEPTOOLS_PLOTFINGERPRINT"];
+p200 [shape=point];
+p198 -> p200;
+
+p198 [label="DEEPTOOLS_PLOTFINGERPRINT"];
+p199 [shape=point];
+p198 -> p199;
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p202 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p116 -> p202 [label="ch_clean_bam"];
+
+p202 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p203 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p202 -> p203;
+
+p203 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p204 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p203 -> p204;
+
+p204 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p207 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="cross"];
+p204 -> p207 [label="ch_to_be_merged"];
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p205 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p116 -> p205 [label="ch_clean_bam"];
+
+p205 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p206 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p205 -> p206;
+
+p206 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p207 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="cross"];
+p206 -> p207 [label="ch_to_be_merged_input"];
+
+p207 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="cross"];
+p208 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p207 -> p208;
+
+p208 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p210 [label="JO_METAGENE_ANALYSIS:JO_MERGE_REP_BAM"];
+p208 -> p210 [label="ch_to_be_merged"];
+
+p209 [shape=point,label="",fixedsize=true,width=0.1];
+p210 [label="JO_METAGENE_ANALYSIS:JO_MERGE_REP_BAM"];
+p209 -> p210 [label="options"];
+
+p210 [label="JO_METAGENE_ANALYSIS:JO_MERGE_REP_BAM"];
+p212 [shape=point];
+p210 -> p212 [label="bam"];
+
+p210 [label="JO_METAGENE_ANALYSIS:JO_MERGE_REP_BAM"];
+p213 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p210 -> p213 [label="bw"];
+
+p210 [label="JO_METAGENE_ANALYSIS:JO_MERGE_REP_BAM"];
+p211 [shape=point];
+p210 -> p211;
+
+p213 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p216 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="concat"];
+p213 -> p216 [label="ch_cpm_bw"];
+
+p210 [label="JO_METAGENE_ANALYSIS:JO_MERGE_REP_BAM"];
+p214 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p210 -> p214 [label="bw"];
+
+p214 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p216 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="concat"];
+p214 -> p216 [label="ch_log2_bw"];
+
+p167 [label="UCSC_BEDRAPHTOBIGWIG"];
+p215 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p167 -> p215 [label="ch_single_bw"];
+
+p215 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p216 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="concat"];
+p215 -> p216 [label="ch_single_bw"];
+
+p216 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="concat"];
+p217 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p216 -> p217;
+
+p217 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p218 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p217 -> p218;
+
+p218 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p220 [label="JO_METAGENE_ANALYSIS:JO_METAGENE"];
+p218 -> p220 [label="ch_bw"];
+
+p219 [shape=point,label="",fixedsize=true,width=0.1];
+p220 [label="JO_METAGENE_ANALYSIS:JO_METAGENE"];
+p219 -> p220 [label="options"];
+
+p220 [label="JO_METAGENE_ANALYSIS:JO_METAGENE"];
+p224 [shape=point];
+p220 -> p224;
+
+p220 [label="JO_METAGENE_ANALYSIS:JO_METAGENE"];
+p223 [shape=point];
+p220 -> p223;
+
+p220 [label="JO_METAGENE_ANALYSIS:JO_METAGENE"];
+p222 [shape=point];
+p220 -> p222;
+
+p220 [label="JO_METAGENE_ANALYSIS:JO_METAGENE"];
+p221 [shape=point];
+p220 -> p221;
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p225 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p116 -> p225 [label="ch_clean_bam"];
+
+p225 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p228 [label="MACS2_CALLPEAK_WITHOUT_CONTROL"];
+p225 -> p228 [label="ch_ip_bam_no_ctl"];
+
+p226 [shape=point,label="",fixedsize=true,width=0.1];
+p228 [label="MACS2_CALLPEAK_WITHOUT_CONTROL"];
+p226 -> p228 [label="macs2_gsize"];
+
+p227 [shape=point,label="",fixedsize=true,width=0.1];
+p228 [label="MACS2_CALLPEAK_WITHOUT_CONTROL"];
+p227 -> p228 [label="options"];
+
+p228 [label="MACS2_CALLPEAK_WITHOUT_CONTROL"];
+p234 [shape=point];
+p228 -> p234;
+
+p228 [label="MACS2_CALLPEAK_WITHOUT_CONTROL"];
+p233 [shape=point];
+p228 -> p233;
+
+p228 [label="MACS2_CALLPEAK_WITHOUT_CONTROL"];
+p232 [shape=point];
+p228 -> p232;
+
+p228 [label="MACS2_CALLPEAK_WITHOUT_CONTROL"];
+p231 [shape=point];
+p228 -> p231;
+
+p228 [label="MACS2_CALLPEAK_WITHOUT_CONTROL"];
+p230 [shape=point];
+p228 -> p230;
+
+p228 [label="MACS2_CALLPEAK_WITHOUT_CONTROL"];
+p229 [shape=point];
+p228 -> p229;
+
+p235 [shape=point,label="",fixedsize=true,width=0.1];
+p236 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p235 -> p236;
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p236 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p116 -> p236 [label="ch_clean_bam"];
+
+p236 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p237 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p236 -> p237 [label="ch_ip_peak_no_control"];
+
+p237 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p238 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p237 -> p238;
+
+p238 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p248 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p238 -> p248;
+
+p236 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p239 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p236 -> p239 [label="ch_ip_peak_no_control"];
+
+p239 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p240 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p239 -> p240;
+
+p240 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p245 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p240 -> p245;
+
+p236 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p241 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p236 -> p241 [label="ch_ip_peak_no_control"];
+
+p241 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p242 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p241 -> p242;
+
+p242 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p243 [shape=point];
+p242 -> p243;
+
+p244 [shape=point,label="",fixedsize=true,width=0.1];
+p245 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p244 -> p245;
+
+p245 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p246 [shape=point];
+p245 -> p246;
+
+p247 [shape=point,label="",fixedsize=true,width=0.1];
+p248 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p247 -> p248;
+
+p248 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p249 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p248 -> p249;
+
+p249 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p253 [label="JO_DIFFBIND_WITHOUT_CONTROL"];
+p249 -> p253 [label="ch_diffbind_without_control"];
+
+p0 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p250 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p0 -> p250 [label="ch_blacklist"];
+
+p250 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p253 [label="JO_DIFFBIND_WITHOUT_CONTROL"];
+p250 -> p253;
+
+p251 [shape=point,label="",fixedsize=true,width=0.1];
+p253 [label="JO_DIFFBIND_WITHOUT_CONTROL"];
+p251 -> p253 [label="gtf"];
+
+p252 [shape=point,label="",fixedsize=true,width=0.1];
+p253 [label="JO_DIFFBIND_WITHOUT_CONTROL"];
+p252 -> p253 [label="options"];
+
+p253 [label="JO_DIFFBIND_WITHOUT_CONTROL"];
+p543 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p253 -> p543;
+
+p196 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p254 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p196 -> p254 [label="ch_ip_control_bam_bai"];
+
+p254 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p257 [label="MACS2_CALLPEAK"];
+p254 -> p257 [label="ch_ip_control_bam"];
+
+p255 [shape=point,label="",fixedsize=true,width=0.1];
+p257 [label="MACS2_CALLPEAK"];
+p255 -> p257 [label="macs2_gsize"];
+
+p256 [shape=point,label="",fixedsize=true,width=0.1];
+p257 [label="MACS2_CALLPEAK"];
+p256 -> p257 [label="options"];
+
+p257 [label="MACS2_CALLPEAK"];
+p278 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p257 -> p278;
+
+p257 [label="MACS2_CALLPEAK"];
+p261 [shape=point];
+p257 -> p261;
+
+p257 [label="MACS2_CALLPEAK"];
+p260 [shape=point];
+p257 -> p260;
+
+p257 [label="MACS2_CALLPEAK"];
+p259 [shape=point];
+p257 -> p259;
+
+p257 [label="MACS2_CALLPEAK"];
+p258 [shape=point];
+p257 -> p258;
+
+p257 [label="MACS2_CALLPEAK"];
+p262 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p257 -> p262;
+
+p262 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p263 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p262 -> p263;
+
+p263 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p264 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p263 -> p264;
+
+p264 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p291 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p264 -> p291 [label="ch_software_versions"];
+
+p265 [shape=point,label="",fixedsize=true,width=0.1];
+p266 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p265 -> p266;
+
+p254 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p266 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p254 -> p266 [label="ch_ip_control_bam"];
+
+p266 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p267 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p266 -> p267;
+
+p267 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p269 [label="FRIP_SCORE"];
+p267 -> p269 [label="ch_ip_peak"];
+
+p268 [shape=point,label="",fixedsize=true,width=0.1];
+p269 [label="FRIP_SCORE"];
+p268 -> p269 [label="options"];
+
+p269 [label="FRIP_SCORE"];
+p270 [shape=point];
+p269 -> p270;
+
+p271 [shape=point,label="",fixedsize=true,width=0.1];
+p272 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p271 -> p272;
+
+p267 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p272 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p267 -> p272 [label="ch_ip_peak"];
+
+p272 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p273 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p272 -> p273;
+
+p273 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p277 [label="MULTIQC_CUSTOM_PEAKS"];
+p273 -> p277 [label="ch_ip_peak_frip"];
+
+p274 [shape=point,label="",fixedsize=true,width=0.1];
+p277 [label="MULTIQC_CUSTOM_PEAKS"];
+p274 -> p277 [label="peak_count_header"];
+
+p275 [shape=point,label="",fixedsize=true,width=0.1];
+p277 [label="MULTIQC_CUSTOM_PEAKS"];
+p275 -> p277 [label="frip_score_header"];
+
+p276 [shape=point,label="",fixedsize=true,width=0.1];
+p277 [label="MULTIQC_CUSTOM_PEAKS"];
+p276 -> p277 [label="options"];
+
+p277 [label="MULTIQC_CUSTOM_PEAKS"];
+p516 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p277 -> p516;
+
+p277 [label="MULTIQC_CUSTOM_PEAKS"];
+p518 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p277 -> p518;
+
+p278 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p279 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p278 -> p279;
+
+p279 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p281 [label="PLOT_MACS2_QC"];
+p279 -> p281;
+
+p280 [shape=point,label="",fixedsize=true,width=0.1];
+p281 [label="PLOT_MACS2_QC"];
+p280 -> p281 [label="options"];
+
+p281 [label="PLOT_MACS2_QC"];
+p283 [shape=point];
+p281 -> p283;
+
+p281 [label="PLOT_MACS2_QC"];
+p282 [shape=point];
+p281 -> p282;
+
+p257 [label="MACS2_CALLPEAK"];
+p288 [label="HOMER_ANNOTATEPEAKS_MACS2"];
+p257 -> p288;
+
+p284 [shape=point,label="",fixedsize=true,width=0.1];
+p288 [label="HOMER_ANNOTATEPEAKS_MACS2"];
+p284 -> p288 [label="fasta"];
+
+p285 [shape=point,label="",fixedsize=true,width=0.1];
+p288 [label="HOMER_ANNOTATEPEAKS_MACS2"];
+p285 -> p288 [label="gtf"];
+
+p286 [shape=point,label="",fixedsize=true,width=0.1];
+p288 [label="HOMER_ANNOTATEPEAKS_MACS2"];
+p286 -> p288 [label="options"];
+
+p287 [shape=point,label="",fixedsize=true,width=0.1];
+p288 [label="HOMER_ANNOTATEPEAKS_MACS2"];
+p287 -> p288 [label="subfolder"];
+
+p288 [label="HOMER_ANNOTATEPEAKS_MACS2"];
+p292 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p288 -> p292;
+
+p288 [label="HOMER_ANNOTATEPEAKS_MACS2"];
+p289 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p288 -> p289;
+
+p289 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p290 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p289 -> p290;
+
+p290 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p291 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p290 -> p291;
+
+p291 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p329 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p291 -> p329 [label="ch_software_versions"];
+
+p292 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p293 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p292 -> p293;
+
+p293 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p297 [label="PLOT_HOMER_ANNOTATEPEAKS"];
+p293 -> p297;
+
+p294 [shape=point,label="",fixedsize=true,width=0.1];
+p297 [label="PLOT_HOMER_ANNOTATEPEAKS"];
+p294 -> p297 [label="mqc_header"];
+
+p295 [shape=point,label="",fixedsize=true,width=0.1];
+p297 [label="PLOT_HOMER_ANNOTATEPEAKS"];
+p295 -> p297 [label="suffix"];
+
+p296 [shape=point,label="",fixedsize=true,width=0.1];
+p297 [label="PLOT_HOMER_ANNOTATEPEAKS"];
+p296 -> p297 [label="options"];
+
+p297 [label="PLOT_HOMER_ANNOTATEPEAKS"];
+p299 [shape=point];
+p297 -> p299;
+
+p297 [label="PLOT_HOMER_ANNOTATEPEAKS"];
+p298 [shape=point];
+p297 -> p298;
+
+p297 [label="PLOT_HOMER_ANNOTATEPEAKS"];
+p520 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p297 -> p520;
+
+p257 [label="MACS2_CALLPEAK"];
+p300 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p257 -> p300;
+
+p300 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p301 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p300 -> p301;
+
+p301 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p302 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p301 -> p302;
+
+p302 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p303 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p302 -> p303;
+
+p303 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p305 [label="MACS2_CONSENSUS"];
+p303 -> p305 [label="ch_antibody_peaks"];
+
+p304 [shape=point,label="",fixedsize=true,width=0.1];
+p305 [label="MACS2_CONSENSUS"];
+p304 -> p305 [label="options"];
+
+p305 [label="MACS2_CONSENSUS"];
+p313 [label="HOMER_ANNOTATEPEAKS_CONSENSUS"];
+p305 -> p313;
+
+p305 [label="MACS2_CONSENSUS"];
+p316 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p305 -> p316;
+
+p305 [label="MACS2_CONSENSUS"];
+p308 [shape=point];
+p305 -> p308;
+
+p305 [label="MACS2_CONSENSUS"];
+p307 [shape=point];
+p305 -> p307;
+
+p305 [label="MACS2_CONSENSUS"];
+p306 [shape=point];
+p305 -> p306;
+
+p309 [shape=point,label="",fixedsize=true,width=0.1];
+p313 [label="HOMER_ANNOTATEPEAKS_CONSENSUS"];
+p309 -> p313 [label="fasta"];
+
+p310 [shape=point,label="",fixedsize=true,width=0.1];
+p313 [label="HOMER_ANNOTATEPEAKS_CONSENSUS"];
+p310 -> p313 [label="gtf"];
+
+p311 [shape=point,label="",fixedsize=true,width=0.1];
+p313 [label="HOMER_ANNOTATEPEAKS_CONSENSUS"];
+p311 -> p313 [label="options"];
+
+p312 [shape=point,label="",fixedsize=true,width=0.1];
+p313 [label="HOMER_ANNOTATEPEAKS_CONSENSUS"];
+p312 -> p313 [label="subfolder"];
+
+p313 [label="HOMER_ANNOTATEPEAKS_CONSENSUS"];
+p315 [shape=point];
+p313 -> p315;
+
+p313 [label="HOMER_ANNOTATEPEAKS_CONSENSUS"];
+p314 [shape=point];
+p313 -> p314;
+
+p316 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p317 [shape=point];
+p316 -> p317 [label="ch_ip_saf"];
+
+p254 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p318 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p254 -> p318 [label="ch_ip_control_bam"];
+
+p318 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p321 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="combine"];
+p318 -> p321;
+
+p319 [shape=point,label="",fixedsize=true,width=0.1];
+p321 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="combine"];
+p319 -> p321;
+
+p320 [shape=point,label="",fixedsize=true,width=0.1];
+p321 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="combine"];
+p320 -> p321;
+
+p321 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="combine"];
+p322 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="filter"];
+p321 -> p322;
+
+p322 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="filter"];
+p323 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p322 -> p323;
+
+p323 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p325 [label="SUBREAD_FEATURECOUNTS"];
+p323 -> p325 [label="ch_ip_bam"];
+
+p324 [shape=point,label="",fixedsize=true,width=0.1];
+p325 [label="SUBREAD_FEATURECOUNTS"];
+p324 -> p325 [label="options"];
+
+p325 [label="SUBREAD_FEATURECOUNTS"];
+p326 [shape=point];
+p325 -> p326;
+
+p325 [label="SUBREAD_FEATURECOUNTS"];
+p522 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p325 -> p522;
+
+p325 [label="SUBREAD_FEATURECOUNTS"];
+p327 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p325 -> p327;
+
+p327 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="first"];
+p328 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p327 -> p328;
+
+p328 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p329 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p328 -> p329;
+
+p329 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
+p462 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p329 -> p462 [label="ch_software_versions"];
+
+p267 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p330 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p267 -> p330 [label="ch_ip_peak"];
+
+p330 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p331 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p330 -> p331;
+
+p331 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p341 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p331 -> p341;
+
+p267 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p332 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p267 -> p332 [label="ch_ip_peak"];
+
+p332 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p333 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p332 -> p333;
+
+p333 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p338 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p333 -> p338;
+
+p267 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p334 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p267 -> p334 [label="ch_ip_peak"];
+
+p334 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p335 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p334 -> p335;
+
+p335 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p336 [shape=point];
+p335 -> p336;
+
+p337 [shape=point,label="",fixedsize=true,width=0.1];
+p338 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p337 -> p338;
+
+p338 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p339 [shape=point];
+p338 -> p339;
+
+p340 [shape=point,label="",fixedsize=true,width=0.1];
+p341 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p340 -> p341;
+
+p341 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p342 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p341 -> p342;
+
+p342 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p346 [label="JO_DIFFBIND"];
+p342 -> p346 [label="ch_diffbind"];
+
+p0 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p343 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p0 -> p343 [label="ch_blacklist"];
+
+p343 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p346 [label="JO_DIFFBIND"];
+p343 -> p346;
+
+p344 [shape=point,label="",fixedsize=true,width=0.1];
+p346 [label="JO_DIFFBIND"];
+p344 -> p346 [label="gtf"];
+
+p345 [shape=point,label="",fixedsize=true,width=0.1];
+p346 [label="JO_DIFFBIND"];
+p345 -> p346 [label="options"];
+
+p346 [label="JO_DIFFBIND"];
+p347 [shape=point];
+p346 -> p347;
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p348 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p116 -> p348 [label="ch_clean_bam"];
+
+p348 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p350 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_MAKETAGDIRECTORY"];
+p348 -> p350 [label="ch_bam"];
+
+p349 [shape=point,label="",fixedsize=true,width=0.1];
+p350 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_MAKETAGDIRECTORY"];
+p349 -> p350 [label="options"];
+
+p350 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_MAKETAGDIRECTORY"];
+p354 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_FINDPEAKS"];
+p350 -> p354;
+
+p350 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_MAKETAGDIRECTORY"];
+p351 [shape=point];
+p350 -> p351 [label="homer_version"];
+
+p352 [shape=point,label="",fixedsize=true,width=0.1];
+p354 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_FINDPEAKS"];
+p352 -> p354 [label="options"];
+
+p353 [shape=point,label="",fixedsize=true,width=0.1];
+p354 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_FINDPEAKS"];
+p353 -> p354 [label="subfolder"];
+
+p354 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_FINDPEAKS"];
+p358 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_POS2BED"];
+p354 -> p358 [label="peak"];
+
+p354 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_FINDPEAKS"];
+p355 [shape=point];
+p354 -> p355;
+
+p356 [shape=point,label="",fixedsize=true,width=0.1];
+p358 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_POS2BED"];
+p356 -> p358 [label="options"];
+
+p357 [shape=point,label="",fixedsize=true,width=0.1];
+p358 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_POS2BED"];
+p357 -> p358 [label="subfolder"];
+
+p358 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_POS2BED"];
+p360 [shape=point];
+p358 -> p360 [label="bed"];
+
+p358 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_POS2BED"];
+p359 [shape=point];
+p358 -> p359;
+
+p354 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_FINDPEAKS"];
+p365 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_ANNOTATEPEAKS"];
+p354 -> p365 [label="peak"];
+
+p361 [shape=point,label="",fixedsize=true,width=0.1];
+p365 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_ANNOTATEPEAKS"];
+p361 -> p365 [label="fasta"];
+
+p362 [shape=point,label="",fixedsize=true,width=0.1];
+p365 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_ANNOTATEPEAKS"];
+p362 -> p365 [label="gtf"];
+
+p363 [shape=point,label="",fixedsize=true,width=0.1];
+p365 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_ANNOTATEPEAKS"];
+p363 -> p365 [label="options"];
+
+p364 [shape=point,label="",fixedsize=true,width=0.1];
+p365 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_ANNOTATEPEAKS"];
+p364 -> p365 [label="subfolder"];
+
+p365 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_ANNOTATEPEAKS"];
+p367 [shape=point];
+p365 -> p367 [label="annopeaks"];
+
+p365 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_ANNOTATEPEAKS"];
+p366 [shape=point];
+p365 -> p366;
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p369 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p116 -> p369 [label="ch_clean_bam"];
+
+p368 [shape=point,label="",fixedsize=true,width=0.1];
+p369 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p368 -> p369;
+
+p369 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p370 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p369 -> p370 [label="ch_ip_peak_homer_no_control"];
+
+p370 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p371 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p370 -> p371;
+
+p371 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p381 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p371 -> p381;
+
+p369 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p372 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p369 -> p372 [label="ch_ip_peak_homer_no_control"];
+
+p372 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p373 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p372 -> p373;
+
+p373 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p378 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p373 -> p378;
+
+p369 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p374 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p369 -> p374 [label="ch_ip_peak_homer_no_control"];
+
+p374 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p375 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p374 -> p375;
+
+p375 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p376 [shape=point];
+p375 -> p376;
+
+p377 [shape=point,label="",fixedsize=true,width=0.1];
+p378 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p377 -> p378;
+
+p378 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p379 [shape=point];
+p378 -> p379;
+
+p380 [shape=point,label="",fixedsize=true,width=0.1];
+p381 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p380 -> p381;
+
+p381 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p382 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p381 -> p382;
+
+p382 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p386 [label="JO_DIFFBIND_HOMER_WITHOUT_CONTROL"];
+p382 -> p386 [label="ch_diffbind_homer_without_control"];
+
+p0 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p383 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p0 -> p383 [label="ch_blacklist"];
+
+p383 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p386 [label="JO_DIFFBIND_HOMER_WITHOUT_CONTROL"];
+p383 -> p386;
+
+p384 [shape=point,label="",fixedsize=true,width=0.1];
+p386 [label="JO_DIFFBIND_HOMER_WITHOUT_CONTROL"];
+p384 -> p386 [label="gtf"];
+
+p385 [shape=point,label="",fixedsize=true,width=0.1];
+p386 [label="JO_DIFFBIND_HOMER_WITHOUT_CONTROL"];
+p385 -> p386 [label="options"];
+
+p386 [label="JO_DIFFBIND_HOMER_WITHOUT_CONTROL"];
+p544 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p386 -> p544;
+
+p196 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p387 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p196 -> p387 [label="ch_ip_control_bam_bai"];
+
+p387 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p389 [label="HOMER_CALLPEAK:HOMER_MAKETAGDIRECTORY"];
+p387 -> p389 [label="ch_bam"];
+
+p388 [shape=point,label="",fixedsize=true,width=0.1];
+p389 [label="HOMER_CALLPEAK:HOMER_MAKETAGDIRECTORY"];
+p388 -> p389 [label="options"];
+
+p389 [label="HOMER_CALLPEAK:HOMER_MAKETAGDIRECTORY"];
+p393 [label="HOMER_CALLPEAK:HOMER_FINDPEAKS"];
+p389 -> p393;
+
+p389 [label="HOMER_CALLPEAK:HOMER_MAKETAGDIRECTORY"];
+p390 [shape=point];
+p389 -> p390 [label="homer_version"];
+
+p391 [shape=point,label="",fixedsize=true,width=0.1];
+p393 [label="HOMER_CALLPEAK:HOMER_FINDPEAKS"];
+p391 -> p393 [label="options"];
+
+p392 [shape=point,label="",fixedsize=true,width=0.1];
+p393 [label="HOMER_CALLPEAK:HOMER_FINDPEAKS"];
+p392 -> p393 [label="subfolder"];
+
+p393 [label="HOMER_CALLPEAK:HOMER_FINDPEAKS"];
+p397 [label="HOMER_CALLPEAK:HOMER_POS2BED"];
+p393 -> p397 [label="peak"];
+
+p393 [label="HOMER_CALLPEAK:HOMER_FINDPEAKS"];
+p394 [shape=point];
+p393 -> p394;
+
+p395 [shape=point,label="",fixedsize=true,width=0.1];
+p397 [label="HOMER_CALLPEAK:HOMER_POS2BED"];
+p395 -> p397 [label="options"];
+
+p396 [shape=point,label="",fixedsize=true,width=0.1];
+p397 [label="HOMER_CALLPEAK:HOMER_POS2BED"];
+p396 -> p397 [label="subfolder"];
+
+p397 [label="HOMER_CALLPEAK:HOMER_POS2BED"];
+p407 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p397 -> p407 [label="bed"];
+
+p397 [label="HOMER_CALLPEAK:HOMER_POS2BED"];
+p398 [shape=point];
+p397 -> p398;
+
+p393 [label="HOMER_CALLPEAK:HOMER_FINDPEAKS"];
+p403 [label="HOMER_CALLPEAK:HOMER_ANNOTATEPEAKS"];
+p393 -> p403 [label="peak"];
+
+p399 [shape=point,label="",fixedsize=true,width=0.1];
+p403 [label="HOMER_CALLPEAK:HOMER_ANNOTATEPEAKS"];
+p399 -> p403 [label="fasta"];
+
+p400 [shape=point,label="",fixedsize=true,width=0.1];
+p403 [label="HOMER_CALLPEAK:HOMER_ANNOTATEPEAKS"];
+p400 -> p403 [label="gtf"];
+
+p401 [shape=point,label="",fixedsize=true,width=0.1];
+p403 [label="HOMER_CALLPEAK:HOMER_ANNOTATEPEAKS"];
+p401 -> p403 [label="options"];
+
+p402 [shape=point,label="",fixedsize=true,width=0.1];
+p403 [label="HOMER_CALLPEAK:HOMER_ANNOTATEPEAKS"];
+p402 -> p403 [label="subfolder"];
+
+p403 [label="HOMER_CALLPEAK:HOMER_ANNOTATEPEAKS"];
+p405 [shape=point];
+p403 -> p405 [label="annopeaks"];
+
+p403 [label="HOMER_CALLPEAK:HOMER_ANNOTATEPEAKS"];
+p404 [shape=point];
+p403 -> p404;
+
+p387 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p406 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p387 -> p406 [label="ch_bam"];
+
+p406 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p410 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p406 -> p410;
+
+p407 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p408 [shape=point];
+p407 -> p408;
+
+p409 [shape=point,label="",fixedsize=true,width=0.1];
+p410 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p409 -> p410;
+
+p410 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p411 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p410 -> p411;
+
+p411 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p412 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p411 -> p412 [label="ch_ip_peak_homer"];
+
+p412 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p413 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p412 -> p413;
+
+p413 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p423 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p413 -> p423;
+
+p411 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p414 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p411 -> p414 [label="ch_ip_peak_homer"];
+
+p414 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p415 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p414 -> p415;
+
+p415 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p420 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p415 -> p420;
+
+p411 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p416 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p411 -> p416 [label="ch_ip_peak_homer"];
+
+p416 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p417 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p416 -> p417;
+
+p417 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="groupTuple"];
+p418 [shape=point];
+p417 -> p418;
+
+p419 [shape=point,label="",fixedsize=true,width=0.1];
+p420 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p419 -> p420;
+
+p420 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p421 [shape=point];
+p420 -> p421;
+
+p422 [shape=point,label="",fixedsize=true,width=0.1];
+p423 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p422 -> p423;
+
+p423 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p424 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p423 -> p424;
+
+p424 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p428 [label="JO_DIFFBIND_HOMER"];
+p424 -> p428 [label="ch_diffbind_homer"];
+
+p0 [shape=point,label="",fixedsize=true,width=0.1,xlabel="Channel.empty"];
+p425 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p0 -> p425 [label="ch_blacklist"];
+
+p425 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p428 [label="JO_DIFFBIND_HOMER"];
+p425 -> p428;
+
+p426 [shape=point,label="",fixedsize=true,width=0.1];
+p428 [label="JO_DIFFBIND_HOMER"];
+p426 -> p428 [label="gtf"];
+
+p427 [shape=point,label="",fixedsize=true,width=0.1];
+p428 [label="JO_DIFFBIND_HOMER"];
+p427 -> p428 [label="options"];
+
+p428 [label="JO_DIFFBIND_HOMER"];
+p429 [shape=point];
+p428 -> p429;
+
+p167 [label="UCSC_BEDRAPHTOBIGWIG"];
+p430 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p167 -> p430 [label="ch_single_bw"];
+
+p430 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p431 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p430 -> p431;
+
+p431 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p441 [label="IGV"];
+p431 -> p441;
+
+p257 [label="MACS2_CALLPEAK"];
+p432 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p257 -> p432;
+
+p432 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p433 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p432 -> p433;
+
+p433 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p441 [label="IGV"];
+p433 -> p441;
+
+p305 [label="MACS2_CONSENSUS"];
+p434 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p305 -> p434;
+
+p434 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p435 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p434 -> p435;
+
+p435 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p441 [label="IGV"];
+p435 -> p441;
+
+p436 [shape=point,label="",fixedsize=true,width=0.1];
+p441 [label="IGV"];
+p436 -> p441 [label="fasta"];
+
+p437 [shape=point,label="",fixedsize=true,width=0.1];
+p441 [label="IGV"];
+p437 -> p441 [label="bigwig_options"];
+
+p438 [shape=point,label="",fixedsize=true,width=0.1];
+p441 [label="IGV"];
+p438 -> p441 [label="peak_options"];
+
+p439 [shape=point,label="",fixedsize=true,width=0.1];
+p441 [label="IGV"];
+p439 -> p441 [label="consensus_options"];
+
+p440 [shape=point,label="",fixedsize=true,width=0.1];
+p441 [label="IGV"];
+p440 -> p441 [label="options"];
+
+p441 [label="IGV"];
+p443 [shape=point];
+p441 -> p443;
+
+p441 [label="IGV"];
+p442 [shape=point];
+p441 -> p442;
+
+p210 [label="JO_METAGENE_ANALYSIS:JO_MERGE_REP_BAM"];
+p444 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p210 -> p444 [label="bw"];
+
+p444 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p449 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="concat"];
+p444 -> p449;
+
+p167 [label="UCSC_BEDRAPHTOBIGWIG"];
+p445 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p167 -> p445 [label="ch_single_bw"];
+
+p445 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p449 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="concat"];
+p445 -> p449;
+
+p257 [label="MACS2_CALLPEAK"];
+p446 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p257 -> p446;
+
+p446 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p449 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="concat"];
+p446 -> p449;
+
+p305 [label="MACS2_CONSENSUS"];
+p447 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p305 -> p447;
+
+p447 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p449 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="concat"];
+p447 -> p449;
+
+p397 [label="HOMER_CALLPEAK:HOMER_POS2BED"];
+p448 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p397 -> p448 [label="bed"];
+
+p448 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p449 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="concat"];
+p448 -> p449;
+
+p449 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="concat"];
+p450 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p449 -> p450;
+
+p450 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p451 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="flatten"];
+p450 -> p451;
+
+p451 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="flatten"];
+p452 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collate"];
+p451 -> p452;
+
+p452 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collate"];
+p453 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p452 -> p453 [label="ch_trackhub"];
+
+p453 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p454 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p453 -> p454;
+
+p454 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p459 [label="JO_TRACKHUB"];
+p454 -> p459 [label="ch_trackhub_name"];
+
+p452 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collate"];
+p455 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p452 -> p455 [label="ch_trackhub"];
+
+p455 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p456 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p455 -> p456;
+
+p456 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p459 [label="JO_TRACKHUB"];
+p456 -> p459 [label="ch_trackhub_track"];
+
+p457 [shape=point,label="",fixedsize=true,width=0.1];
+p459 [label="JO_TRACKHUB"];
+p457 -> p459 [label="designtab"];
+
+p19 [label="GET_CHROM_SIZES"];
+p459 [label="JO_TRACKHUB"];
+p19 -> p459 [label="size"];
+
+p458 [shape=point,label="",fixedsize=true,width=0.1];
+p459 [label="JO_TRACKHUB"];
+p458 -> p459 [label="options"];
+
+p459 [label="JO_TRACKHUB"];
+p461 [shape=point];
+p459 -> p461;
+
+p459 [label="JO_TRACKHUB"];
+p460 [shape=point];
+p459 -> p460;
+
+p462 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p463 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p462 -> p463;
+
+p463 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p465 [label="GET_SOFTWARE_VERSIONS"];
+p463 -> p465;
+
+p464 [shape=point,label="",fixedsize=true,width=0.1];
+p465 [label="GET_SOFTWARE_VERSIONS"];
+p464 -> p465 [label="options"];
+
+p465 [label="GET_SOFTWARE_VERSIONS"];
+p466 [shape=point];
+p465 -> p466;
+
+p465 [label="GET_SOFTWARE_VERSIONS"];
+p474 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p465 -> p474;
+
+p467 [shape=point,label="",fixedsize=true,width=0.1];
+p470 [label="OUTPUT_DOCUMENTATION"];
+p467 -> p470 [label="output_docs"];
+
+p468 [shape=point,label="",fixedsize=true,width=0.1];
+p470 [label="OUTPUT_DOCUMENTATION"];
+p468 -> p470 [label="images"];
+
+p469 [shape=point,label="",fixedsize=true,width=0.1];
+p470 [label="OUTPUT_DOCUMENTATION"];
+p469 -> p470 [label="options"];
+
+p470 [label="OUTPUT_DOCUMENTATION"];
+p471 [shape=point];
+p470 -> p471;
+
+p472 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p473 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p472 -> p473;
+
+p473 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p473 -> p526;
+
+p474 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p526 [label="MULTIQC"];
+p474 -> p526;
+
+p475 [shape=point,label="",fixedsize=true,width=0.1];
+p476 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collectFile"];
+p475 -> p476 [label="ch_workflow_summary"];
+
+p476 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collectFile"];
+p526 [label="MULTIQC"];
+p476 -> p526;
+
+p477 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p478 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p477 -> p478;
+
+p478 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p478 -> p526;
+
+p479 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p480 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p479 -> p480;
+
+p480 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p480 -> p526;
+
+p481 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p482 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p481 -> p482;
+
+p482 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p482 -> p526;
+
+p483 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p526 [label="MULTIQC"];
+p483 -> p526;
+
+p484 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p526 [label="MULTIQC"];
+p484 -> p526;
+
+p485 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p526 [label="MULTIQC"];
+p485 -> p526;
+
+p486 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p487 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p486 -> p487;
+
+p487 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p487 -> p526;
+
+p488 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p489 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p488 -> p489;
+
+p489 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p489 -> p526;
+
+p490 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p491 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p490 -> p491;
+
+p491 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p491 -> p526;
+
+p492 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p493 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p492 -> p493;
+
+p493 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p493 -> p526;
+
+p494 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p495 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p494 -> p495;
+
+p495 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p495 -> p526;
+
+p496 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p497 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p496 -> p497;
+
+p497 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p497 -> p526;
+
+p498 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p499 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p498 -> p499;
+
+p499 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p499 -> p526;
+
+p500 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p501 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p500 -> p501;
+
+p501 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p501 -> p526;
+
+p502 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p503 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p502 -> p503;
+
+p503 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p503 -> p526;
+
+p504 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p505 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p504 -> p505;
+
+p505 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p505 -> p526;
+
+p506 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p507 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p506 -> p507;
+
+p507 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p507 -> p526;
+
+p147 [label="PHANTOMPEAKQUALTOOLS"];
+p508 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p147 -> p508;
+
+p508 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p509 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p508 -> p509;
+
+p509 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p509 -> p526;
+
+p510 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p511 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p510 -> p511;
+
+p511 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p511 -> p526;
+
+p512 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p513 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p512 -> p513;
+
+p513 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p513 -> p526;
+
+p514 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p515 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p514 -> p515;
+
+p515 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p515 -> p526;
+
+p516 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p517 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p516 -> p517;
+
+p517 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p517 -> p526;
+
+p518 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p519 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p518 -> p519;
+
+p519 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p519 -> p526;
+
+p520 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p521 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p520 -> p521;
+
+p521 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p521 -> p526;
+
+p522 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p523 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p522 -> p523;
+
+p523 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p526 [label="MULTIQC"];
+p523 -> p526;
+
+p524 [shape=point,label="",fixedsize=true,width=0.1];
+p526 [label="MULTIQC"];
+p524 -> p526 [label="multiqc_config"];
+
+p525 [shape=point,label="",fixedsize=true,width=0.1];
+p526 [label="MULTIQC"];
+p525 -> p526 [label="options"];
+
+p526 [label="MULTIQC"];
+p528 [shape=point];
+p526 -> p528;
+
+p526 [label="MULTIQC"];
+p527 [shape=point];
+p526 -> p527;
+
+p526 [label="MULTIQC"];
+p550 [label="JO_INDEX"];
+p526 -> p550;
+
+p475 [shape=point,label="",fixedsize=true,width=0.1];
+p529 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collectFile"];
+p475 -> p529 [label="ch_workflow_summary"];
+
+p529 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collectFile"];
+p550 [label="JO_INDEX"];
+p529 -> p550;
+
+p159 [label="MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS"];
+p530 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p159 -> p530;
+
+p530 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p531 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p530 -> p531;
+
+p531 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p550 [label="JO_INDEX"];
+p531 -> p550;
+
+p159 [label="MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS"];
+p532 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p159 -> p532;
+
+p532 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p533 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p532 -> p533;
+
+p533 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p550 [label="JO_INDEX"];
+p533 -> p550;
+
+p277 [label="MULTIQC_CUSTOM_PEAKS"];
+p534 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p277 -> p534;
+
+p534 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p535 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p534 -> p535;
+
+p535 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p550 [label="JO_INDEX"];
+p535 -> p550;
+
+p536 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p537 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p536 -> p537;
+
+p537 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p550 [label="JO_INDEX"];
+p537 -> p550;
+
+p128 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_FLAGSTAT"];
+p538 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p128 -> p538 [label="flagstat"];
+
+p538 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p539 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p538 -> p539;
+
+p539 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p550 [label="JO_INDEX"];
+p539 -> p550;
+
+p540 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p550 [label="JO_INDEX"];
+p540 -> p550;
+
+p89 [label="MARK_DUPLICATES_PICARD:PICARD_MARKDUPLICATES"];
+p541 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p89 -> p541 [label="bam"];
+
+p541 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p550 [label="JO_INDEX"];
+p541 -> p550;
+
+p89 [label="MARK_DUPLICATES_PICARD:PICARD_MARKDUPLICATES"];
+p542 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p89 -> p542 [label="bam"];
+
+p542 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p550 [label="JO_INDEX"];
+p542 -> p550;
+
+p543 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p550 [label="JO_INDEX"];
+p543 -> p550;
+
+p544 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="ifEmpty"];
+p550 [label="JO_INDEX"];
+p544 -> p550;
+
+p465 [label="GET_SOFTWARE_VERSIONS"];
+p545 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p465 -> p545;
+
+p545 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="collect"];
+p550 [label="JO_INDEX"];
+p545 -> p550;
+
+p546 [shape=point,label="",fixedsize=true,width=0.1];
+p550 [label="JO_INDEX"];
+p546 -> p550 [label="index_docs"];
+
+p547 [shape=point,label="",fixedsize=true,width=0.1];
+p550 [label="JO_INDEX"];
+p547 -> p550 [label="designtab"];
+
+p548 [shape=point,label="",fixedsize=true,width=0.1];
+p550 [label="JO_INDEX"];
+p548 -> p550 [label="doc_img"];
+
+p549 [shape=point,label="",fixedsize=true,width=0.1];
+p550 [label="JO_INDEX"];
+p549 -> p550 [label="options"];
+
+p550 [label="JO_INDEX"];
+p551 [shape=point];
+p550 -> p551;
+
+}

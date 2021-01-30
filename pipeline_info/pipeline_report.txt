@@ -1,0 +1,60 @@
+----------------------------------------------------
+                                        ,--./,-.
+        ___     __   __   __   ___     /,-._.--~\
+  |\ | |__  __ /  ` /  \ |__) |__         }  {
+  | \| |       \__, \__/ |  \ |___     \`-._,-`-,
+                                        `._,._,'
+  jianhong/chipseq v1.1.1
+----------------------------------------------------
+
+Run Name: magical_varahamihira
+
+## jianhong/chipseq execution completed successfully! ##
+
+
+The workflow was completed at 2021-01-30T00:54:41.542Z (duration: 37m 21s)
+
+The command used to launch the workflow was as follows:
+
+  nextflow run /home/runner/work/chipseq/chipseq -profile test,docker
+
+
+
+Pipeline Configuration:
+-----------------------
+ - Run Name: magical_varahamihira
+ - Design File: https://raw.githubusercontent.com/jianhong/chipseq/master/assets/design.csv
+ - Genome: Not supplied
+ - Fasta File: https://raw.githubusercontent.com/nf-core/test-datasets/atacseq/reference/genome.fa
+ - GTF File: https://raw.githubusercontent.com/nf-core/test-datasets/atacseq/reference/genes.gtf
+ - MACS2 Genome Size: 1.2E+7
+ - Min Consensus Reps: 1
+ - Trim R1: 0 bp
+ - Trim R2: 0 bp
+ - Trim 3' R1: 0 bp
+ - Trim 3' R2: 0 bp
+ - NextSeq Trim: 0 bp
+ - Fragment Size: 200 bp
+ - Fingerprint Bins: 100
+ - Save Genome Index: No
+ - Max Resources: 6 GB memory, 2 cpus, 12h time per job
+ - Container: docker - jianhong/chipseq:latest
+ - Output dir: ./results
+ - Launch dir: /home/runner/work/chipseq/chipseq
+ - Working dir: /home/runner/work/chipseq/chipseq/work
+ - Script dir: /home/runner/work/chipseq/chipseq
+ - User: runner
+ - Config Profile: test,docker
+ - Config Profile Descr: Minimal test dataset to check pipeline function
+ - Config Files: /home/runner/work/chipseq/chipseq/nextflow.config
+ - Date Started: 2021-01-30T00:17:20.523Z
+ - Date Completed: 2021-01-30T00:54:41.542Z
+ - Pipeline script file path: /home/runner/work/chipseq/chipseq/main.nf
+ - Pipeline script hash ID: 64295bfde55cfc8387e6d82a861e75e7
+ - Nextflow Version: 20.10.0
+ - Nextflow Build: 5430
+ - Nextflow Compile Timestamp: 01-11-2020 15:14 UTC
+
+--
+jianhong/chipseq
+https://github.com/jianhong/chipseq
