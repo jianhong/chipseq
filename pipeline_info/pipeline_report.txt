@@ -7,12 +7,12 @@
   jianhong/chipseq v1.1.1
 ----------------------------------------------------
 
-Run Name: magical_varahamihira
+Run Name: drunk_hilbert
 
 ## jianhong/chipseq execution completed successfully! ##
 
 
-The workflow was completed at 2021-01-30T00:54:41.542Z (duration: 37m 21s)
+The workflow was completed at 2021-01-30T01:16:47.445Z (duration: 27m 58s)
 
 The command used to launch the workflow was as follows:
 
@@ -22,7 +22,7 @@ The command used to launch the workflow was as follows:
 
 Pipeline Configuration:
 -----------------------
- - Run Name: magical_varahamihira
+ - Run Name: drunk_hilbert
  - Design File: https://raw.githubusercontent.com/jianhong/chipseq/master/assets/design.csv
  - Genome: Not supplied
  - Fasta File: https://raw.githubusercontent.com/nf-core/test-datasets/atacseq/reference/genome.fa
@@ -47,8 +47,8 @@ Pipeline Configuration:
  - Config Profile: test,docker
  - Config Profile Descr: Minimal test dataset to check pipeline function
  - Config Files: /home/runner/work/chipseq/chipseq/nextflow.config
- - Date Started: 2021-01-30T00:17:20.523Z
- - Date Completed: 2021-01-30T00:54:41.542Z
+ - Date Started: 2021-01-30T00:48:49.032Z
+ - Date Completed: 2021-01-30T01:16:47.445Z
  - Pipeline script file path: /home/runner/work/chipseq/chipseq/main.nf
  - Pipeline script hash ID: 64295bfde55cfc8387e6d82a861e75e7
  - Nextflow Version: 20.10.0

@@ -459,13 +459,13 @@ p104 [label="MARK_DUPLICATES_PICARD:BAM_STATS_SAMTOOLS:SAMTOOLS_IDXSTATS"];
 p105 [shape=point];
 p104 -> p105;
 
-p106 [shape=point,label="",fixedsize=true,width=0.1];
-p107 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
-p106 -> p107;
-
 p89 [label="MARK_DUPLICATES_PICARD:PICARD_MARKDUPLICATES"];
 p107 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p89 -> p107 [label="bam"];
+
+p106 [shape=point,label="",fixedsize=true,width=0.1];
+p107 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p106 -> p107;
 
 p107 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p112 [label="BAM_CLEAN:BAM_FILTER"];
@@ -527,13 +527,13 @@ p119 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_INDEX"];
 p120 [shape=point];
 p119 -> p120;
 
-p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
-p123 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
-p116 -> p123 [label="ch_clean_bam"];
-
 p122 [shape=point,label="",fixedsize=true,width=0.1];
 p123 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p122 -> p123;
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p123 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p116 -> p123 [label="ch_clean_bam"];
 
 p123 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p125 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
@@ -859,13 +859,13 @@ p188 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
 p189 [shape=point];
 p188 -> p189 [label="ch_control_bam_bai"];
 
-p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
-p191 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
-p116 -> p191 [label="ch_clean_bam"];
-
 p190 [shape=point,label="",fixedsize=true,width=0.1];
 p191 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p190 -> p191;
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p191 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p116 -> p191 [label="ch_clean_bam"];
 
 p191 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p192 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
@@ -1191,13 +1191,13 @@ p264 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
 p291 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
 p264 -> p291 [label="ch_software_versions"];
 
-p265 [shape=point,label="",fixedsize=true,width=0.1];
-p266 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
-p265 -> p266;
-
 p254 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
 p266 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p254 -> p266 [label="ch_ip_control_bam"];
+
+p265 [shape=point,label="",fixedsize=true,width=0.1];
+p266 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p265 -> p266;
 
 p266 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p267 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
@@ -1215,13 +1215,13 @@ p269 [label="FRIP_SCORE"];
 p270 [shape=point];
 p269 -> p270;
 
-p271 [shape=point,label="",fixedsize=true,width=0.1];
-p272 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
-p271 -> p272;
-
 p267 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
 p272 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p267 -> p272 [label="ch_ip_peak"];
+
+p271 [shape=point,label="",fixedsize=true,width=0.1];
+p272 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p271 -> p272;
 
 p272 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p273 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
@@ -1627,13 +1627,13 @@ p365 [label="HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_ANNOTATEPEAKS"];
 p366 [shape=point];
 p365 -> p366;
 
-p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
-p369 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
-p116 -> p369 [label="ch_clean_bam"];
-
 p368 [shape=point,label="",fixedsize=true,width=0.1];
 p369 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p368 -> p369;
+
+p116 [label="BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p369 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p116 -> p369 [label="ch_clean_bam"];
 
 p369 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p370 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
