@@ -621,7 +621,7 @@ for(folder in c("pipeline_info", "multiqc")){
   for(f in files) cat(paste0('[', sub(".html", "", basename(f)), '](', f, ')\n\n'))
 }
 for(folder in c("igv", "trackhub")){
-  cat(paste0("[", folder, "](", folder, ")\n\n"))
+  cat(paste0("[", folder, " files](", folder, ")\n\n"))
 }
 ```
 
