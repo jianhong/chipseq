@@ -34,7 +34,7 @@ jobs:
         with:
           auto-update-conda: true
           python-version: ${{ matrix.python-version }}
-          allow-softlinks: true
+          channels: conda-forge,defaults,bioconda,r
           show-channel-urls: true
           use-only-tar-bz2: true
 
