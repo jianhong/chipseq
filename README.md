@@ -119,7 +119,7 @@ nextflow run jianhong/chipseq -profile test -resume --genomicElements beds/*.bed
 
 Here is the example profile file named as sample.config for human samples.
 
-```
+```bash
 params {
   config_profile_name = 'Full test profile'
   config_profile_description = 'Full test dataset to check pipeline function'
@@ -139,6 +139,7 @@ nextflow run jianhong/chipseq -c sample.config --conda
 ```
 
 Or by docker:
+
 ```bash
 nextflow run jianhong/chipseq -c sample.config --docker
 ```
