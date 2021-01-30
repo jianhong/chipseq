@@ -14,6 +14,9 @@ jobs:
     # Only run on push if this is the dev branch (merged PRs)
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'jianhong/chipseq') }}
     runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash -l {0}
     env:
       NXF_VER: ${{ matrix.nxf_ver }}
       NXF_ANSI_LOG: false
@@ -30,8 +33,10 @@ jobs:
       - uses: conda-incubator/setup-miniconda@v2
         with:
           auto-update-conda: true
-          auto-activate-base: true
           python-version: ${{ matrix.python-version }}
+          allow-softlinks: true
+          show-channel-urls: true
+          use-only-tar-bz2: true
 
       - name: Install Nextflow
         env:
@@ -47,5 +52,4 @@ jobs:
           
       - name: Run pipeline with no control data
         run: |
-          conda clean --all -f
           nextflow run ${GITHUB_WORKSPACE} -profile test_no_input,conda
