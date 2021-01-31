@@ -43,6 +43,6 @@ process JO_INDEX {
     paste <(printf '%s\n' "\${n[@]}") <(printf '%s\n' "\${s[@]}") > peaktype_files.txt
     cp ${index_docs} new.rmd
     install_packages.r rmarkdown DT ggplot2 reshape2
-    Rscript -e "rmarkdown::render('new.rmd', output_file='index.html', params = list(design='${designtab}', genome='${params.genome}', summary='${workflow_summary}', exec_info='${params.tracedir}', launchdir='${workflow.launchDir}', conda='${params.conda}'))"
+    Rscript -e "rmarkdown::render('new.rmd', output_file='index.html', params = list(design='${designtab}', genome='${params.genome}', species='${params.species}', summary='${workflow_summary}', exec_info='${params.tracedir}', launchdir='${workflow.launchDir}', conda='${params.conda}'))"
     """
 }

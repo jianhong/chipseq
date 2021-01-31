@@ -11,6 +11,7 @@ output:
 params:
   design: ""
   genome: ""
+  species: ""
   summary: ""
   exec_info: ""
   launchdir: ""
@@ -178,6 +179,30 @@ Code for QC:
 | Color code               | Green    | Yellow  | Red     | Gray|
 
 ### Plots for peaks
+
+```{r, echo=FALSE, eval=FALSE}
+outdir <- dirname(params$exec_info)
+if(!grepl("^\\/", outdir)){
+  ## if outdir is absolute path, it will not work
+  files <- dir(".", "bigwig|bed|broadPeak|narrowPeak", 
+              recursive = TRUE, full.names = TRUE)
+  files <- sub("\\.\\/", "", files)
+  names(files) <- sub("\\..*?$", "", basename(files))
+  ids <- which(grepl("^(homer|macs2)", files))
+  if(length(broadPeaks)>0){
+    pts <- rep("narrowPeaks", length(ids))
+    idNames <- files[ids]
+    dist <- adist(idNames, peaktypes[, 1])
+    pts <- apply(dist, 1, function(.ele) peattypes[which.min(.ele)[1], 2])
+  }else{
+    pts <- "narrowPeaks"
+  }
+  files[ids] <- mapply(file.path, pts, files[ids])
+  browseTracks(tracks = files, genome=params$species)
+}
+
+```
+
 
 The sample correlation is shown, if available, by sample similarity plots of peaks
 called by MACS2 and Homer by DiffBind for the samples without control setting.

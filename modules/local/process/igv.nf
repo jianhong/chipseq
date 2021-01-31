@@ -17,7 +17,6 @@ process IGV {
     val bigwig_options
     val peak_options
     val consensus_options
-    // path differential_peaks from ch_macs_consensus_deseq_comp_igv.collect().ifEmpty([])
     val options
 
     output:
@@ -33,5 +32,3 @@ process IGV {
     igv_files_to_session.py igv_session.xml igv_files.txt ../../genome/${fasta.getName()} --path_prefix '../../'
     """
 }
-// find * -type f -name "${prefix}.bed" -exec echo -e "bwa/mergedLibrary/macs/${PEAK_TYPE}/consensus/${antibody}/"{}"\\t0,0,0" \\; > ${prefix}.bed.igv.txt
-// find * -type f -name "*.FDR0.05.results.bed" -exec echo -e "bwa/mergedLibrary/macs/${PEAK_TYPE}/consensus/${antibody}/deseq2/"{}"\\t255,0,0" \\; > ${prefix}.igv.txt
