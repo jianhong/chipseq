@@ -56,11 +56,12 @@ BiocManager to avoid the dependece issues.
             * Annotate peaks relative to gene features ([`HOMER`](http://homer.ucsd.edu/homer/download.html))
             * Create consensus peakset across all samples and create tabular file to aid in the filtering of the data ([`BEDTools`](https://github.com/arq5x/bedtools2/))
             * Count reads in consensus peaks ([`featureCounts`](http://bioinf.wehi.edu.au/featureCounts/))
-            * Differential binding analysis, PCA and clustering ([`R`](https://www.r-project.org/), [`DESeq2`](https://bioconductor.org/packages/release/bioc/html/DESeq2.html))
+            * Differential binding analysis, PCA and clustering ([`R`](https://www.r-project.org/), [`DESeq2`](https://bioconductor.org/packages/DESeq2/))
         3. Differential binding analysis by [`DiffBind`](https://bioconductor.org/packages/DiffBind/)
     2. By ([`HOMER`](http://homer.ucsd.edu/homer/download.html))
         1. Call Peaks
         2. Differential binding analysis by [`DiffBind`](https://bioconductor.org/packages/DiffBind/)
+        3. Annotate peaks relative to gene features ([`ChIPpeakAnno`](https://bioconductor.org/packages/ChIPpeakAnno/))
 7. Visualisation the tracks.
     1. Create IGV session file containing bigWig tracks, peaks and differential sites for data visualisation ([`IGV`](https://software.broadinstitute.org/software/igv/)).
     2. Create UCSC genome browser track hub for bigWig tracks [trackhub](https://daler.github.io/trackhub/quickstart.html).
