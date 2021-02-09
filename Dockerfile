@@ -4,7 +4,7 @@
 # images
 # Based on Ubuntu
 #  $ cd chipseq
-#  $ VERSION=master
+#  $ VERSION=dev
 #  $ docker build -t jianhong/chipseq:$VERSION .  ## --no-cache
 #  $ docker images jianhong/chipseq:$VERSION
 #  $ docker push jianhong/chipseq:$VERSION
@@ -25,7 +25,7 @@ ENV DEBIAN_FRONTEND="noninteractive" TZ="America/New_York"
 # Install software from source
 RUN cd ~ && \
     apt-get update --fix-missing && \
-    apt-get install --yes rsync wget bzip2 gcc libssl-dev libxml2-dev libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev librsvg2-dev libv8-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools subread && \
+    apt-get install --yes rsync wget bzip2 gcc libssl-dev libxml2-dev libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev librsvg2-dev libv8-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools subread pigz curl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN ln -s python3 /usr/bin/python
@@ -73,6 +73,11 @@ RUN wget https://github.com/FelixKrueger/TrimGalore/archive/0.6.6.tar.gz && \
 RUN wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bedGraphToBigWig && \
     chmod +x bedGraphToBigWig && mv bedGraphToBigWig /usr/local/sbin/
 
+RUN yes | sh -c "$(wget -q ftp://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh -O -)" && \
+    wget --output-document sratoolkit.tar.gz http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz && \
+    tar -xf sratoolkit.tar.gz && mv sratoolkit.2.10.9-ubuntu64/bin/* /usr/local/sbin/ && \
+    rm -rf sratoolkit*
+
 ## Install Bioconductor packages
 RUN Rscript -e "install.packages('BiocManager')"
 RUN Rscript -e 'BiocManager::install(c("optparse", "rjson", "DiffBind", "ChIPpeakAnno", \
@@ -80,6 +85,7 @@ RUN Rscript -e 'BiocManager::install(c("optparse", "rjson", "DiffBind", "ChIPpea
                 "RColorBrewer", "pheatmap", "lattice", "BiocParallel", \
                 "reshape2", "scales", "UpSetR", "caTools", \
                 "rmarkdown", "DT"))'
+
 
 # Instruct R processes to use these empty files instead of clashing with a local version
 RUN touch .Rprofile

@@ -30,7 +30,7 @@ process JO_DIFFBIND {
     """
     echo '${metadata}' > designtab.txt
     install_packages.r rjson DiffBind ChIPpeakAnno rtracklayer ggplot2 GenomicFeatures optparse
-    diffbind.r -d 'designtab.txt' \\
+    ${workflow.projectDir}/modules/local/process/diffbind/diffbind.r -d 'designtab.txt' \\
         -f ${bams.join(',')} \\
         -p ${peaks.join(',')} \\
         -g ${gtf} \\

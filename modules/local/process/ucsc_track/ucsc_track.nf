@@ -34,7 +34,7 @@ process JO_TRACKHUB {
     s=($bws)
     paste <(printf '%s\n' "\${n[@]}") <(printf '%s\n' "\${s[@]}") > track_files.txt
     
-    create_trackhub.py track_files.txt $params.species $size $params.email $designtab
+    ${workflow.projectDir}/modules/local/process/ucsc_track/create_trackhub.py track_files.txt $params.species $size $params.email $designtab
     
     rsync trackhub/${params.species} tmp -a --copy-links -v
     rm -r trackhub/${params.species}

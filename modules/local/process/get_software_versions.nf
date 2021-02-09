@@ -5,6 +5,8 @@ include { saveFiles } from './functions'
  * Parse software version numbers
  */
 process GET_SOFTWARE_VERSIONS {
+    cache false
+    
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:"pipeline_info", publish_id:'') }
