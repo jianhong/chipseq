@@ -57,7 +57,7 @@ workflow {
             ch_input = file(params.input, checkIfExists: true)
         }
     } else { exit 1, 'Samples design file not specified!' }
-    ch_input.view()
+
     /*
      * SUBWORKFLOW: Run main jianhong/chipseq analysis pipeline
      */

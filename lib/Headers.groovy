@@ -22,7 +22,7 @@ class Headers {
     
     static String dashed_line(monochrome_logs) {
         Map colors = log_colours(monochrome_logs)
-        return "-${colors.dim}----------------------------------------------------${colors.reset}-"
+        return "-${colors.dim}--------------------------------------------------------${colors.reset}-"
     }
 
     static String nf_core(workflow, monochrome_logs) {
@@ -30,11 +30,11 @@ class Headers {
         String.format(
             """\n
             ${dashed_line(monochrome_logs)}
-                                                    ${colors.green},--.${colors.black}/${colors.green},-.${colors.reset}
-            ${colors.blue}        ___     __   __   __   ___     ${colors.green}/,-._.--~\'${colors.reset}
-            ${colors.blue}  |\\ | |__  __ /  ` /  \\ |__) |__         ${colors.yellow}}  {${colors.reset}
-            ${colors.blue}  | \\| |       \\__, \\__/ |  \\ |___     ${colors.green}\\`-._,-`-,${colors.reset}
-                                                    ${colors.green}`._,._,\'${colors.reset}
+                                                          ${colors.green},--.${colors.black}/${colors.green},-.${colors.reset}
+            ${colors.blue} ___,         ___,                 ___       ${colors.green}/,-._.--~\'${colors.reset}
+            ${colors.blue} |  |  .      |__| .  __  __ |\\ | |__           ${colors.yellow}}  {${colors.reset}
+            ${colors.blue} |__|_ | |__| |__| | |__|    | \\| |          ${colors.green}\\`-._,-`-,${colors.reset}
+                                                          ${colors.green}`._,._,\'${colors.reset}
             ${colors.purple}  ${workflow.manifest.name} v${workflow.manifest.version}${colors.reset}
             ${dashed_line(monochrome_logs)}
             """.stripIndent()

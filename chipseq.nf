@@ -7,11 +7,6 @@
  https://github.com/jianhong/chipseq
 ----------------------------------------------------------------------------------------
 */
-if( !nextflow.version.matches('20.10+') ) {
-    println "This workflow requires Nextflow version 20.10 or greater -- You are running version $nextflow.version"
-    exit 1
-}
-
 ////////////////////////////////////////////////////
 /* --         LOCAL PARAMETER VALUES           -- */
 ////////////////////////////////////////////////////
@@ -149,10 +144,10 @@ include { JO_METAGENE_ANALYSIS                } from './modules/local/subworkflo
 include { JO_CHECKSUMS                        } from './modules/local/process/checksum/checksum'
 include { JO_TRACKHUB                         } from './modules/local/process/ucsc_track/ucsc_track'
 include { JO_INDEX                            } from './modules/local/process/create_index/create_index'
-include { JO_DIFFBIND as JO_DIFFBIND_HOMER
-          JO_DIFFBIND as JO_DIFFBIND_WITHOUT_CONTROL
-          JO_DIFFBIND as JO_DIFFBIND_HOMER_WITHOUT_CONTROL
-          JO_DIFFBIND                         } from './modules/local/process/diffbind/diffbind'
+include { JO_DIFFBIND_ENRICHMENT as JO_DIFFBIND_ENRICHMENT_HOMER
+          JO_DIFFBIND_ENRICHMENT as JO_DIFFBIND_ENRICHMENT_WITHOUT_CONTROL
+          JO_DIFFBIND_ENRICHMENT as JO_DIFFBIND_ENRICHMENT_HOMER_WITHOUT_CONTROL
+          JO_DIFFBIND_ENRICHMENT                         } from './modules/local/subworkflow/diffbind_enrich'
 
 ////////////////////////////////////////////////////
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
@@ -425,7 +420,7 @@ workflow CHIPSEQ {
                     .join(ch_ip_peak_no_control.map{[it[0].antibody, it[2]]}.groupTuple()))
             .map{[it[1], it[2], it[3]]}
             .set{ch_diffbind_without_control}
-        JO_DIFFBIND_WITHOUT_CONTROL (
+        JO_DIFFBIND_ENRICHMENT_WITHOUT_CONTROL (
             ch_diffbind_without_control,
             ch_gtf,
             ch_blacklist.ifEmpty([]),
@@ -576,7 +571,7 @@ workflow CHIPSEQ {
             .map{[it[1], it[2], it[3]]}
             .set{ch_diffbind}
         
-        JO_DIFFBIND (
+        JO_DIFFBIND_ENRICHMENT (
             ch_diffbind,
             ch_gtf,
             ch_blacklist.ifEmpty([]),
@@ -612,7 +607,7 @@ workflow CHIPSEQ {
                     .join(ch_ip_peak_homer_no_control.map{[it[0].antibody, it[2]]}.groupTuple()))
             .map{[it[1], it[2], it[3]]}
             .set{ch_diffbind_homer_without_control}
-        JO_DIFFBIND_HOMER_WITHOUT_CONTROL (
+        JO_DIFFBIND_ENRICHMENT_HOMER_WITHOUT_CONTROL (
             ch_diffbind_homer_without_control,
             ch_gtf,
             ch_blacklist.ifEmpty([]),
@@ -649,7 +644,7 @@ workflow CHIPSEQ {
             .map{[it[1], it[2], it[3]]}
             .set{ch_diffbind_homer}
         
-        JO_DIFFBIND_HOMER (
+        JO_DIFFBIND_ENRICHMENT_HOMER (
             ch_diffbind_homer,
             ch_gtf,
             ch_blacklist.ifEmpty([]),
@@ -771,8 +766,8 @@ workflow CHIPSEQ {
         JO_CHECKSUMS.out.md5.collect(),
         MARK_DUPLICATES_PICARD.out.bam.collect{it[0].id},
         MARK_DUPLICATES_PICARD.out.bam.collect{it[0].peaktype},
-        JO_DIFFBIND_WITHOUT_CONTROL.out.res.ifEmpty([]),
-        JO_DIFFBIND_HOMER_WITHOUT_CONTROL.out.res.ifEmpty([]),
+        JO_DIFFBIND_ENRICHMENT_WITHOUT_CONTROL.out.res.ifEmpty([]),
+        JO_DIFFBIND_ENRICHMENT_HOMER_WITHOUT_CONTROL.out.res.ifEmpty([]),
         GET_SOFTWARE_VERSIONS.out.yaml.collect(),
         [:]
     )

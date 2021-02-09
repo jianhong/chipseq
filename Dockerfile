@@ -93,3 +93,4 @@ RUN touch .Renviron
 
 WORKDIR /work
 ENV JAVA_HOME="/usr"
+ENV PATH $PATH:$HOME/edirect
