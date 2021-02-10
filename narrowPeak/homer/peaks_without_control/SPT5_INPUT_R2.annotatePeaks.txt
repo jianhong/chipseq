@@ -1,2 +1,0 @@
-PeakID (cmd=annotatePeaks.pl SPT5_INPUT_R2_homer_narrowPeak.txt genome.fa -gtf genes.gtf -cpu 2)	Chr	Start	End	Strand	Peak Score	Focus Ratio/Region Size	Annotation	Detailed Annotation	Distance to TSS	Nearest PromoterID	Entrez ID	Nearest Unigene	Nearest Refseq	Nearest Ensembl	Gene Name	Gene Alias	Gene Description	Gene Type
-XII-1	XII	460196	460280	+	6014.1	0.539	TTS (RDN25-2)	rRNA-TTS (RDN25-2)	562	RDN5-1	RDN5-1	RDN5-1			RDN5-1			rRNA

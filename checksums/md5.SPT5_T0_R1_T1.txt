@@ -1,2 +1,0 @@
-16f81b4c3ac2ec1612d3bb8eeebdbc5f  SPT5_T0_R1_T1_1.fastq
-dd426f18361a77a9f61a002a1a5a8a0e  SPT5_T0_R1_T1_2.fastq
