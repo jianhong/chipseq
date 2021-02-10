@@ -7,12 +7,12 @@
   jianhong/chipseq v1.1.5
 ----------------------------------------------------
 
-Run Name: confident_joliot
+Run Name: gigantic_hypatia
 
 ## jianhong/chipseq execution completed successfully! ##
 
 
-The workflow was completed at 2021-02-10T22:17:06.457Z (duration: 11s)
+The workflow was completed at 2021-02-10T22:22:19.588Z (duration: 11.3s)
 
 The command used to launch the workflow was as follows:
 
@@ -22,14 +22,14 @@ The command used to launch the workflow was as follows:
 
 Pipeline Configuration:
 -----------------------
- - Core Nextflow options: [runName:confident_joliot, containerEngine:docker, container:jianhong/chipseq:latest, launchDir:/home/runner/work/chipseq/chipseq, workDir:/home/runner/work/chipseq/chipseq/work, projectDir:/home/runner/work/chipseq/chipseq, userName:runner, profile:test,docker, input:https://raw.githubusercontent.com/jianhong/chipseq/master/assets/design.csv, configFiles:/home/runner/work/chipseq/chipseq/nextflow.config]
- - Date Started: 2021-02-10T22:16:55.457Z
- - Date Completed: 2021-02-10T22:17:06.457Z
+ - Core Nextflow options: [runName:gigantic_hypatia, containerEngine:docker, container:jianhong/chipseq:latest, launchDir:/home/runner/work/chipseq/chipseq, workDir:/home/runner/work/chipseq/chipseq/work, projectDir:/home/runner/work/chipseq/chipseq, userName:runner, profile:test,docker, input:https://raw.githubusercontent.com/jianhong/chipseq/master/assets/design.csv, configFiles:/home/runner/work/chipseq/chipseq/nextflow.config]
+ - Date Started: 2021-02-10T22:22:08.321Z
+ - Date Completed: 2021-02-10T22:22:19.588Z
  - Pipeline script file path: /home/runner/work/chipseq/chipseq/main.nf
  - Pipeline script hash ID: b7dc6b840e3090f83c671515fee0c3f0
- - Nextflow Version: 20.10.0
- - Nextflow Build: 5430
- - Nextflow Compile Timestamp: 01-11-2020 15:14 UTC
+ - Nextflow Version: 20.07.1
+ - Nextflow Build: 5412
+ - Nextflow Compile Timestamp: 24-07-2020 15:18 UTC
 
 --
 jianhong/chipseq
