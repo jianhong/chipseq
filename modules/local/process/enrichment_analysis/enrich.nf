@@ -1,5 +1,5 @@
 // Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from '../functions'
+include { initOptions; saveFiles; getSoftwareName; getRealPath } from '../functions'
 
 /*
  * enrichment analysis by clusterProfile and GSEA
@@ -23,9 +23,10 @@ process JO_ENRICHMENTANALYSIS {
 
     script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
     def ioptions  = initOptions(options)
+    def curr_path = getRealPath()
     """
     install_packages.r ChIPpeakAnno clusterProfiler pathview biomaRt optparse
-    ${workflow.projectDir}/modules/local/process/enrichment_analysis/enrich.r \\
+    ${curr_path}/enrichment_analysis/enrich.r \\
         -s '${params.genome}' \\
         $ioptions.args
     """

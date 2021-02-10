@@ -3,31 +3,28 @@ include { saveFiles } from './functions'
 
 params.options = [:]
 
-/*
- * Convert GTF file to BED format
- */
-process GTF2BED {
-    tag "$gtf"
-    label 'process_low'
+process GTF_GENE_FILTER {
+    tag "$fasta"
     publishDir "${params.outdir}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:'genome', publish_id:'') }
 
-    conda (params.enable_conda ? "conda-forge::perl=5.26.2" : null)
+    conda (params.enable_conda ? "conda-forge::python=3.8.3" : null)
     if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://depot.galaxyproject.org/singularity/perl:5.26.2"
+        container "https://depot.galaxyproject.org/singularity/python:3.8.3"
     } else {
-        container "quay.io/biocontainers/perl:5.26.2"
+        container "quay.io/biocontainers/python:3.8.3"
     }
 
     input:
+    path fasta
     path gtf
     
     output:
-    path '*.bed'
-
-    script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
+    path "*.gtf"
+    
+    script: // filter_gtf_for_genes_in_genome.py is bundled with the pipeline, in nf-core/rnaseq/bin/
     """
-    gtf2bed $gtf > ${gtf.baseName}.bed
+    filter_gtf_for_genes_in_genome.py --gtf $gtf --fasta $fasta -o ${fasta.baseName}_genes.gtf
     """
 }

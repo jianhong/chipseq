@@ -16,7 +16,9 @@ workflow INPUT_CHECK {
         .splitCsv(header:true, sep:',')
         .map { get_samplesheet_paths(it, seq_center) }
         .set { ch_reads }
+    genome = ch_reads.collect{[it[4]]}.distinct()
 
     emit:
-    reads = ch_reads // channel: [ val(meta), [ reads ] ]
+    reads  = ch_reads // channel: [ val(meta), [ reads ] ]
+    genome = genome   // channel: [ val(genome) ]
 }

@@ -3,6 +3,16 @@
  *  Utility functions used in nf-core DSL2 module files
  * -----------------------------------------------------
  */
+/*
+ * get real project dir
+ */
+
+def getRealPath(){
+    if(workflow.containerEngine){
+        return "/pipeline/modules/local/process"
+    }
+     return "${workflow.projectDir}/modules/local/process"
+}
 
 /*
  * Extract name of software tool from process name using $task.process

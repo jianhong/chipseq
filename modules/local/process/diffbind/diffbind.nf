@@ -1,5 +1,5 @@
 // Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from '../functions'
+include { initOptions; saveFiles; getSoftwareName; getRealPath } from '../functions'
 
 /*
  * Differential analysis by DiffBind and annotation by ChIPpeakAnno
@@ -27,10 +27,11 @@ process JO_DIFFBIND {
     def ioptions  = initOptions(options)
     blacklist_params = params.blacklist ? "-b ${blacklist}" : '-b FALSE'
     def metadata = new groovy.json.JsonBuilder(meta).toPrettyString()
+    def curr_path = getRealPath()
     """
     echo '${metadata}' > designtab.txt
     install_packages.r rjson DiffBind ChIPpeakAnno rtracklayer ggplot2 GenomicFeatures optparse
-    ${workflow.projectDir}/modules/local/process/diffbind/diffbind.r -d 'designtab.txt' \\
+    ${curr_path}/diffbind/diffbind.r -d 'designtab.txt' \\
         -f ${bams.join(',')} \\
         -p ${peaks.join(',')} \\
         -g ${gtf} \\

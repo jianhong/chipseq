@@ -93,4 +93,13 @@ RUN touch .Renviron
 
 WORKDIR /work
 ENV JAVA_HOME="/usr"
-ENV PATH $PATH:$HOME/edirect
+RUN mv $HOME/edirect /edirect
+ENV PATH $PATH:/edirect
+
+RUN apt-get update --fix-missing && \
+    apt-get install --yes libxml-simple-perl && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+RUN wget https://github.com/jianhong/chipseq/archive/dev.zip && \
+    unzip dev.zip && mv chipseq-dev /pipeline && rm dev.zip

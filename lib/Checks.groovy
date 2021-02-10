@@ -86,4 +86,19 @@ class Checks {
             System.exit(0)
         }
     }
+    
+     // Get attribute from genome config file e.g. fasta
+    static String get_genome_attribute(params, attribute) {
+        def val = false
+        if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
+            if (params.genomes[ params.genome ].containsKey(attribute)) {
+                val = params.genomes[ params.genome ][ attribute ]
+            }
+        }else{
+            if(params.containsKey(attribute)){
+                val = params[attribute]
+            }
+        }
+        return val
+    }
 }

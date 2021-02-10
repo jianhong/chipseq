@@ -33,15 +33,16 @@ if (params.genomes && params.genome && !params.genomes.containsKey(params.genome
 }
 
 // Configurable variables
-params.fasta = params.genome ? params.genomes[ params.genome ].fasta ?: false : false
-params.bwa_index = params.genome ? params.genomes[ params.genome ].bwa ?: false : false
-params.gtf = params.genome ? params.genomes[ params.genome ].gtf ?: false : false
-params.gene_bed = params.genome ? params.genomes[ params.genome ].bed12 ?: false : false
-params.macs_gsize = params.genome ? params.genomes[ params.genome ].macs_gsize ?: false : false
-params.deep_gsize = params.genome ? params.genomes[ params.genome ].deep_gsize ?: false : false
-params.blacklist = params.genome ? params.genomes[ params.genome ].blacklist ?: false : false
-anno_readme = params.genome ? params.genomes[ params.genome ].readme ?: false : false
-params.species = params.genome ? params.genomes[ params.genome ].species ?: params.genome : params.species?:false
+params.fasta      = Checks.get_genome_attribute(params, 'fasta')
+params.bwa_index  = Checks.get_genome_attribute(params, 'bwa')
+params.gtf        = Checks.get_genome_attribute(params, 'gtf')
+params.gene_bed   = Checks.get_genome_attribute(params, 'bed12')
+params.macs_gsize = Checks.get_genome_attribute(params, 'macs_gsize')
+params.deep_gsize = Checks.get_genome_attribute(params, 'deep_gsize')
+params.blacklist  = Checks.get_genome_attribute(params, 'blacklist')
+anno_readme       = Checks.get_genome_attribute(params, 'readme')
+params.species    = Checks.get_genome_attribute(params, 'species')
+
 
 ////////////////////////////////////////////////////
 /* --          VALIDATE INPUTS                 -- */
@@ -50,31 +51,10 @@ params.species = params.genome ? params.genomes[ params.genome ].species ?: para
 /*
  * Validate parameters
  */
-if (params.gtf)       { ch_gtf = file(params.gtf, checkIfExists: true) } else { exit 1, 'GTF annotation file not specified!' }
-if (params.gene_bed)  { ch_gene_bed = file(params.gene_bed, checkIfExists: true) }
-if (params.blacklist) { ch_blacklist = Channel.fromPath(params.blacklist, checkIfExists: true) } else { ch_blacklist = Channel.empty() }
-
-if (params.fasta) {
-    ch_fasta = file(params.fasta, checkIfExists: true)
-} else {
-    exit 1, 'Fasta file not specified!'
-}
-
 // Save AWS IGenomes file containing annotation version
 if (anno_readme && file(anno_readme).exists()) {
     file("${params.outdir}/genome/").mkdirs()
     file(anno_readme).copyTo("${params.outdir}/genome/")
-}
-
-// If --gtf is supplied along with --genome
-// Make gene bed from supplied --gtf instead of using iGenomes one automatically
-def makeBED = false
-if (!params.gene_bed) {
-    makeBED = true
-} else if (params.genome && params.gtf) {
-    if (params.genomes[ params.genome ].gtf != params.gtf) {
-        makeBED = true
-    }
 }
 
 /*
@@ -137,6 +117,7 @@ include { OUTPUT_DOCUMENTATION                } from './modules/local/process/do
 include { GET_SOFTWARE_VERSIONS               } from './modules/local/process/get_software_versions'
 include { MULTIQC                             } from './modules/local/process/multiqc'
 
+include { PREPARE_GENOME                      } from './modules/local/process/prepare_genome/prepare_genome'
 include { INPUT_CHECK                         } from './modules/local/subworkflow/input_check'
 include { BAM_CLEAN                           } from './modules/local/subworkflow/bam_clean'
 
@@ -153,7 +134,6 @@ include { JO_DIFFBIND_ENRICHMENT as JO_DIFFBIND_ENRICHMENT_HOMER
 /* --    IMPORT NF-CORE MODULES/SUBWORKFLOWS   -- */
 ////////////////////////////////////////////////////
 
-include { BWA_INDEX                     } from './modules/nf-core/software/bwa/index/main'
 include { PICARD_MERGESAMFILES          } from './modules/nf-core/software/picard/mergesamfiles/main'
 include { PICARD_COLLECTMULTIPLEMETRICS } from './modules/nf-core/software/picard/collectmultiplemetrics/main'
 include { PRESEQ_LCEXTRAP               } from './modules/nf-core/software/preseq/lcextrap/main'
@@ -201,17 +181,10 @@ workflow CHIPSEQ {
     /*
      * Prepare genome files
      */
-    ch_index = params.bwa_index ? Channel.value(file(params.bwa_index)) : BWA_INDEX ( ch_fasta, params.modules['bwa_index'] ).index
-
-    if (makeBED) { ch_gene_bed = GTF2BED ( ch_gtf, [:] ) }
-
-    MAKE_GENOME_FILTER (
-        GET_CHROM_SIZES ( ch_fasta, [:] ).sizes,
-        ch_blacklist.ifEmpty([]),
-        [:]
-    )
+    PREPARE_GENOME(INPUT_CHECK.out.genome)
+    
     ch_software_versions = Channel.empty()
-    ch_software_versions = ch_software_versions.mix(MAKE_GENOME_FILTER.out.version.first().ifEmpty(null))
+    ch_software_versions = ch_software_versions.mix(PREPARE_GENOME.out.filter_version.first().ifEmpty(null))
 
     /*
      * Read QC & trimming
@@ -235,8 +208,8 @@ workflow CHIPSEQ {
     params.modules['bwa_mem'].args += score
     MAP_BWA_MEM (
         FASTQC_TRIMGALORE.out.reads,
-        ch_index,
-        ch_fasta,
+        PREPARE_GENOME.out.ch_index,
+        PREPARE_GENOME.out.fasta,
         params.modules['bwa_mem'],
         params.modules['samtools_sort_lib']
     )
@@ -276,7 +249,7 @@ workflow CHIPSEQ {
     // Fix getting name sorted BAM here for PE/SE
     BAM_CLEAN (
         MARK_DUPLICATES_PICARD.out.bam.join(MARK_DUPLICATES_PICARD.out.bai, by: [0]),
-        MAKE_GENOME_FILTER.out.bed.collect(),
+        PREPARE_GENOME.out.filter_bed.collect(),
         ch_bamtools_filter_se_config,
         ch_bamtools_filter_pe_config,
         params.modules['bam_filter'],
@@ -290,7 +263,7 @@ workflow CHIPSEQ {
      */
     PICARD_COLLECTMULTIPLEMETRICS (
         BAM_CLEAN.out.bam,
-        ch_fasta,
+        PREPARE_GENOME.out.fasta,
         params.modules['picard_collectmultiplemetrics']
     )
 
@@ -325,7 +298,7 @@ workflow CHIPSEQ {
 
     UCSC_BEDRAPHTOBIGWIG (
         BEDTOOLS_GENOMECOV.out.bedgraph,
-        GET_CHROM_SIZES.out.sizes,
+        PREPARE_GENOME.out.chrom_sizes,
         params.modules['ucsc_bedgraphtobigwig']
     )
     ch_software_versions = ch_software_versions.mix(UCSC_BEDRAPHTOBIGWIG.out.version.first().ifEmpty(null))
@@ -335,7 +308,7 @@ workflow CHIPSEQ {
      */
     DEEPTOOLS_COMPUTEMATRIX (
         UCSC_BEDRAPHTOBIGWIG.out.bigwig,
-        ch_gene_bed,
+        PREPARE_GENOME.out.gene_bed,
         params.modules['deeptools_computematrix']
     )
     ch_software_versions = ch_software_versions.mix(DEEPTOOLS_COMPUTEMATRIX.out.version.first().ifEmpty(null))
@@ -422,8 +395,8 @@ workflow CHIPSEQ {
             .set{ch_diffbind_without_control}
         JO_DIFFBIND_ENRICHMENT_WITHOUT_CONTROL (
             ch_diffbind_without_control,
-            ch_gtf,
-            ch_blacklist.ifEmpty([]),
+            PREPARE_GENOME.out.gtf,
+            PREPARE_GENOME.out.blacklist.ifEmpty([]),
             params.modules['jo_diffbind_macs2_without_control']
         )
         
@@ -469,8 +442,8 @@ workflow CHIPSEQ {
 
         HOMER_ANNOTATEPEAKS_MACS2 (
             MACS2_CALLPEAK.out.peak,
-            ch_fasta,
-            ch_gtf,
+            PREPARE_GENOME.out.fasta,
+            PREPARE_GENOME.out.gtf,
             params.modules['homer_annotatepeaks_macs2'],
             false
         )
@@ -516,8 +489,8 @@ workflow CHIPSEQ {
         params.modules['homer_annotatepeaks_consensus'].publish_dir += "/consensus"
         HOMER_ANNOTATEPEAKS_CONSENSUS (
             MACS2_CONSENSUS.out.bed,
-            ch_fasta,
-            ch_gtf,
+            PREPARE_GENOME.out.fasta,
+            PREPARE_GENOME.out.gtf,
             params.modules['homer_annotatepeaks_consensus'],
             false
         )
@@ -573,8 +546,8 @@ workflow CHIPSEQ {
         
         JO_DIFFBIND_ENRICHMENT (
             ch_diffbind,
-            ch_gtf,
-            ch_blacklist.ifEmpty([]),
+            PREPARE_GENOME.out.gtf,
+            PREPARE_GENOME.out.blacklist.ifEmpty([]),
             params.modules['jo_diffbind_macs2']
         )
     }
@@ -589,8 +562,8 @@ workflow CHIPSEQ {
 
         HOMER_CALLPEAK_WITHOUT_CONTROL (
             ch_ip_bam_no_ctl_homer,
-            ch_fasta,
-            ch_gtf,
+            PREPARE_GENOME.out.fasta,
+            PREPARE_GENOME.out.gtf,
             params.modules['homer_maketagdirecotry'],
             params.modules['homer_findpeaks'],
             params.modules['homer_annotatepeaks'],
@@ -609,8 +582,8 @@ workflow CHIPSEQ {
             .set{ch_diffbind_homer_without_control}
         JO_DIFFBIND_ENRICHMENT_HOMER_WITHOUT_CONTROL (
             ch_diffbind_homer_without_control,
-            ch_gtf,
-            ch_blacklist.ifEmpty([]),
+            PREPARE_GENOME.out.gtf,
+            PREPARE_GENOME.out.blacklist.ifEmpty([]),
             params.modules['jo_diffbind_homer_without_control']
         )
         
@@ -621,8 +594,8 @@ workflow CHIPSEQ {
             
         HOMER_CALLPEAK (
             ch_ip_control_bam_homer,
-            ch_fasta,
-            ch_gtf,
+            PREPARE_GENOME.out.fasta,
+            PREPARE_GENOME.out.gtf,
             params.modules['homer_maketagdirecotry'],
             params.modules['homer_findpeaks'],
             params.modules['homer_annotatepeaks'],
@@ -646,8 +619,8 @@ workflow CHIPSEQ {
         
         JO_DIFFBIND_ENRICHMENT_HOMER (
             ch_diffbind_homer,
-            ch_gtf,
-            ch_blacklist.ifEmpty([]),
+            PREPARE_GENOME.out.gtf,
+            PREPARE_GENOME.out.blacklist.ifEmpty([]),
             params.modules['jo_diffbind_homer']
         )
     
@@ -656,7 +629,7 @@ workflow CHIPSEQ {
      * Create IGV session
      */
     IGV (
-        ch_fasta,
+        PREPARE_GENOME.out.fasta,
         UCSC_BEDRAPHTOBIGWIG.out.bigwig.collect{it[1]}.ifEmpty([]),
         MACS2_CALLPEAK.out.peak.collect{it[1]}.ifEmpty([]),
         MACS2_CONSENSUS.out.bed.collect{it[1]}.ifEmpty([]),
@@ -687,7 +660,7 @@ workflow CHIPSEQ {
         ch_trackhub_name,
         ch_trackhub_track,
         ch_input,
-        GET_CHROM_SIZES.out.sizes,
+        PREPARE_GENOME.out.chrom_sizes,
         params.modules['jo_trackhub']
    )
 

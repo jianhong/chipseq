@@ -198,3 +198,7 @@ nextflow run jianhong/chipseq -c sample.config -c path/to/your/module/config/fil
 ## Get help
 
 Please create an issue to submit your questions.
+
+## Citation
+
+See [citation](CITATIONS.md)

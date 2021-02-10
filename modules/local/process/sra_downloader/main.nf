@@ -17,7 +17,7 @@ workflow JO_SRADOWNLOADER {
     //dowload data
     JO_FASTQDUMP(JO_SRAINFO.out.info.splitCsv ( header:true, sep:',' ).map{
         meta -> 
-            path = "fastq/${meta.ScientificName.replaceAll('\\W+', '_')}/${meta.LibraryLayout}/${meta.LibraryStrategy}/${meta.condition}/${meta.replicate}"
+            meta.path = "fastq/${meta.ScientificName.replaceAll('\\W+', '_')}/${meta.LibraryLayout}/${meta.LibraryStrategy}/${meta.condition}/${meta.replicate}"
             meta
     })
 
