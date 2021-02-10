@@ -11,11 +11,7 @@ process JO_FASTQDUMP {
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:"${meta.path}", publish_id:"${meta.Run}") }
 
     conda (params.conda ? "${params.conda_softwares.sra_tools} ${params.conda_softwares.pigz}" : null)
-    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
-        container "https://containers.biocontainers.pro/s3/SingImgsRepo/biocontainers/v1.2.0_cv1/biocontainers_v1.2.0_cv1.img"
-    } else {
-        container "jianhong/chipseq:latest"
-    }
+    
     input:
     val meta
 
