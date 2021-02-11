@@ -46,7 +46,7 @@ def get_samplesheet_paths(LinkedHashMap row, String seq_center, String genome) {
     if(row.ScientificName){
         meta.genome = genomes[row.ScientificName.toString().replaceAll("\\W+", "_").toLowerCase()]
     }else{
-        meta.genome = genome
+        meta.genome = genome?:'unkown'
     }
 
     def rg = "\'@RG\\tID:${meta.id}\\tSM:${meta.id.split('_')[0..-2].join('_')}\\tPL:ILLUMINA\\tLB:${meta.id}\\tPU:1\'"

@@ -1,5 +1,5 @@
 // Import generic module functions
-include { initOptions; saveFiles } from './functions'
+include { initOptions; saveFiles; getRealPath } from '../functions'
 
 /*
  * Aggregated QC plots for peak-to-gene annotation
@@ -25,9 +25,10 @@ process PLOT_HOMER_ANNOTATEPEAKS {
 
     script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
     def ioptions = initOptions(options)
+    def curr_path = getRealPath()
     """
-    install_packages.r optparse ggplot2 reshape2 scales
-    plot_homer_annotatepeaks.r \\
+    ${curr_path}/utilities/install_packages.r optparse stringi ggplot2 reshape2 scales
+    ${curr_path}/visualization/plot_homer_annotatepeaks.r \\
         -i ${annos.join(',')} \\
         -s ${annos.join(',').replaceAll("${suffix}","")} \\
         $ioptions.args

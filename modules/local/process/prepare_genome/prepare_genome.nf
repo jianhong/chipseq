@@ -23,7 +23,7 @@ workflow PREPARE_GENOME {
     
     main:
     if(genome){
-        params.genome=genome
+        params.genome = "${genome}"
         // Configurable variables
         params.fasta      = Checks.get_genome_attribute(params, 'fasta')
         params.bwa_index  = Checks.get_genome_attribute(params, 'bwa')
@@ -101,7 +101,7 @@ workflow PREPARE_GENOME {
     ch_bwa_index = params.bwa_index ? Channel.value(file(params.bwa_index)) : BWA_INDEX ( ch_fasta ).index
 
     emit:
-    genome            = params.genome                  // genome
+    genome            = genome                         // genome
     fasta             = ch_fasta                       // path: genome.fasta,
     gtf               = ch_gtf                         // path: genome.gtf,
     gene_bed          = ch_gene_bed                    //           path: gene.bed,
@@ -109,6 +109,7 @@ workflow PREPARE_GENOME {
     blacklist         = ch_blacklist                   //           path: blacklist.bed,
     bed               = filtered_bed                   //           path: *.bed,
     bwa_index         = ch_bwa_index                   //           path: fasta.*]]
+    data              = tuple genome, ch_fasta, ch_gtf, ch_gene_bed, ch_chrom_sizes, ch_blacklist, filtered_bed, ch_bwa_index //full data for one genome
     gffread_version   = ch_gffread_version             // path: *.version.txt
     filter_version    = MAKE_GENOME_FILTER.out.version // path: *.version.txt
 }

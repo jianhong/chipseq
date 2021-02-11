@@ -1,5 +1,5 @@
 // Import generic module functions
-include { saveFiles } from './functions'
+include { saveFiles; getRealPath } from '../functions'
 
 /*
  * Create IGV session file
@@ -24,11 +24,12 @@ process IGV {
     path "*.xml", emit: xml
 
     script: // scripts are bundled with the pipeline in nf-core/chipseq/bin/
+    def curr_path = getRealPath()
     """
     find * -type l -name "*.bigWig" -exec echo -e ""{}"\\t0,0,178" \\; > bigwig.igv.txt
     find * -type l -name "*Peak" -exec echo -e ""{}"\\t0,0,178" \\; > peaks.igv.txt
 
     cat *.txt > igv_files.txt
-    igv_files_to_session.py igv_session.xml igv_files.txt ../../genome/${fasta.getName()} --path_prefix '../../'
+    ${curr_path}/igv/igv_files_to_session.py igv_session.xml igv_files.txt ../../genome/${fasta.getName()} --path_prefix '../../'
     """
 }

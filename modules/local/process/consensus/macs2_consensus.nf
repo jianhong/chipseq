@@ -1,5 +1,5 @@
 // Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from './functions'
+include { initOptions; saveFiles; getSoftwareName; getRealPath } from '../functions'
 
 /*
  * Consensus peaks across samples, create boolean filtering file, SAF file for featureCounts
@@ -33,11 +33,12 @@ process MACS2_CONSENSUS {
         def mergecols    = meta.peaktype=="narrowPeak" ? (2..10).join(',') : (2..9).join(',')
         def collapsecols = meta.peaktype=="narrowPeak" ? (['collapse']*9).join(',') : (['collapse']*8).join(',')
         def expandparam  = meta.peaktype=="narrowPeak" ? '--is_narrow_peak' : ''
+        def curr_path = getRealPath()
         """
         sort -T '.' -k1,1 -k2,2n ${peaks.collect{it.toString()}.sort().join(' ')} \\
             | mergeBed -c $mergecols -o $collapsecols > ${prefix}.txt
 
-        macs2_merged_expand.py \\
+        ${curr_path}/consensus/macs2_merged_expand.py \\
             ${prefix}.txt \\
             ${peaks.collect{it.toString()}.sort().join(',').replaceAll("_peaks.${peak_type}","")} \\
             ${prefix}.boolean.txt \\
@@ -49,8 +50,8 @@ process MACS2_CONSENSUS {
         echo -e "GeneID\tChr\tStart\tEnd\tStrand" > ${prefix}.saf
         awk -v FS='\t' -v OFS='\t' 'FNR > 1 { print \$4, \$1, \$2, \$3,  "+" }' ${prefix}.boolean.txt >> ${prefix}.saf
 
-        install_packages.r optparse UpSetR
-        plot_peak_intersect.r -i ${prefix}.boolean.intersect.txt -o ${prefix}.boolean.intersect.plot.pdf
+        ${curr_path}/utilities/install_packages.r optparse UpSetR
+        ${curr_path}/consensus/plot_peak_intersect.r -i ${prefix}.boolean.intersect.txt -o ${prefix}.boolean.intersect.plot.pdf
         """
     }
 }

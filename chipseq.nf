@@ -105,14 +105,14 @@ include { GTF2BED                             } from './modules/local/process/gt
 include { GET_CHROM_SIZES                     } from './modules/local/process/get_chrom_sizes'
 include { MAKE_GENOME_FILTER                  } from './modules/local/process/make_genome_filter'
 include { BEDTOOLS_GENOMECOV                  } from './modules/local/process/bedtools_genomecov'
-include { PLOT_HOMER_ANNOTATEPEAKS            } from './modules/local/process/plot_homer_annotatepeaks'
-include { PLOT_MACS2_QC                       } from './modules/local/process/plot_macs2_qc'
+include { PLOT_HOMER_ANNOTATEPEAKS            } from './modules/local/process/visualization/plot_homer_annotatepeaks'
+include { PLOT_MACS2_QC                       } from './modules/local/process/visualization/plot_macs2_qc'
 include { MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS } from './modules/local/process/multiqc_custom_phantompeakqualtools'
 include { MULTIQC_CUSTOM_PEAKS                } from './modules/local/process/multiqc_custom_peaks'
-include { MACS2_CONSENSUS                     } from './modules/local/process/macs2_consensus'
+include { MACS2_CONSENSUS                     } from './modules/local/process/consensus/macs2_consensus'
 include { FRIP_SCORE                          } from './modules/local/process/frip_score'
-//include { DESEQ2_FEATURECOUNTS                } from './modules/local/process/deseq2_featurecounts'
-include { IGV                                 } from './modules/local/process/igv'
+include { DESEQ2_FEATURECOUNTS                } from './modules/local/process/featurecounts_deseq2/deseq2_featurecounts'
+include { IGV                                 } from './modules/local/process/igv/igv'
 include { OUTPUT_DOCUMENTATION                } from './modules/local/process/doc/output_documentation'
 include { GET_SOFTWARE_VERSIONS               } from './modules/local/process/get_software_versions/get_software_versions'
 include { MULTIQC                             } from './modules/local/process/multiqc'
@@ -201,6 +201,7 @@ workflow CHIPSEQ {
     ch_software_versions = ch_software_versions.mix(FASTQC_TRIMGALORE.out.fastqc_version.first().ifEmpty(null))
     ch_software_versions = ch_software_versions.mix(FASTQC_TRIMGALORE.out.trimgalore_version.first().ifEmpty(null))
     
+    //PREPARE_GENOME.out.data.view()
     /*
      * Map reads & BAM QC
      */
@@ -531,12 +532,19 @@ workflow CHIPSEQ {
         )
         ch_software_versions = ch_software_versions.mix(SUBREAD_FEATURECOUNTS.out.version.first().ifEmpty(null))
 
-        //
-        // DESEQ2_FEATURECOUNTS (
-        //     params.modules['deseq2_featurecounts']
-        // )
-        // ch_deseq2_pca_header = file("$projectDir/assets/multiqc/deseq2_pca_header.txt", checkIfExists: true)
-        // ch_deseq2_clustering_header = file("$projectDir/assets/multiqc/deseq2_clustering_header.txt", checkIfExists: true)
+        SUBREAD_FEATURECOUNTS.out.txt.map{
+                meta, counts ->
+                    [meta.antibody, meta.single_end, meta.peaktype, counts]
+            }.groupTuple(by: [0, 1, 2])
+             .map{[[antibody:it[0], single_end:it[1], peaktype:it[2]], it[3]]}
+             .set{ch_grouped_counts}
+        params.modules['deseq2_featurecounts'].publish_dir += "/consensus"
+        DESEQ2_FEATURECOUNTS (
+            ch_grouped_counts,
+            ch_deseq2_pca_header,
+            ch_deseq2_clustering_header,
+            params.modules['deseq2_featurecounts']
+        )
 
         ch_ip_peak
             .map{meta, bam, peak -> [meta.antibody, meta]}
@@ -722,7 +730,7 @@ workflow CHIPSEQ {
         MULTIQC_CUSTOM_PEAKS.out.frip.collect{it[1]}.ifEmpty([]),
         PLOT_HOMER_ANNOTATEPEAKS.out.tsv.collect().ifEmpty([]),
         SUBREAD_FEATURECOUNTS.out.summary.collect{it[1]}.ifEmpty([]),
-        // path ('macs/consensus/*') from ch_macs_consensus_deseq_mqc.collect().ifEmpty([])
+        DESEQ2_FEATURECOUNTS.out.tsv.collect().ifEmpty([]),
 
         params.modules['multiqc']
     )
