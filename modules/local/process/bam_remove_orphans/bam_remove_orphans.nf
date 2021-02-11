@@ -1,5 +1,5 @@
 // Import generic module functions
-include { initOptions; saveFiles } from './functions'
+include { initOptions; saveFiles; getRealPath } from '../functions'
 
 /*
  * Remove orphan reads from paired-end BAM file
@@ -23,10 +23,11 @@ process BAM_REMOVE_ORPHANS {
     script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
     def ioptions = initOptions(options)
     prefix       = ioptions.suffix ? "${meta.id}${ioptions.suffix}" : "${meta.id}"
+    def curr_path = getRealPath()
     if (!meta.single_end) {
         """
         samtools sort -n -@ $task.cpus -o ${prefix}.name.sorted.bam -T ${prefix}.name.sorted $bam
-        bampe_rm_orphan.py ${prefix}.name.sorted.bam ${prefix}.bam $ioptions.args
+        ${curr_path}/bam_remove_orphans/bampe_rm_orphan.py ${prefix}.name.sorted.bam ${prefix}.bam $ioptions.args
         if grep -q 'Total Output Pairs = 0' ${prefix}.bam; then
             rm ${prefix}.bam
         fi

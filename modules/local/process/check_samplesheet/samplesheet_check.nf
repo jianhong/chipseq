@@ -1,5 +1,5 @@
 // Import generic module functions
-include { saveFiles } from './functions'
+include { saveFiles; getRealPath } from '../functions'
 
 /*
  * Reformat design file, check validitiy and create IP vs control mappings
@@ -18,13 +18,14 @@ process SAMPLESHEET_CHECK {
     path '*.csv'
 
     script:  // This script is bundled with the pipeline, in nf-core/chipseq/bin/
+    def curr_path = getRealPath()
     """
-    check_samplesheet.py $samplesheet samplesheet.valid.csv
+    ${curr_path}/check_samplesheet/check_samplesheet.py $samplesheet samplesheet.valid.csv
     """
 }
 
 // Function to get list of [ meta, [ fastq_1, fastq_2 ] ]
-def get_samplesheet_paths(LinkedHashMap row, String seq_center) {
+def get_samplesheet_paths(LinkedHashMap row, String seq_center, String genome) {
     def meta = [:]
     meta.id = row.sample
     meta.single_end = row.single_end.toBoolean()
@@ -39,6 +40,14 @@ def get_samplesheet_paths(LinkedHashMap row, String seq_center) {
         meta.treatment = row.treatment
     }
     meta.sample_uniq_keys = ['md5', 'techrep', 'read_group']
+    
+    def genomes=["homo_sapiens":"GRCh38", "mus_musculus":"GRCm38", "arabidopsis_thaliana":"TAIR10", "bacillus_subtilis_168":"EB2", "bos_taurus":"UMD3.1", "caenorhabditis_elegans":"WBcel235", "canis_familiaris":"CanFam3.1", "danio_rerio":"GRCz10", "Drosophila_melanogaster":"BDGP6", "equus_caballus":"EquCab2", "gallus_gallus":"Galgal4", "escherichia_coli":"EB1", "gallus_gallus":"Galgal4", "glycine_max":"Gm01", "macaca_mulatta":"Mmul_1", "oryza_sativa_japonica":"IRGSP-1.0", "pan_troglodytes":"CHIMP2.1.4", "rattus_norvegicus":"Rnor_6.0", "saccharomyces_cerevisiae":"R64-1-1", "schizosaccharomyces_pombe":"EF2", "sorghum_bicolor":"Sbi1", "sus_scrofa":"Sscrofa10.2", "zea_mays":"AGPv3"]
+    
+    if(row.ScientificName){
+        meta.genome = genomes[row.ScientificName.toString().replaceAll("\\W+", "_").toLowerCase()]
+    }else{
+        meta.genome = genome
+    }
 
     def rg = "\'@RG\\tID:${meta.id}\\tSM:${meta.id.split('_')[0..-2].join('_')}\\tPL:ILLUMINA\\tLB:${meta.id}\\tPU:1\'"
     if (seq_center) {

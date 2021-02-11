@@ -114,7 +114,7 @@ include { FRIP_SCORE                          } from './modules/local/process/fr
 //include { DESEQ2_FEATURECOUNTS                } from './modules/local/process/deseq2_featurecounts'
 include { IGV                                 } from './modules/local/process/igv'
 include { OUTPUT_DOCUMENTATION                } from './modules/local/process/doc/output_documentation'
-include { GET_SOFTWARE_VERSIONS               } from './modules/local/process/get_software_versions'
+include { GET_SOFTWARE_VERSIONS               } from './modules/local/process/get_software_versions/get_software_versions'
 include { MULTIQC                             } from './modules/local/process/multiqc'
 
 include { PREPARE_GENOME                      } from './modules/local/process/prepare_genome/prepare_genome'
@@ -200,7 +200,7 @@ workflow CHIPSEQ {
     )
     ch_software_versions = ch_software_versions.mix(FASTQC_TRIMGALORE.out.fastqc_version.first().ifEmpty(null))
     ch_software_versions = ch_software_versions.mix(FASTQC_TRIMGALORE.out.trimgalore_version.first().ifEmpty(null))
-
+    
     /*
      * Map reads & BAM QC
      */
@@ -208,7 +208,7 @@ workflow CHIPSEQ {
     params.modules['bwa_mem'].args += score
     MAP_BWA_MEM (
         FASTQC_TRIMGALORE.out.reads,
-        PREPARE_GENOME.out.ch_index,
+        PREPARE_GENOME.out.bwa_index,
         PREPARE_GENOME.out.fasta,
         params.modules['bwa_mem'],
         params.modules['samtools_sort_lib']
@@ -249,7 +249,7 @@ workflow CHIPSEQ {
     // Fix getting name sorted BAM here for PE/SE
     BAM_CLEAN (
         MARK_DUPLICATES_PICARD.out.bam.join(MARK_DUPLICATES_PICARD.out.bai, by: [0]),
-        PREPARE_GENOME.out.filter_bed.collect(),
+        PREPARE_GENOME.out.bed.collect(),
         ch_bamtools_filter_se_config,
         ch_bamtools_filter_pe_config,
         params.modules['bam_filter'],
@@ -257,6 +257,7 @@ workflow CHIPSEQ {
         params.modules['samtools_sort_filter']
     )
     ch_software_versions = ch_software_versions.mix(BAM_CLEAN.out.bamtools_version.first().ifEmpty(null))
+
 
     /*
      * Post alignment QC
@@ -362,6 +363,7 @@ workflow CHIPSEQ {
         params.modules['jo_merge_rep_bam'],
         params.modules['jo_metagene']
     )
+
     
     if (params.macs_gsize) {
 

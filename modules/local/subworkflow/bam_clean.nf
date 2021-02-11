@@ -3,7 +3,7 @@
  */
 
 include { BAM_FILTER         } from '../process/bam_filter'
-include { BAM_REMOVE_ORPHANS } from '../process/bam_remove_orphans'
+include { BAM_REMOVE_ORPHANS } from '../process/bam_remove_orphans/bam_remove_orphans'
 include { BAM_SORT_SAMTOOLS  } from '../../nf-core/subworkflow/bam_sort_samtools'
 
 workflow BAM_CLEAN {

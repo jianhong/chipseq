@@ -24,7 +24,7 @@ process BWA_INDEX {
 
     script:
     def software = getSoftwareName(task.process)
-    def ioptions = initOptions(options)
+    def ioptions = initOptions(params.options)
     """
     bwa index $ioptions.args $fasta
     echo \$(bwa 2>&1) | sed 's/^.*Version: //; s/Contact:.*\$//' > ${software}.version.txt

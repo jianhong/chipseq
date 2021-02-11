@@ -1,5 +1,5 @@
 // Import generic module functions
-include { saveFiles } from '../functions'
+include { saveFiles; getRealPath } from '../functions'
 
 /*
  * Output Markdown documentation to HTML
@@ -20,7 +20,8 @@ process OUTPUT_DOCUMENTATION {
     path "results_description.html"
 
     script:
+    def curr_path = getRealPath()
     """
-    markdown_to_html.py $output_docs -o results_description.html
+    ${curr_path}/doc/markdown_to_html.py $output_docs -o results_description.html
     """
 }

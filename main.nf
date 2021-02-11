@@ -62,7 +62,7 @@ workflow {
      * SUBWORKFLOW: Run main jianhong/chipseq analysis pipeline
      */
     include { CHIPSEQ } from './chipseq' addParams( summary_params: summary_params )
-    //CHIPSEQ (ch_input)
+    CHIPSEQ (ch_input)
 }
 
 

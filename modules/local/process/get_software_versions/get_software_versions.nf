@@ -1,5 +1,5 @@
 // Import generic module functions
-include { saveFiles } from './functions'
+include { saveFiles; getRealPath } from '../functions'
 
 /*
  * Parse software version numbers
@@ -20,12 +20,13 @@ process GET_SOFTWARE_VERSIONS {
     path 'software_versions_mqc.yaml', emit: yaml
 
     script:
+    def curr_path = getRealPath()
     """
     echo $workflow.manifest.version > pipeline.version.txt
     echo $workflow.nextflow.version > nextflow.version.txt
     echo $workflow.manifest.name > pipelinename.version.txt
     echo $workflow.manifest.homePage > pipelienurl.version.txt
     
-    scrape_software_versions.py &> software_versions_mqc.yaml
+    ${curr_path}/get_software_versions/scrape_software_versions.py &> software_versions_mqc.yaml
     """
 }

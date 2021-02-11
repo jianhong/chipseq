@@ -12,8 +12,11 @@ process MAKE_GENOME_FILTER {
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:params.options, publish_dir:"genome", publish_id:'') }
 
-    container (params.universalContainer? "${params.container}":"quay.io/biocontainers/bedtools:2.29.2--hc088bd4_0")
-    //container "https://depot.galaxyproject.org/singularity/bedtools:2.29.2--hc088bd4_0"
+    if (workflow.containerEngine == 'singularity' && !params.singularity_pull_docker_container) {
+        container "https://depot.galaxyproject.org/singularity/bedtools:2.29.2--hc088bd4_0"
+    } else {
+        container (params.universalContainer? "${params.container}":"quay.io/biocontainers/bedtools:2.29.2--hc088bd4_0")
+    }
 
     conda (params.conda ? "${params.conda_softwares.bedtools}" : null)
 
