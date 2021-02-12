@@ -157,7 +157,6 @@ NOTE: docker version not support this.
 nextflow run jianhong/chipseq --input GSE90661 --genome R64-1-1 --api_key ABCD123
 ```
 
-
 ## Change parameters for module setting and rerun the pipeline
 
 First create a config file following this format:
