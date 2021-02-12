@@ -1,10 +1,12 @@
-From:r-base:latest
-Bootstrap:docker
+BootStrap: debootstrap
+OSVersion: xenial
+MirrorURL: http://archive.ubuntu.com/ubuntu/
+Include: bash
 
 %labels
-    MAINTAINER Jianhong Ou <jianhong.ou@duke.edu>
-    DESCRIPTION Singularity image containing all requirements for the jianhong/chipseq
-    VERSION latest
+  MAINTAINER Jianhong Ou <jianhong.ou@duke.edu>
+  DESCRIPTION Singularity image containing all requirements for the jianhong/chipseq
+  VERSION latest
 
 %environment
   DEBIAN_FRONTEND="noninteractive"
@@ -14,7 +16,7 @@ Bootstrap:docker
 
 %post
   apt-get update --fix-missing
-  apt-get install --yes rsync wget bzip2 gcc libssl-dev libxml2-dev libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev librsvg2-dev libv8-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools subread pigz curl libxml-simple-perl
+  apt-get install --yes rsync wget bzip2 gcc libssl-dev libxml2-dev libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev librsvg2-dev libv8-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools subread pigz curl libxml-simple-perl libopenblas-dev r-base-core libopenmpi-dev openmpi-bin openmpi-common openmpi-doc openssh-client openssh-server libssh-dev vim nano git gfortran g++ autoconf libtool libtool-bin
   
   ln -s python3 /usr/bin/python
   
