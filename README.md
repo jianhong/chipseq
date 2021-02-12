@@ -149,6 +149,14 @@ Here is the example to download data from GEO database and run analysis
 nextflow run jianhong/chipseq --input GSE90661 --genome R64-1-1
 ```
 
+To speed your download, you may want to add [E-utilities api_key](https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/).
+Let’s say that you create a key and its value is “ABCD123”.
+
+```bash
+nextflow run jianhong/chipseq --input GSE90661 --genome R64-1-1 --api_key ABCD123
+```
+
+
 ## Change parameters for module setting and rerun the pipeline
 
 First create a config file following this format:
