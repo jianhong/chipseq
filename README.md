@@ -151,6 +151,7 @@ nextflow run jianhong/chipseq --input GSE90661 --genome R64-1-1
 
 To speed your download, you may want to add [E-utilities api_key](https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/).
 Let’s say that you create a key and its value is “ABCD123”.
+NOTE: docker version not support this.
 
 ```bash
 nextflow run jianhong/chipseq --input GSE90661 --genome R64-1-1 --api_key ABCD123

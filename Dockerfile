@@ -93,7 +93,7 @@ RUN touch .Renviron
 
 ## Make a copy of the pipeline
 RUN wget https://github.com/jianhong/chipseq/archive/dev.zip && \
-    unzip dev.zip && mv chipseq-dev /pipeline && rm dev.zip
+    unzip dev.zip && rm dev.zip && mv chipseq-dev /pipeline
 
 WORKDIR /work
 ENV JAVA_HOME="/usr"

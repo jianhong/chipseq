@@ -181,8 +181,6 @@ workflow CHIPSEQ {
     
     ch_software_versions = Channel.empty()
     ch_software_versions = ch_software_versions.mix(PREPARE_GENOME.out.filter_version.first().ifEmpty(null))
-    
-    PREPARE_GENOME.out.data.view()
 
     /*
      * Read QC & trimming
