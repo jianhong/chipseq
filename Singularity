@@ -1,7 +1,5 @@
-BootStrap: debootstrap
-OSVersion: xenial
-MirrorURL: http://archive.ubuntu.com/ubuntu/
-Include: bash
+Bootstrap: docker
+From: ubuntu:20.10
 
 %labels
   MAINTAINER Jianhong Ou <jianhong.ou@duke.edu>
@@ -15,8 +13,10 @@ Include: bash
   export PATH $PATH:/homer/bin:/edirect
 
 %post
-  apt-get update --fix-missing
-  apt-get install --yes rsync wget bzip2 gcc libssl-dev libxml2-dev libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev librsvg2-dev libv8-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools subread pigz curl libxml-simple-perl libopenblas-dev r-base-core libopenmpi-dev openmpi-bin openmpi-common openmpi-doc openssh-client openssh-server libssh-dev vim nano git gfortran g++ autoconf libtool libtool-bin
+  apt-get update --fix-missing && \
+  apt-get install --yes rsync wget bzip2 gcc libssl-dev libxml2-dev libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev librsvg2-dev libv8-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools subread pigz curl && \
+  apt-get clean && \
+  rm -rf /var/lib/apt/lists/* 
   
   ln -s python3 /usr/bin/python
   
