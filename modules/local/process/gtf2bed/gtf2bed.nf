@@ -1,5 +1,5 @@
 // Import generic module functions
-include { saveFiles } from './functions'
+include { saveFiles; getRealPath } from '../functions'
 
 params.options = [:]
 
@@ -27,7 +27,8 @@ process GTF2BED {
     path '*.bed'
 
     script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
+    def curr_path = getRealPath()
     """
-    gtf2bed $gtf > ${gtf.baseName}.bed
+    ${curr_path}/gtf2bed/gtf2bed $gtf > ${gtf.baseName}.bed
     """
 }

@@ -8,7 +8,7 @@
  */
 
 def getRealPath(){
-    if(workflow.containerEngine){
+    if(params.singularity | params.docker){ // ask params.docker and singularity in nextflow.config file
         return "/pipeline/modules/local/process"
     }
      return "${workflow.projectDir}/modules/local/process"

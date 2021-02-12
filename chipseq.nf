@@ -100,10 +100,6 @@ ch_index_docs = file("$projectDir/docs/index.Rmd", checkIfExists: true)
 ////////////////////////////////////////////////////
 /* --    IMPORT LOCAL MODULES/SUBWORKFLOWS     -- */
 ////////////////////////////////////////////////////
-
-include { GTF2BED                             } from './modules/local/process/gtf2bed'
-include { GET_CHROM_SIZES                     } from './modules/local/process/get_chrom_sizes'
-include { MAKE_GENOME_FILTER                  } from './modules/local/process/make_genome_filter'
 include { BEDTOOLS_GENOMECOV                  } from './modules/local/process/bedtools_genomecov'
 include { PLOT_HOMER_ANNOTATEPEAKS            } from './modules/local/process/visualization/plot_homer_annotatepeaks'
 include { PLOT_MACS2_QC                       } from './modules/local/process/visualization/plot_macs2_qc'
@@ -181,10 +177,12 @@ workflow CHIPSEQ {
     /*
      * Prepare genome files
      */
-    PREPARE_GENOME(INPUT_CHECK.out.genome)
+    PREPARE_GENOME()
     
     ch_software_versions = Channel.empty()
     ch_software_versions = ch_software_versions.mix(PREPARE_GENOME.out.filter_version.first().ifEmpty(null))
+    
+    PREPARE_GENOME.out.data.view()
 
     /*
      * Read QC & trimming

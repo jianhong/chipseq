@@ -25,7 +25,7 @@ process SAMPLESHEET_CHECK {
 }
 
 // Function to get list of [ meta, [ fastq_1, fastq_2 ] ]
-def get_samplesheet_paths(LinkedHashMap row, String seq_center, String genome) {
+def get_samplesheet_paths(LinkedHashMap row, String seq_center) {
     def meta = [:]
     meta.id = row.sample
     meta.single_end = row.single_end.toBoolean()
@@ -46,7 +46,7 @@ def get_samplesheet_paths(LinkedHashMap row, String seq_center, String genome) {
     if(row.ScientificName){
         meta.genome = genomes[row.ScientificName.toString().replaceAll("\\W+", "_").toLowerCase()]
     }else{
-        meta.genome = genome?:'unkown'
+        meta.genome = params.genome
     }
 
     def rg = "\'@RG\\tID:${meta.id}\\tSM:${meta.id.split('_')[0..-2].join('_')}\\tPL:ILLUMINA\\tLB:${meta.id}\\tPU:1\'"

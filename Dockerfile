@@ -25,7 +25,7 @@ ENV DEBIAN_FRONTEND="noninteractive" TZ="America/New_York"
 # Install software from source
 RUN cd ~ && \
     apt-get update --fix-missing && \
-    apt-get install --yes rsync wget bzip2 gcc libssl-dev libxml2-dev libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev librsvg2-dev libv8-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools subread pigz curl && \
+    apt-get install --yes rsync wget bzip2 gcc libssl-dev libxml2-dev libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev librsvg2-dev libv8-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools subread pigz curl libxml-simple-perl && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN ln -s python3 /usr/bin/python
@@ -91,15 +91,12 @@ RUN Rscript -e 'BiocManager::install(c("optparse", "rjson", "DiffBind", "ChIPpea
 RUN touch .Rprofile
 RUN touch .Renviron
 
+## Make a copy of the pipeline
+RUN wget https://github.com/jianhong/chipseq/archive/dev.zip && \
+    unzip dev.zip && mv chipseq-dev /pipeline && rm dev.zip
+
 WORKDIR /work
 ENV JAVA_HOME="/usr"
 RUN mv $HOME/edirect /edirect
 ENV PATH $PATH:/edirect
 
-RUN apt-get update --fix-missing && \
-    apt-get install --yes libxml-simple-perl && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
-
-RUN wget https://github.com/jianhong/chipseq/archive/dev.zip && \
-    unzip dev.zip && mv chipseq-dev /pipeline && rm dev.zip

@@ -11,30 +11,14 @@ include {
     GUNZIP as GUNZIP_GFF
     GUNZIP as GUNZIP_GENE_BED
     GUNZIP as GUNZIP_ADDITIONAL_FASTA } from '../utilities/gunzip'                       addParams( options: params.genome_options       )
-include { GTF2BED                     } from '../gtf2bed'                                addParams( options: params.genome_options       )
+include { GTF2BED                     } from '../gtf2bed/gtf2bed'                        addParams( options: params.genome_options       )
 include { GET_CHROM_SIZES             } from '../get_chrom_sizes'                        addParams( options: params.genome_options       )
 include { MAKE_GENOME_FILTER          } from '../make_genome_filter'                     addParams( options: params.genome_options       )
 include { GFFREAD                     } from '../../../nf-core/software/gffread/main'    addParams( options: params.gffread_options      )
 include { BWA_INDEX                   } from '../../../nf-core/software/bwa/index/main'  addParams( options: params.modules['bwa_index'])
 
 workflow PREPARE_GENOME {
-    take:
-    genome    // map: options for genome 
-    
     main:
-    if(genome){
-        params.genome = "${genome}"
-        // Configurable variables
-        params.fasta      = Checks.get_genome_attribute(params, 'fasta')
-        params.bwa_index  = Checks.get_genome_attribute(params, 'bwa')
-        params.gtf        = Checks.get_genome_attribute(params, 'gtf')
-        params.gene_bed   = Checks.get_genome_attribute(params, 'bed12')
-        params.macs_gsize = Checks.get_genome_attribute(params, 'macs_gsize')
-        params.deep_gsize = Checks.get_genome_attribute(params, 'deep_gsize')
-        params.blacklist  = Checks.get_genome_attribute(params, 'blacklist')
-        anno_readme       = Checks.get_genome_attribute(params, 'readme')
-        params.species    = Checks.get_genome_attribute(params, 'species')
-    }
     
     /*
      * Uncompress genome fasta file if required
@@ -101,7 +85,6 @@ workflow PREPARE_GENOME {
     ch_bwa_index = params.bwa_index ? Channel.value(file(params.bwa_index)) : BWA_INDEX ( ch_fasta ).index
 
     emit:
-    genome            = genome                         // genome
     fasta             = ch_fasta                       // path: genome.fasta,
     gtf               = ch_gtf                         // path: genome.gtf,
     gene_bed          = ch_gene_bed                    //           path: gene.bed,
@@ -109,7 +92,13 @@ workflow PREPARE_GENOME {
     blacklist         = ch_blacklist                   //           path: blacklist.bed,
     bed               = filtered_bed                   //           path: *.bed,
     bwa_index         = ch_bwa_index                   //           path: fasta.*]]
-    data              = tuple genome, ch_fasta, ch_gtf, ch_gene_bed, ch_chrom_sizes, ch_blacklist, filtered_bed, ch_bwa_index //full data for one genome
+    data              = [fasta:ch_fasta,
+                         gtf:ch_gtf,
+                         gene_bed:ch_gene_bed,
+                         chrom_sizes:ch_chrom_sizes,
+                         blacklist:ch_blacklist,
+                         bed:filtered_bed,
+                         bwa:ch_bwa_index] //full data for one genome
     gffread_version   = ch_gffread_version             // path: *.version.txt
     filter_version    = MAKE_GENOME_FILTER.out.version // path: *.version.txt
 }
