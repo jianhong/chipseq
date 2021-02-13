@@ -16,28 +16,28 @@ visibility full
 color 0,0,178
 autoScale on
 
-track SPT5_INPUT_R1_mLb_clN
-bigDataUrl SPT5_INPUT_R1_mLb_clN.bigWig
-shortLabel SPT5_INPUT_R1
-longLabel SPT5_INPUT_R1_mLb_clN
+track SPT5_INPUT_R2_mLb_clN
+bigDataUrl SPT5_INPUT_R2_mLb_clN.bigWig
+shortLabel SPT5_INPUT_R2
+longLabel SPT5_INPUT_R2_mLb_clN
 type bigWig
 visibility full
 color 0,0,178
 autoScale on
 
-track SPT5_T0_R1_peaks
-bigDataUrl SPT5_T0_R1_peaks.bigBed
-shortLabel SPT5_T0_R1
-longLabel SPT5_T0_R1_peaks
+track SPT5_T0_R2_peaks
+bigDataUrl SPT5_T0_R2_peaks.bigBed
+shortLabel SPT5_T0_R2
+longLabel SPT5_T0_R2_peaks
 type bigBed 6+4
 visibility dense
 color 0,0,178
 autoScale on
 
-track SPT5_T0_R1_homer_narrowPeak
-bigDataUrl SPT5_T0_R1_homer_narrowPeak.bigBed
-shortLabel SPT5_T0_R1
-longLabel SPT5_T0_R1_homer_narrowPeak
+track SPT5_T0_R2_homer_narrowPeak
+bigDataUrl SPT5_T0_R2_homer_narrowPeak.bigBed
+shortLabel SPT5_T0_R2
+longLabel SPT5_T0_R2_homer_narrowPeak
 type bigBed
 visibility dense
 color 0,0,178
