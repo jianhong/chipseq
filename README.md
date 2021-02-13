@@ -145,7 +145,7 @@ nextflow run jianhong/chipseq -c sample.config --docker
 ## Analysis data from GEO database
 
 Here is the example to download data from GEO database and run analysis.
-The downloader will filter the seqtype by ChIP-Seq. You can reset the 
+The downloader will filter the seqtype by ChIP-Seq. You can reset the
 seqtype by --seqtype parameter.
 
 ```bash
