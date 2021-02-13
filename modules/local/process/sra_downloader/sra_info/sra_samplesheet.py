@@ -71,7 +71,10 @@ def get_sra_run_info(runTableFile, runJSONFile, outfile, designfile, libraryFilt
     for run in runinfo:
       if run[runheader.index("Sample")] == exp["accession"]:
         for item in attrTAG:
-          run[runheader.index(item)] = exp[item]
+          if item in exp.keys() and item in runheader:
+            run[runheader.index(item)] = exp[item]
+          else:
+            run[runheader.index(item)] = ""
         break
   
   selectheader = ["Run", "LibraryStrategy", "LibraryLayout", "ScientificName", 

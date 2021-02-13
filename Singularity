@@ -40,7 +40,9 @@ From: ubuntu:20.10
     rm 0.6.6.tar.gz && rm -rf TrimGalore-0.6.6
   
   wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bedGraphToBigWig && \
-    chmod +x bedGraphToBigWig && mv bedGraphToBigWig /usr/local/sbin/
+    chmod +x bedGraphToBigWig && mv bedGraphToBigWig /usr/local/sbin/ && \
+    wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bedToBigBed && \
+    chmod +x bedToBigBed && mv bedToBigBed /usr/local/sbin/
   
   yes | sh -c "$(wget -q ftp://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh -O -)" && \
     mv $HOME/edirect /edirect && \
@@ -57,6 +59,7 @@ From: ubuntu:20.10
                 "rtracklayer", "ggplot2", "GenomicFeatures", "DESeq2", "vsn", \
                 "RColorBrewer", "pheatmap", "lattice", "BiocParallel", \
                 "reshape2", "scales", "UpSetR", "caTools", \
+                "clusterProfiler", "pathview", "biomaRt", \
                 "rmarkdown", "DT"))'
   
   touch .Rprofile

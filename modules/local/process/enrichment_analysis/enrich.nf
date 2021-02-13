@@ -8,14 +8,14 @@ process JO_ENRICHMENTANALYSIS {
     tag "$meta.id"
     label 'process_long'
     label 'error_ignore'
-    publishDir "${params.outdir}/${meta[0].peaktype}",
+    publishDir "${params.outdir}/${meta.peaktype}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
 
     conda (params.conda ? "${params.conda_softwares.rbase}" : null)
 
     input:
-    path res
+    tuple val(meta), path(res)
     val options
 
     output:
@@ -25,9 +25,9 @@ process JO_ENRICHMENTANALYSIS {
     def ioptions  = initOptions(options)
     def curr_path = getRealPath()
     """
-    install_packages.r ChIPpeakAnno clusterProfiler pathview biomaRt optparse
+    ${curr_path}/utilities/install_packages.r ChIPpeakAnno clusterProfiler pathview biomaRt optparse
     ${curr_path}/enrichment_analysis/enrich.r \\
-        -s '${params.genome}' \\
+        -s '${params.genome}' -n '${params.species}' \\
         $ioptions.args
     """
 }

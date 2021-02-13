@@ -53,7 +53,7 @@ RUN wget https://raw.githubusercontent.com/jianhong/chipseq/master/assets/picard
 #    make && make install && \
 #    cd ../.. && rm -rf v2.5.1.tar.gz && rm -rf bamtools-2.5.1
 
-RUN pip install pysam deeptools MACS2 cutadapt pymdown-extensions trackhub
+RUN pip install pysam deeptools MACS2 cutadapt pymdown-extensions trackhub 
 
 RUN mkdir /homer && cd /homer && \
     wget http://homer.ucsd.edu/homer/configureHomer.pl && \
@@ -71,7 +71,9 @@ RUN wget https://github.com/FelixKrueger/TrimGalore/archive/0.6.6.tar.gz && \
     rm 0.6.6.tar.gz && rm -rf TrimGalore-0.6.6
 
 RUN wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bedGraphToBigWig && \
-    chmod +x bedGraphToBigWig && mv bedGraphToBigWig /usr/local/sbin/
+    chmod +x bedGraphToBigWig && mv bedGraphToBigWig /usr/local/sbin/ && \
+    wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bedToBigBed && \
+    chmod +x bedToBigBed && mv bedToBigBed /usr/local/sbin/
 
 RUN yes | sh -c "$(wget -q ftp://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh -O -)" && \
     wget --output-document sratoolkit.tar.gz http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz && \
@@ -84,16 +86,19 @@ RUN Rscript -e 'BiocManager::install(c("optparse", "rjson", "DiffBind", "ChIPpea
                 "rtracklayer", "ggplot2", "GenomicFeatures", "DESeq2", "vsn", \
                 "RColorBrewer", "pheatmap", "lattice", "BiocParallel", \
                 "reshape2", "scales", "UpSetR", "caTools", \
+                "clusterProfiler", "pathview", "biomaRt", \     
                 "rmarkdown", "DT"))'
-
 
 # Instruct R processes to use these empty files instead of clashing with a local version
 RUN touch .Rprofile
 RUN touch .Renviron
 
 ## Make a copy of the pipeline
-RUN wget https://github.com/jianhong/chipseq/archive/dev.zip && \
+RUN wget https://github.com/jianhong/chipseq/archive/dev.zip -O dev.zip && \
     unzip dev.zip && rm dev.zip && mv chipseq-dev /pipeline
+
+## update numpy
+RUN pip install numpy --upgrade
 
 WORKDIR /work
 ENV JAVA_HOME="/usr"

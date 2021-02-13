@@ -32,16 +32,15 @@ process DESEQ2_FEATURECOUNTS {
 
     script:
     prefix = "${meta.antibody}.consensus_peaks"
-    bam_ext = meta.single_end ? '.mLb.clN.sorted.bam' : '.mLb.clN.bam'
     vst = params.deseq2_vst ? '--vst TRUE' : ''
     def curr_path = getRealPath()
     def ioptions = initOptions(options)
     """
+    ${curr_path}/utilities/install_packages.r optparse DESeq2 vsn ggplot2 RColorBrewer pheatmap lattice BiocParallel
     ${curr_path}/featurecounts_deseq2/featurecounts_deseq2.r \\
-        --featurecount_file $counts \\
-        --bam_suffix '$bam_ext' \\
+        --featurecount_file "$counts" \\
         --outdir ./ \\
-        --outprefix $prefix \\
+        --outprefix "differential" \\
         --outsuffix '' \\
         --cores $task.cpus \\
         $vst

@@ -21,7 +21,7 @@ process JO_DIFFBIND {
     val options
 
     output:
-    path 'DiffBind/*', emit: res
+    tuple val(meta), path('DiffBind/*'), emit: res
 
     script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
     def ioptions  = initOptions(options)
@@ -30,7 +30,7 @@ process JO_DIFFBIND {
     def curr_path = getRealPath()
     """
     echo '${metadata}' > designtab.txt
-    install_packages.r rjson DiffBind ChIPpeakAnno rtracklayer ggplot2 GenomicFeatures optparse
+    ${curr_path}/utilities/install_packages.r rjson DiffBind ChIPpeakAnno rtracklayer ggplot2 GenomicFeatures optparse
     ${curr_path}/diffbind/diffbind.r -d 'designtab.txt' \\
         -f ${bams.join(',')} \\
         -p ${peaks.join(',')} \\

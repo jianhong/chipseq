@@ -7,6 +7,11 @@
 #######################################################################
 #######################################################################
 c("optparse", "ChIPpeakAnno", "clusterProfiler", "pathview", "biomaRt")
+# set libPath to pwd
+pwd <- getwd()
+pwd <- file.path(pwd, "lib")
+dir.create(pwd)
+.libPaths(c(pwd, .libPaths()))
 
 library(ChIPpeakAnno)
 library(clusterProfiler)
@@ -15,6 +20,7 @@ library(biomaRt)
 library(optparse)
 
 option_list <- list(make_option(c("-s", "--species"), type="character", default=NULL, help="species", metavar="string"),
+                    make_option(c("-n", "--ucscname"), type="character", default=NULL, help="ucscname", metavar="string"),
                     make_option(c("-c", "--cores"), type="integer", default=1, help="Number of cores", metavar="integer"))
 
 opt_parser <- OptionParser(option_list=option_list)
@@ -62,13 +68,33 @@ scientificName <- c("GRCh37"="Homo sapiens",
                     "panTro4"="Pan troglodytes",
                     "rn6"="Rattus norvegicus",
                     "sacCer3"="Saccharomyces cerevisiae",
-                    "susScr3"="Sus scrofa")[opt$species]
+                    "susScr3"="Sus scrofa")
+if(opt$ucscname %in% names(scientificName)){
+  scientificName <- scientificName[opt$ucscname]
+}else{
+  if(opt$species %in% names(scientificName)){
+    scientificName <- scientificName[opt$species]
+  }else{
+    stop("Not a valid genome for enrichment analysis.")
+  }
+}
+
 scientificName2martTab <- function(.ele){
   .ele <- tolower(strsplit(.ele)[[1]])
   paste0(substring(.ele[1], 1, 1), .ele[2])
 }
-org <- get(egOrgMap(opt$scientificName))
+org <- egOrgMap(scientificName)
+lib <- .libPaths()
+if(file.access(lib[1], mode=2)!=0){
+  pwd <- getwd()
+  pwd <- file.path(pwd, "lib")
+  dir.create(pwd)
+  .libPaths(c(pwd, lib))
+}
+BiocManager::install(org, update = FALSE, ask = FALSE)
+library(org, character.only = TRUE)
 organism <- ChIPpeakAnno:::.findKEGGRESTOrganismName(org)
+org <- get(org)
 
 shortStrs <- function(strs, len=60){
   if(length(strs)==0) return(strs)
@@ -90,6 +116,9 @@ files <- dir(".", "DiffBind.res..*.all.csv", recursive = TRUE, full.names = TRUE
 gmt <- "ftp.broadinstitute.org://pub/gsea/gene_sets/c2.all.v7.2.symbols.gmt"
 for(file in files){
   data <- read.csv(file, row.names = 1)
+  if(length(data$gene)!=nrow(data)){
+    data$gene <- data$symbol
+  }
   data.s <- data[data$FDR<0.05, , drop=FALSE]
   if(nrow(data.s)>1){
     gene.df <- bitr(data.s$gene,

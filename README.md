@@ -62,6 +62,7 @@ BiocManager to avoid the dependece issues.
         1. Call Peaks
         2. Differential binding analysis by [`DiffBind`](https://bioconductor.org/packages/DiffBind/)
         3. Annotate peaks relative to gene features ([`ChIPpeakAnno`](https://bioconductor.org/packages/ChIPpeakAnno/))
+        4. Enrichment analysis. If [gsea-cli.sh](https://www.gsea-msigdb.org/gsea/index.jsp) and c2.all.v7.2 molecular signatures database are available, GSEA enrichment analysis will also be done.
 7. Visualisation the tracks.
     1. Create IGV session file containing bigWig tracks, peaks and differential sites for data visualisation ([`IGV`](https://software.broadinstitute.org/software/igv/)).
     2. Create UCSC genome browser track hub for bigWig tracks [trackhub](https://daler.github.io/trackhub/quickstart.html).
@@ -143,13 +144,15 @@ nextflow run jianhong/chipseq -c sample.config --docker
 
 ## Analysis data from GEO database
 
-Here is the example to download data from GEO database and run analysis
+Here is the example to download data from GEO database and run analysis.
+The downloader will filter the seqtype by ChIP-Seq. You can reset the 
+seqtype by --seqtype parameter.
 
 ```bash
 nextflow run jianhong/chipseq --input GSE90661 --genome R64-1-1
 ```
 
-To speed your download, you may want to add [E-utilities api_key](https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/).
+To breakdown the limitation, you may want to add [E-utilities api_key](https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/).
 Let’s say that you create a key and its value is “ABCD123”.
 NOTE: docker version not support this.
 
