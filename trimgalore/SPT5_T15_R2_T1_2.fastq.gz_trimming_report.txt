@@ -1,0 +1,115 @@
+
+SUMMARISING RUN PARAMETERS
+==========================
+Input filename: SPT5_T15_R2_T1_2.fastq.gz
+Trimming mode: paired-end
+Trim Galore version: 0.6.6
+Cutadapt version: 3.2
+Number of cores used for trimming: 1
+Quality Phred score cutoff: 20
+Quality encoding type selected: ASCII+33
+Using Nextera adapter for trimming (count: 21824). Second best hit was smallRNA (count: 0)
+Adapter sequence: 'CTGTCTCTTATA' (Nextera Transposase sequence; auto-detected)
+Maximum trimming error rate: 0.1 (default)
+Minimum required adapter overlap (stringency): 1 bp
+Minimum required sequence length for both reads before a sequence pair gets removed: 20 bp
+Running FastQC on the data once trimming has completed
+Output file will be GZIP compressed
+
+
+This is cutadapt 3.2 with Python 3.8.6
+Command line parameters: -j 1 -e 0.1 -q 20 -O 1 -a CTGTCTCTTATA SPT5_T15_R2_T1_2.fastq.gz
+Processing reads on 1 core in single-end mode ...
+Finished in 2.80 s (28 µs/read; 2.14 M reads/minute).
+
+=== Summary ===
+
+Total reads processed:                 100,000
+Reads with adapters:                    49,019 (49.0%)
+Reads written (passing filters):       100,000 (100.0%)
+
+Total basepairs processed:     7,600,000 bp
+Quality-trimmed:                  43,321 bp (0.6%)
+Total written (filtered):      6,913,468 bp (91.0%)
+
+=== Adapter 1 ===
+
+Sequence: CTGTCTCTTATA; Type: regular 3'; Length: 12; Trimmed: 49019 times
+
+No. of allowed errors:
+1-9 bp: 0; 10-12 bp: 1
+
+Bases preceding removed adapters:
+  A: 18.4%
+  C: 31.8%
+  G: 24.2%
+  T: 25.5%
+  none/other: 0.0%
+
+Overview of removed sequences
+length	count	expect	max.err	error counts
+1	15396	25000.0	0	15396
+2	4667	6250.0	0	4667
+3	1485	1562.5	0	1485
+4	831	390.6	0	831
+5	673	97.7	0	673
+6	670	24.4	0	670
+7	652	6.1	0	652
+8	695	1.5	0	695
+9	666	0.4	0	665 1
+10	650	0.1	1	640 10
+11	655	0.0	1	646 9
+12	673	0.0	1	656 17
+13	670	0.0	1	659 11
+14	661	0.0	1	649 12
+15	697	0.0	1	682 15
+16	724	0.0	1	704 20
+17	721	0.0	1	707 14
+18	746	0.0	1	730 16
+19	871	0.0	1	852 19
+20	1144	0.0	1	1131 13
+21	392	0.0	1	388 4
+22	792	0.0	1	770 22
+23	743	0.0	1	727 16
+24	760	0.0	1	745 15
+25	803	0.0	1	788 15
+26	830	0.0	1	820 10
+27	878	0.0	1	860 18
+28	888	0.0	1	865 23
+29	1082	0.0	1	1069 13
+30	679	0.0	1	673 6
+31	908	0.0	1	889 19
+32	850	0.0	1	841 9
+33	787	0.0	1	768 19
+34	753	0.0	1	737 16
+35	644	0.0	1	633 11
+36	688	0.0	1	679 9
+37	614	0.0	1	608 6
+38	581	0.0	1	567 14
+39	446	0.0	1	435 11
+40	360	0.0	1	356 4
+41	164	0.0	1	159 5
+42	75	0.0	1	74 1
+43	48	0.0	1	48
+44	34	0.0	1	33 1
+45	36	0.0	1	33 3
+46	47	0.0	1	47
+47	59	0.0	1	59
+48	57	0.0	1	53 4
+49	43	0.0	1	42 1
+50	19	0.0	1	19
+51	2	0.0	1	2
+53	1	0.0	1	0 1
+59	1	0.0	1	0 1
+60	1	0.0	1	0 1
+63	1	0.0	1	0 1
+65	1	0.0	1	0 1
+68	5	0.0	1	0 5
+
+RUN STATISTICS FOR INPUT FILE: SPT5_T15_R2_T1_2.fastq.gz
+=============================================
+100000 sequences processed in total
+
+Total number of sequences analysed for the sequence pair length validation: 100000
+
+Number of sequence pairs removed because at least one read was shorter than the length cutoff (20 bp): 263 (0.26%)

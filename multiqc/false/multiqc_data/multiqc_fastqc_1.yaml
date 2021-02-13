@@ -1,0 +1,248 @@
+SPT5_INPUT_R1_T1_1:
+  '%GC': 40.0
+  Encoding: Sanger / Illumina 1.9
+  File type: Conventional base calls
+  Filename: SPT5_INPUT_R1_T1_1_val_1.fq.gz
+  Sequence length: 20-50
+  Sequences flagged as poor quality: 0.0
+  Total Sequences: 99554.0
+  adapter_content: pass
+  avg_sequence_length: 49.45086083934347
+  basic_statistics: pass
+  overrepresented_sequences: pass
+  per_base_n_content: pass
+  per_base_sequence_content: fail
+  per_base_sequence_quality: pass
+  per_sequence_gc_content: pass
+  per_sequence_quality_scores: pass
+  sequence_duplication_levels: pass
+  sequence_length_distribution: warn
+  total_deduplicated_percentage: 97.45263876890934
+SPT5_INPUT_R1_T1_2:
+  '%GC': 40.0
+  Encoding: Sanger / Illumina 1.9
+  File type: Conventional base calls
+  Filename: SPT5_INPUT_R1_T1_2_val_2.fq.gz
+  Sequence length: 20-50
+  Sequences flagged as poor quality: 0.0
+  Total Sequences: 99554.0
+  adapter_content: pass
+  avg_sequence_length: 49.38851276694056
+  basic_statistics: pass
+  overrepresented_sequences: pass
+  per_base_n_content: pass
+  per_base_sequence_content: fail
+  per_base_sequence_quality: pass
+  per_sequence_gc_content: pass
+  per_sequence_quality_scores: pass
+  sequence_duplication_levels: pass
+  sequence_length_distribution: warn
+  total_deduplicated_percentage: 97.51190308777146
+SPT5_INPUT_R2_T1_1:
+  '%GC': 39.0
+  Encoding: Sanger / Illumina 1.9
+  File type: Conventional base calls
+  Filename: SPT5_INPUT_R2_T1_1_val_1.fq.gz
+  Sequence length: 20-50
+  Sequences flagged as poor quality: 0.0
+  Total Sequences: 99540.0
+  adapter_content: pass
+  avg_sequence_length: 49.44749849306811
+  basic_statistics: pass
+  overrepresented_sequences: pass
+  per_base_n_content: pass
+  per_base_sequence_content: fail
+  per_base_sequence_quality: pass
+  per_sequence_gc_content: pass
+  per_sequence_quality_scores: pass
+  sequence_duplication_levels: pass
+  sequence_length_distribution: warn
+  total_deduplicated_percentage: 98.36749045609805
+SPT5_INPUT_R2_T1_2:
+  '%GC': 39.0
+  Encoding: Sanger / Illumina 1.9
+  File type: Conventional base calls
+  Filename: SPT5_INPUT_R2_T1_2_val_2.fq.gz
+  Sequence length: 20-50
+  Sequences flagged as poor quality: 0.0
+  Total Sequences: 99540.0
+  adapter_content: pass
+  avg_sequence_length: 49.38756278882861
+  basic_statistics: pass
+  overrepresented_sequences: pass
+  per_base_n_content: pass
+  per_base_sequence_content: fail
+  per_base_sequence_quality: pass
+  per_sequence_gc_content: pass
+  per_sequence_quality_scores: pass
+  sequence_duplication_levels: pass
+  sequence_length_distribution: warn
+  total_deduplicated_percentage: 98.44986939923649
+SPT5_T0_R1_T1_1:
+  '%GC': 43.0
+  Encoding: Sanger / Illumina 1.9
+  File type: Conventional base calls
+  Filename: SPT5_T0_R1_T1_1_val_1.fq.gz
+  Sequence length: 20-76
+  Sequences flagged as poor quality: 0.0
+  Total Sequences: 99756.0
+  adapter_content: pass
+  avg_sequence_length: 67.79664381089859
+  basic_statistics: pass
+  overrepresented_sequences: pass
+  per_base_n_content: pass
+  per_base_sequence_content: fail
+  per_base_sequence_quality: pass
+  per_sequence_gc_content: pass
+  per_sequence_quality_scores: pass
+  per_tile_sequence_quality: pass
+  sequence_duplication_levels: pass
+  sequence_length_distribution: warn
+  total_deduplicated_percentage: 78.2960423433177
+SPT5_T0_R1_T1_2:
+  '%GC': 43.0
+  Encoding: Sanger / Illumina 1.9
+  File type: Conventional base calls
+  Filename: SPT5_T0_R1_T1_2_val_2.fq.gz
+  Sequence length: 20-76
+  Sequences flagged as poor quality: 0.0
+  Total Sequences: 99756.0
+  adapter_content: pass
+  avg_sequence_length: 67.77946188700429
+  basic_statistics: pass
+  overrepresented_sequences: pass
+  per_base_n_content: pass
+  per_base_sequence_content: fail
+  per_base_sequence_quality: pass
+  per_sequence_gc_content: pass
+  per_sequence_quality_scores: pass
+  per_tile_sequence_quality: pass
+  sequence_duplication_levels: pass
+  sequence_length_distribution: warn
+  total_deduplicated_percentage: 78.30506435703116
+SPT5_T0_R2_T1_1:
+  '%GC': 43.0
+  Encoding: Sanger / Illumina 1.9
+  File type: Conventional base calls
+  Filename: SPT5_T0_R2_T1_1_val_1.fq.gz
+  Sequence length: 20-76
+  Sequences flagged as poor quality: 0.0
+  Total Sequences: 99710.0
+  adapter_content: pass
+  avg_sequence_length: 68.797934008625
+  basic_statistics: pass
+  overrepresented_sequences: pass
+  per_base_n_content: pass
+  per_base_sequence_content: fail
+  per_base_sequence_quality: pass
+  per_sequence_gc_content: pass
+  per_sequence_quality_scores: pass
+  per_tile_sequence_quality: pass
+  sequence_duplication_levels: pass
+  sequence_length_distribution: warn
+  total_deduplicated_percentage: 71.3067896901013
+SPT5_T0_R2_T1_2:
+  '%GC': 43.0
+  Encoding: Sanger / Illumina 1.9
+  File type: Conventional base calls
+  Filename: SPT5_T0_R2_T1_2_val_2.fq.gz
+  Sequence length: 20-76
+  Sequences flagged as poor quality: 0.0
+  Total Sequences: 99710.0
+  adapter_content: pass
+  avg_sequence_length: 68.7311202487213
+  basic_statistics: pass
+  overrepresented_sequences: pass
+  per_base_n_content: pass
+  per_base_sequence_content: fail
+  per_base_sequence_quality: pass
+  per_sequence_gc_content: pass
+  per_sequence_quality_scores: pass
+  per_tile_sequence_quality: pass
+  sequence_duplication_levels: pass
+  sequence_length_distribution: warn
+  total_deduplicated_percentage: 71.44218232875339
+SPT5_T15_R1_T1_1:
+  '%GC': 43.0
+  Encoding: Sanger / Illumina 1.9
+  File type: Conventional base calls
+  Filename: SPT5_T15_R1_T1_1_val_1.fq.gz
+  Sequence length: 20-76
+  Sequences flagged as poor quality: 0.0
+  Total Sequences: 99769.0
+  adapter_content: pass
+  avg_sequence_length: 71.56922490954103
+  basic_statistics: pass
+  overrepresented_sequences: pass
+  per_base_n_content: pass
+  per_base_sequence_content: fail
+  per_base_sequence_quality: pass
+  per_sequence_gc_content: pass
+  per_sequence_quality_scores: pass
+  per_tile_sequence_quality: pass
+  sequence_duplication_levels: pass
+  sequence_length_distribution: warn
+  total_deduplicated_percentage: 78.34798384267658
+SPT5_T15_R1_T1_2:
+  '%GC': 43.0
+  Encoding: Sanger / Illumina 1.9
+  File type: Conventional base calls
+  Filename: SPT5_T15_R1_T1_2_val_2.fq.gz
+  Sequence length: 20-76
+  Sequences flagged as poor quality: 0.0
+  Total Sequences: 99769.0
+  adapter_content: pass
+  avg_sequence_length: 71.5532880955006
+  basic_statistics: pass
+  overrepresented_sequences: pass
+  per_base_n_content: pass
+  per_base_sequence_content: fail
+  per_base_sequence_quality: pass
+  per_sequence_gc_content: pass
+  per_sequence_quality_scores: pass
+  per_tile_sequence_quality: pass
+  sequence_duplication_levels: pass
+  sequence_length_distribution: warn
+  total_deduplicated_percentage: 78.36201625755496
+SPT5_T15_R2_T1_1:
+  '%GC': 42.0
+  Encoding: Sanger / Illumina 1.9
+  File type: Conventional base calls
+  Filename: SPT5_T15_R2_T1_1_val_1.fq.gz
+  Sequence length: 21-76
+  Sequences flagged as poor quality: 0.0
+  Total Sequences: 99737.0
+  adapter_content: pass
+  avg_sequence_length: 68.99020423714369
+  basic_statistics: pass
+  overrepresented_sequences: pass
+  per_base_n_content: pass
+  per_base_sequence_content: fail
+  per_base_sequence_quality: pass
+  per_sequence_gc_content: pass
+  per_sequence_quality_scores: pass
+  per_tile_sequence_quality: pass
+  sequence_duplication_levels: pass
+  sequence_length_distribution: warn
+  total_deduplicated_percentage: 82.19116275805368
+SPT5_T15_R2_T1_2:
+  '%GC': 42.0
+  Encoding: Sanger / Illumina 1.9
+  File type: Conventional base calls
+  Filename: SPT5_T15_R2_T1_2_val_2.fq.gz
+  Sequence length: 20-76
+  Sequences flagged as poor quality: 0.0
+  Total Sequences: 99737.0
+  adapter_content: pass
+  avg_sequence_length: 68.96806601361581
+  basic_statistics: pass
+  overrepresented_sequences: pass
+  per_base_n_content: pass
+  per_base_sequence_content: fail
+  per_base_sequence_quality: pass
+  per_sequence_gc_content: pass
+  per_sequence_quality_scores: pass
+  per_tile_sequence_quality: pass
+  sequence_duplication_levels: pass
+  sequence_length_distribution: warn
+  total_deduplicated_percentage: 82.23828669400524

@@ -1,0 +1,20 @@
+SPT5_T0_R1:
+  Intergenic: 11.0
+  TTS: 26.0
+  exon: 11.0
+  promoter-TSS: 731.0
+SPT5_T0_R2:
+  Intergenic: 8.0
+  TTS: 27.0
+  exon: 22.0
+  promoter-TSS: 511.0
+SPT5_T15_R1:
+  Intergenic: 10.0
+  TTS: 22.0
+  exon: 6.0
+  promoter-TSS: 675.0
+SPT5_T15_R2:
+  Intergenic: 10.0
+  TTS: 26.0
+  exon: 6.0
+  promoter-TSS: 730.0

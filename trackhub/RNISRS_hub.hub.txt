@@ -1,0 +1,5 @@
+hub hub
+shortLabel Regeneromics Shared Resource hub
+longLabel Regeneration Next Initiative Regeneromics Shared Resource hub
+genomesFile RNISRS_hub.genomes.txt
+email false

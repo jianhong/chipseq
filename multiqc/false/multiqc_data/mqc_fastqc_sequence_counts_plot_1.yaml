@@ -1,0 +1,36 @@
+SPT5_INPUT_R1_T1_1:
+  Duplicate Reads: 2614.0
+  Unique Reads: 97386.0
+SPT5_INPUT_R1_T1_2:
+  Duplicate Reads: 2537.0
+  Unique Reads: 97463.0
+SPT5_INPUT_R2_T1_1:
+  Duplicate Reads: 1664.0
+  Unique Reads: 98336.0
+SPT5_INPUT_R2_T1_2:
+  Duplicate Reads: 1567.0
+  Unique Reads: 98433.0
+SPT5_T0_R1_T1_1:
+  Duplicate Reads: 29601.0
+  Unique Reads: 70399.0
+SPT5_T0_R1_T1_2:
+  Duplicate Reads: 29861.0
+  Unique Reads: 70139.0
+SPT5_T0_R2_T1_1:
+  Duplicate Reads: 37139.0
+  Unique Reads: 62861.0
+SPT5_T0_R2_T1_2:
+  Duplicate Reads: 37311.0
+  Unique Reads: 62689.0
+SPT5_T15_R1_T1_1:
+  Duplicate Reads: 26581.0
+  Unique Reads: 73419.0
+SPT5_T15_R1_T1_2:
+  Duplicate Reads: 26644.0
+  Unique Reads: 73356.0
+SPT5_T15_R2_T1_1:
+  Duplicate Reads: 23454.0
+  Unique Reads: 76546.0
+SPT5_T15_R2_T1_2:
+  Duplicate Reads: 23511.0
+  Unique Reads: 76489.0
