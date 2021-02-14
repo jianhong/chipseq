@@ -65,8 +65,8 @@ def get_sra_run_info(runTableFile, runJSONFile, outfile, designfile, libraryFilt
     for i in range(len(runheader)-len(run)):
       run.append(None)
   
-  print(experimentInfo)
-  print(attrTAG)
+  #print(experimentInfo)
+  #print(attrTAG)
   for exp in experimentInfo:
     for run in runinfo:
       if run[runheader.index("Sample")] == exp["accession"]:
@@ -95,11 +95,14 @@ def get_sra_run_info(runTableFile, runJSONFile, outfile, designfile, libraryFilt
 
   for h in runheader:
     if h not in unselectheader:
+      if h.lower() == "antibody":
+        selectheader.append(h)
+        next
       allInfo = []
       runID = []
       runCond = []
       for run in runinfo:
-        curr = re.sub('\s+rep\d+$', '', run[runheader.index(h)], flags=re.I)
+        curr = re.sub('\s+rep[licates ]*\d+$', '', run[runheader.index(h)], flags=re.I)
         runCond.append(curr)
         runID.append(run[runheader.index("Run")])
         if curr not in allInfo:
@@ -141,6 +144,7 @@ def get_sra_run_info(runTableFile, runJSONFile, outfile, designfile, libraryFilt
         gp_id[value] = 1
       replicate[key] = gp_id[value]
   
+  print condition
   with open(outfile, mode='w') as f:
     writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     

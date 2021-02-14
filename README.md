@@ -149,7 +149,7 @@ The downloader will filter the seqtype by ChIP-Seq. You can reset the
 seqtype by --seqtype parameter.
 
 ```bash
-nextflow run jianhong/chipseq --input GSE90661 --genome R64-1-1
+nextflow run jianhong/chipseq --input GSE36107 --genome dm6
 ```
 
 To breakdown the limitation, you may want to add [E-utilities api_key](https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/).
