@@ -1,18 +1,18 @@
 ----------------------------------------------------
-                                        ,--./,-.
-        ___     __   __   __   ___     /,-._.--~\
-  |\ | |__  __ /  ` /  \ |__) |__         }  {
-  | \| |       \__, \__/ |  \ |___     \`-._,-`-,
-                                        `._,._,'
-  jianhong/chipseq v1.1.7
+                                          ,--./,-.
+  ___,         ___,                 ___  /,-._.--~\
+  |  |  .      |__| .  __  __ |\ | |__    }  {
+  |__|_ | |__| |__| | |__|    | \| |     \`-._,-`-,
+                                          `._,._,'
+  jianhong/chipseq v1.1.9
 ----------------------------------------------------
 
-Run Name: cheeky_laplace
+Run Name: mad_meninsky
 
 ## jianhong/chipseq execution completed successfully! ##
 
 
-The workflow was completed at 2021-02-13T23:40:44.606Z (duration: 35m 21s)
+The workflow was completed at 2021-02-15T15:54:30.957Z (duration: 37m 10s)
 
 The command used to launch the workflow was as follows:
 
@@ -22,14 +22,14 @@ The command used to launch the workflow was as follows:
 
 Pipeline Configuration:
 -----------------------
- - Core Nextflow options: [runName:cheeky_laplace, containerEngine:docker, container:jianhong/chipseq:latest, launchDir:/home/runner/work/chipseq/chipseq, workDir:/home/runner/work/chipseq/chipseq/work, projectDir:/home/runner/work/chipseq/chipseq, userName:runner, profile:test,docker, input:https://raw.githubusercontent.com/jianhong/chipseq/master/assets/design.csv, configFiles:/home/runner/work/chipseq/chipseq/nextflow.config]
- - Date Started: 2021-02-13T23:05:23.589Z
- - Date Completed: 2021-02-13T23:40:44.606Z
+ - Core Nextflow options: [runName:mad_meninsky, containerEngine:docker, container:jianhong/chipseq:latest, launchDir:/home/runner/work/chipseq/chipseq, workDir:/home/runner/work/chipseq/chipseq/work, projectDir:/home/runner/work/chipseq/chipseq, userName:runner, profile:test,docker, input:https://raw.githubusercontent.com/jianhong/chipseq/master/assets/design.csv, configFiles:/home/runner/work/chipseq/chipseq/nextflow.config]
+ - Date Started: 2021-02-15T15:17:20.660Z
+ - Date Completed: 2021-02-15T15:54:30.957Z
  - Pipeline script file path: /home/runner/work/chipseq/chipseq/main.nf
  - Pipeline script hash ID: 6771b189006da81d9e1d341a5b5620ee
- - Nextflow Version: 20.07.1
- - Nextflow Build: 5412
- - Nextflow Compile Timestamp: 24-07-2020 15:18 UTC
+ - Nextflow Version: 20.10.0
+ - Nextflow Build: 5430
+ - Nextflow Compile Timestamp: 01-11-2020 15:14 UTC
 
 --
 jianhong/chipseq

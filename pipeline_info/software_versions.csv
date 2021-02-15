@@ -1,4 +1,4 @@
-QiuBio-nextflow/chipseq	1.1.7
+QiuBio-nextflow/chipseq	1.1.9
 bamtools	2.5.1
 bedtools	2.29.2
 bwa	0.7.17-r1188
@@ -6,7 +6,7 @@ deeptools	3.5.0
 fastqc	0.11.9
 homer	4.11
 macs2	2.2.7.1
-nextflow	20.07.1
+nextflow	20.10.0
 picard	2.22.8
 pipelienurl	https://github.com/jianhong/chipseq
 samtools	1.10
