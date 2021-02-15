@@ -1,5 +1,5 @@
 "","SampleID","Condition","Replicate","Factor","bamReads","Peaks","Peakcaller","PeakFormat","ScoreCol"
 "1","SPT5_T0_R1","SPT5_T0","1","SPT5","SPT5_T0_R1.mLb.clN.sorted.bam","SPT5_T0_R1_peaks.narrowPeak","macs2","narrowPeak",5
-"2","SPT5_T15_R1","SPT5_T15","1","SPT5","SPT5_T15_R1.mLb.clN.sorted.bam","SPT5_T15_R1_peaks.narrowPeak","macs2","narrowPeak",5
-"3","SPT5_T0_R2","SPT5_T0","2","SPT5","SPT5_T0_R2.mLb.clN.sorted.bam","SPT5_T0_R2_peaks.narrowPeak","macs2","narrowPeak",5
+"2","SPT5_T0_R2","SPT5_T0","2","SPT5","SPT5_T0_R2.mLb.clN.sorted.bam","SPT5_T0_R2_peaks.narrowPeak","macs2","narrowPeak",5
+"3","SPT5_T15_R1","SPT5_T15","1","SPT5","SPT5_T15_R1.mLb.clN.sorted.bam","SPT5_T15_R1_peaks.narrowPeak","macs2","narrowPeak",5
 "4","SPT5_T15_R2","SPT5_T15","2","SPT5","SPT5_T15_R2.mLb.clN.sorted.bam","SPT5_T15_R2_peaks.narrowPeak","macs2","narrowPeak",5
