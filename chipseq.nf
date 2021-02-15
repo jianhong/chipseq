@@ -737,16 +737,21 @@ workflow CHIPSEQ {
         ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'),
         MULTIQC.out.plots,
         ch_output_docs_images,
+        
         MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS.out.nsc.collect{it[1]}.ifEmpty([]),
         MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS.out.rsc.collect{it[1]}.ifEmpty([]),
         MULTIQC_CUSTOM_PEAKS.out.frip.collect{it[1]}.ifEmpty([]),
+        
         PRESEQ_LCEXTRAP.out.log.collect{it[1]}.ifEmpty([]),
         BAM_CLEAN.out.flagstat.collect{it[1]}.ifEmpty([]),
         JO_CHECKSUMS.out.md5.collect(),
+        
         MARK_DUPLICATES_PICARD.out.bam.collect{it[0].id},
         MARK_DUPLICATES_PICARD.out.bam.collect{it[0].peaktype},
-        JO_DIFFBIND_ENRICHMENT_WITHOUT_CONTROL.out.res.ifEmpty(null),
-        JO_DIFFBIND_ENRICHMENT_HOMER_WITHOUT_CONTROL.out.res.ifEmpty(null),
+        
+        JO_DIFFBIND_ENRICHMENT_WITHOUT_CONTROL.out.res.collect{it[1]}.ifEmpty([]),
+        JO_DIFFBIND_ENRICHMENT_HOMER_WITHOUT_CONTROL.out.res.collect{it[1]}.ifEmpty([]),
+        
         GET_SOFTWARE_VERSIONS.out.yaml.collect(),
         [:]
     )

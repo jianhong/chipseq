@@ -4,6 +4,7 @@ include { initOptions; saveFiles; getSoftwareName } from './functions'
 process MACS2_CALLPEAK {
     tag "$meta.id"
     label 'process_medium'
+    label 'error_retryThenIgnore'
     publishDir "${params.outdir}/${meta.peaktype}",
         mode: params.publish_dir_mode,
         saveAs: { filename -> saveFiles(filename:filename, options:options, publish_dir:getSoftwareName(task.process), publish_id:meta.id) }
@@ -33,6 +34,9 @@ process MACS2_CALLPEAK {
     def format   = meta.single_end ? 'BAM' : 'BAMPE'
     def control  = controlbam ? "--control $controlbam" : ''
     def broad = meta.peaktype=='broadPeak' ? "--broad --broad-cutoff ${params.broad_cutoff}" : ''
+    if(task.attempt>0 & ioptions.args=="--keep-dup all"){
+        ioptions.args += " --nomodel --extsize 147" 
+    }
     """
     macs2 \\
         callpeak \\

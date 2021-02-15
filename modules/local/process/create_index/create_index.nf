@@ -18,16 +18,21 @@ process JO_INDEX {
     path workflow_summary
     path images
     path doc_img
+    
     path nsc
     path rsc
     path frip
+    
     path preseq_log
     path flagstat
     path checksum
+    
     val id
     val peaktype
+    
     path ('macs2DiffBind/*')
     path ('homerDiffBind/*')
+    
     path software_version
     val options
 

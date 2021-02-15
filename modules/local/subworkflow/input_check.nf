@@ -15,7 +15,7 @@ workflow INPUT_CHECK {
     SAMPLESHEET_CHECK (ch_input, samplesheet_check_options)
         .splitCsv(header:true, sep:',')
         .map { get_samplesheet_paths(it, seq_center) }
-        .filter {meta, fastqs -> meta.genome == params.genome } // check meta.genome == params.genome
+        .filter {meta, fastqs -> meta.genome == params.genome | meta.genome == params.species } // check meta.genome == params.genome
         .set { ch_reads }
 
     emit:
