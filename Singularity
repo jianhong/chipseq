@@ -55,12 +55,7 @@ From: ubuntu:20.10
   
   Rscript -e "install.packages('BiocManager')"
   
-  Rscript -e 'BiocManager::install(c("optparse", "rjson", "DiffBind", "ChIPpeakAnno", \
-                "rtracklayer", "ggplot2", "GenomicFeatures", "DESeq2", "vsn", \
-                "RColorBrewer", "pheatmap", "lattice", "BiocParallel", \
-                "reshape2", "scales", "UpSetR", "caTools", \
-                "clusterProfiler", "pathview", "biomaRt", \
-                "rmarkdown", "DT"))'
+  Rscript -e 'BiocManager::install(c("optparse", "rjson", "DiffBind", "ChIPpeakAnno", "rtracklayer", "ggplot2", "GenomicFeatures", "DESeq2", "vsn", "RColorBrewer", "pheatmap", "lattice", "BiocParallel", "reshape2", "scales", "UpSetR", "caTools", "clusterProfiler", "pathview", "biomaRt", "rmarkdown", "DT"))'
   
   touch .Rprofile
   touch .Renviron
