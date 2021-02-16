@@ -2,186 +2,186 @@
     "report_data_sources": {
         "LIB: FastQC (raw)": {
             "all_sections": {
-                "SPT5_T15_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/fastqc/SPT5_T15_R2_T1_1_fastqc.zip",
-                "SPT5_INPUT_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/fastqc/SPT5_INPUT_R2_T1_1_fastqc.zip",
-                "SPT5_INPUT_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/fastqc/SPT5_INPUT_R2_T1_2_fastqc.zip",
-                "SPT5_T0_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/fastqc/SPT5_T0_R2_T1_1_fastqc.zip",
-                "SPT5_T15_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/fastqc/SPT5_T15_R2_T1_2_fastqc.zip",
-                "SPT5_T0_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/fastqc/SPT5_T0_R2_T1_2_fastqc.zip",
-                "SPT5_T15_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/fastqc/SPT5_T15_R1_T1_1_fastqc.zip",
-                "SPT5_T15_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/fastqc/SPT5_T15_R1_T1_2_fastqc.zip",
-                "SPT5_INPUT_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/fastqc/SPT5_INPUT_R1_T1_1_fastqc.zip",
-                "SPT5_T0_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/fastqc/SPT5_T0_R1_T1_2_fastqc.zip",
-                "SPT5_INPUT_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/fastqc/SPT5_INPUT_R1_T1_2_fastqc.zip",
-                "SPT5_T0_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/fastqc/SPT5_T0_R1_T1_1_fastqc.zip"
+                "SPT5_T15_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/fastqc/SPT5_T15_R2_T1_1_fastqc.zip",
+                "SPT5_INPUT_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/fastqc/SPT5_INPUT_R2_T1_1_fastqc.zip",
+                "SPT5_INPUT_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/fastqc/SPT5_INPUT_R2_T1_2_fastqc.zip",
+                "SPT5_T0_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/fastqc/SPT5_T0_R2_T1_1_fastqc.zip",
+                "SPT5_T15_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/fastqc/SPT5_T15_R2_T1_2_fastqc.zip",
+                "SPT5_T0_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/fastqc/SPT5_T0_R2_T1_2_fastqc.zip",
+                "SPT5_T15_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/fastqc/SPT5_T15_R1_T1_1_fastqc.zip",
+                "SPT5_T15_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/fastqc/SPT5_T15_R1_T1_2_fastqc.zip",
+                "SPT5_INPUT_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/fastqc/SPT5_INPUT_R1_T1_1_fastqc.zip",
+                "SPT5_T0_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/fastqc/SPT5_T0_R1_T1_2_fastqc.zip",
+                "SPT5_INPUT_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/fastqc/SPT5_INPUT_R1_T1_2_fastqc.zip",
+                "SPT5_T0_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/fastqc/SPT5_T0_R1_T1_1_fastqc.zip"
             }
         },
         "LIB: cutadapt (trimmed)": {
             "all_sections": {
-                "SPT5_T15_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/SPT5_T15_R2_T1_2.fastq.gz_trimming_report.txt",
-                "SPT5_T0_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/SPT5_T0_R1_T1_2.fastq.gz_trimming_report.txt",
-                "SPT5_INPUT_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/SPT5_INPUT_R1_T1_1.fastq.gz_trimming_report.txt",
-                "SPT5_T15_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/SPT5_T15_R1_T1_1.fastq.gz_trimming_report.txt",
-                "SPT5_INPUT_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/SPT5_INPUT_R2_T1_1.fastq.gz_trimming_report.txt",
-                "SPT5_INPUT_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/SPT5_INPUT_R2_T1_2.fastq.gz_trimming_report.txt",
-                "SPT5_INPUT_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/SPT5_INPUT_R1_T1_2.fastq.gz_trimming_report.txt",
-                "SPT5_T0_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/SPT5_T0_R1_T1_1.fastq.gz_trimming_report.txt",
-                "SPT5_T0_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/SPT5_T0_R2_T1_1.fastq.gz_trimming_report.txt",
-                "SPT5_T15_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/SPT5_T15_R1_T1_2.fastq.gz_trimming_report.txt",
-                "SPT5_T15_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/SPT5_T15_R2_T1_1.fastq.gz_trimming_report.txt",
-                "SPT5_T0_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/SPT5_T0_R2_T1_2.fastq.gz_trimming_report.txt"
+                "SPT5_T15_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/SPT5_T15_R2_T1_2.fastq.gz_trimming_report.txt",
+                "SPT5_T0_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/SPT5_T0_R1_T1_2.fastq.gz_trimming_report.txt",
+                "SPT5_INPUT_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/SPT5_INPUT_R1_T1_1.fastq.gz_trimming_report.txt",
+                "SPT5_T15_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/SPT5_T15_R1_T1_1.fastq.gz_trimming_report.txt",
+                "SPT5_INPUT_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/SPT5_INPUT_R2_T1_1.fastq.gz_trimming_report.txt",
+                "SPT5_INPUT_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/SPT5_INPUT_R2_T1_2.fastq.gz_trimming_report.txt",
+                "SPT5_INPUT_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/SPT5_INPUT_R1_T1_2.fastq.gz_trimming_report.txt",
+                "SPT5_T0_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/SPT5_T0_R1_T1_1.fastq.gz_trimming_report.txt",
+                "SPT5_T0_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/SPT5_T0_R2_T1_1.fastq.gz_trimming_report.txt",
+                "SPT5_T15_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/SPT5_T15_R1_T1_2.fastq.gz_trimming_report.txt",
+                "SPT5_T15_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/SPT5_T15_R2_T1_1.fastq.gz_trimming_report.txt",
+                "SPT5_T0_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/SPT5_T0_R2_T1_2.fastq.gz_trimming_report.txt"
             }
         },
         "LIB: FastQC (trimmed)": {
             "all_sections": {
-                "SPT5_INPUT_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/fastqc/SPT5_INPUT_R2_T1_2_val_2_fastqc.zip",
-                "SPT5_T15_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/fastqc/SPT5_T15_R1_T1_2_val_2_fastqc.zip",
-                "SPT5_T0_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/fastqc/SPT5_T0_R1_T1_1_val_1_fastqc.zip",
-                "SPT5_INPUT_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/fastqc/SPT5_INPUT_R1_T1_1_val_1_fastqc.zip",
-                "SPT5_INPUT_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/fastqc/SPT5_INPUT_R1_T1_2_val_2_fastqc.zip",
-                "SPT5_T15_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/fastqc/SPT5_T15_R2_T1_1_val_1_fastqc.zip",
-                "SPT5_T0_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/fastqc/SPT5_T0_R2_T1_1_val_1_fastqc.zip",
-                "SPT5_T0_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/fastqc/SPT5_T0_R1_T1_2_val_2_fastqc.zip",
-                "SPT5_T15_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/fastqc/SPT5_T15_R2_T1_2_val_2_fastqc.zip",
-                "SPT5_T0_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/fastqc/SPT5_T0_R2_T1_2_val_2_fastqc.zip",
-                "SPT5_T15_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/fastqc/SPT5_T15_R1_T1_1_val_1_fastqc.zip",
-                "SPT5_INPUT_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/trimgalore/fastqc/SPT5_INPUT_R2_T1_1_val_1_fastqc.zip"
+                "SPT5_INPUT_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/fastqc/SPT5_INPUT_R2_T1_2_val_2_fastqc.zip",
+                "SPT5_T15_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/fastqc/SPT5_T15_R1_T1_2_val_2_fastqc.zip",
+                "SPT5_T0_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/fastqc/SPT5_T0_R1_T1_1_val_1_fastqc.zip",
+                "SPT5_INPUT_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/fastqc/SPT5_INPUT_R1_T1_1_val_1_fastqc.zip",
+                "SPT5_INPUT_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/fastqc/SPT5_INPUT_R1_T1_2_val_2_fastqc.zip",
+                "SPT5_T15_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/fastqc/SPT5_T15_R2_T1_1_val_1_fastqc.zip",
+                "SPT5_T0_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/fastqc/SPT5_T0_R2_T1_1_val_1_fastqc.zip",
+                "SPT5_T0_R1_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/fastqc/SPT5_T0_R1_T1_2_val_2_fastqc.zip",
+                "SPT5_T15_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/fastqc/SPT5_T15_R2_T1_2_val_2_fastqc.zip",
+                "SPT5_T0_R2_T1_2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/fastqc/SPT5_T0_R2_T1_2_val_2_fastqc.zip",
+                "SPT5_T15_R1_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/fastqc/SPT5_T15_R1_T1_1_val_1_fastqc.zip",
+                "SPT5_INPUT_R2_T1_1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/trimgalore/fastqc/SPT5_INPUT_R2_T1_1_val_1_fastqc.zip"
             }
         },
         "LIB: SAMTools": {
             "stats": {
-                "SPT5_T15_R2_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_T15_R2_T1.Lb.sorted.bam.stats",
-                "SPT5_T0_R2_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_T0_R2_T1.Lb.sorted.bam.stats",
-                "SPT5_INPUT_R2_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_INPUT_R2_T1.Lb.sorted.bam.stats",
-                "SPT5_T15_R1_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_T15_R1_T1.Lb.sorted.bam.stats",
-                "SPT5_T0_R1_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_T0_R1_T1.Lb.sorted.bam.stats",
-                "SPT5_INPUT_R1_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_INPUT_R1_T1.Lb.sorted.bam.stats"
+                "SPT5_T15_R2_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_T15_R2_T1.Lb.sorted.bam.stats",
+                "SPT5_T0_R2_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_T0_R2_T1.Lb.sorted.bam.stats",
+                "SPT5_INPUT_R2_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_INPUT_R2_T1.Lb.sorted.bam.stats",
+                "SPT5_T15_R1_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_T15_R1_T1.Lb.sorted.bam.stats",
+                "SPT5_T0_R1_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_T0_R1_T1.Lb.sorted.bam.stats",
+                "SPT5_INPUT_R1_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_INPUT_R1_T1.Lb.sorted.bam.stats"
             },
             "flagstat": {
-                "SPT5_INPUT_R2_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_INPUT_R2_T1.Lb.sorted.bam.flagstat",
-                "SPT5_T15_R2_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_T15_R2_T1.Lb.sorted.bam.flagstat",
-                "SPT5_T0_R1_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_T0_R1_T1.Lb.sorted.bam.flagstat",
-                "SPT5_T15_R1_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_T15_R1_T1.Lb.sorted.bam.flagstat",
-                "SPT5_INPUT_R1_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_INPUT_R1_T1.Lb.sorted.bam.flagstat",
-                "SPT5_T0_R2_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_T0_R2_T1.Lb.sorted.bam.flagstat"
+                "SPT5_INPUT_R2_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_INPUT_R2_T1.Lb.sorted.bam.flagstat",
+                "SPT5_T15_R2_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_T15_R2_T1.Lb.sorted.bam.flagstat",
+                "SPT5_T0_R1_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_T0_R1_T1.Lb.sorted.bam.flagstat",
+                "SPT5_T15_R1_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_T15_R1_T1.Lb.sorted.bam.flagstat",
+                "SPT5_INPUT_R1_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_INPUT_R1_T1.Lb.sorted.bam.flagstat",
+                "SPT5_T0_R2_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_T0_R2_T1.Lb.sorted.bam.flagstat"
             },
             "idxstats": {
-                "SPT5_INPUT_R2_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_INPUT_R2_T1.Lb.sorted.bam.idxstats",
-                "SPT5_T0_R2_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_T0_R2_T1.Lb.sorted.bam.idxstats",
-                "SPT5_T0_R1_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_T0_R1_T1.Lb.sorted.bam.idxstats",
-                "SPT5_INPUT_R1_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_INPUT_R1_T1.Lb.sorted.bam.idxstats",
-                "SPT5_T15_R2_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_T15_R2_T1.Lb.sorted.bam.idxstats",
-                "SPT5_T15_R1_T1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/library/SPT5_T15_R1_T1.Lb.sorted.bam.idxstats"
+                "SPT5_INPUT_R2_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_INPUT_R2_T1.Lb.sorted.bam.idxstats",
+                "SPT5_T0_R2_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_T0_R2_T1.Lb.sorted.bam.idxstats",
+                "SPT5_T0_R1_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_T0_R1_T1.Lb.sorted.bam.idxstats",
+                "SPT5_INPUT_R1_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_INPUT_R1_T1.Lb.sorted.bam.idxstats",
+                "SPT5_T15_R2_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_T15_R2_T1.Lb.sorted.bam.idxstats",
+                "SPT5_T15_R1_T1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/library/SPT5_T15_R1_T1.Lb.sorted.bam.idxstats"
             }
         },
         "MERGED LIB: SAMTools (unfiltered)": {
             "stats": {
-                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_INPUT_R1.mLb.mkD.sorted.bam.stats",
-                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_T15_R1.mLb.mkD.sorted.bam.stats",
-                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_INPUT_R2.mLb.mkD.sorted.bam.stats",
-                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_T0_R1.mLb.mkD.sorted.bam.stats",
-                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_T15_R2.mLb.mkD.sorted.bam.stats",
-                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_T0_R2.mLb.mkD.sorted.bam.stats"
+                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_INPUT_R1.mLb.mkD.sorted.bam.stats",
+                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_T15_R1.mLb.mkD.sorted.bam.stats",
+                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_INPUT_R2.mLb.mkD.sorted.bam.stats",
+                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_T0_R1.mLb.mkD.sorted.bam.stats",
+                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_T15_R2.mLb.mkD.sorted.bam.stats",
+                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_T0_R2.mLb.mkD.sorted.bam.stats"
             },
             "flagstat": {
-                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_T0_R2.mLb.mkD.sorted.bam.flagstat",
-                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_INPUT_R2.mLb.mkD.sorted.bam.flagstat",
-                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_INPUT_R1.mLb.mkD.sorted.bam.flagstat",
-                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_T0_R1.mLb.mkD.sorted.bam.flagstat",
-                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_T15_R1.mLb.mkD.sorted.bam.flagstat",
-                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_T15_R2.mLb.mkD.sorted.bam.flagstat"
+                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_T0_R2.mLb.mkD.sorted.bam.flagstat",
+                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_INPUT_R2.mLb.mkD.sorted.bam.flagstat",
+                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_INPUT_R1.mLb.mkD.sorted.bam.flagstat",
+                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_T0_R1.mLb.mkD.sorted.bam.flagstat",
+                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_T15_R1.mLb.mkD.sorted.bam.flagstat",
+                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_T15_R2.mLb.mkD.sorted.bam.flagstat"
             },
             "idxstats": {
-                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_T0_R1.mLb.mkD.sorted.bam.idxstats",
-                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_T15_R1.mLb.mkD.sorted.bam.idxstats",
-                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_T15_R2.mLb.mkD.sorted.bam.idxstats",
-                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_INPUT_R1.mLb.mkD.sorted.bam.idxstats",
-                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_T0_R2.mLb.mkD.sorted.bam.idxstats",
-                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/SPT5_INPUT_R2.mLb.mkD.sorted.bam.idxstats"
+                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_T0_R1.mLb.mkD.sorted.bam.idxstats",
+                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_T15_R1.mLb.mkD.sorted.bam.idxstats",
+                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_T15_R2.mLb.mkD.sorted.bam.idxstats",
+                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_INPUT_R1.mLb.mkD.sorted.bam.idxstats",
+                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_T0_R2.mLb.mkD.sorted.bam.idxstats",
+                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/SPT5_INPUT_R2.mLb.mkD.sorted.bam.idxstats"
             }
         },
         "MERGED LIB: Picard (unfiltered)": {
             "DuplicationMetrics": {
-                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/picard_metrics/SPT5_T0_R2.mLb.mkD.sorted.MarkDuplicates.metrics.txt",
-                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/picard_metrics/SPT5_T0_R1.mLb.mkD.sorted.MarkDuplicates.metrics.txt",
-                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/picard_metrics/SPT5_T15_R2.mLb.mkD.sorted.MarkDuplicates.metrics.txt",
-                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/picard_metrics/SPT5_T15_R1.mLb.mkD.sorted.MarkDuplicates.metrics.txt",
-                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/picard_metrics/SPT5_INPUT_R1.mLb.mkD.sorted.MarkDuplicates.metrics.txt",
-                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/unfiltered/picard_metrics/SPT5_INPUT_R2.mLb.mkD.sorted.MarkDuplicates.metrics.txt"
+                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/picard_metrics/SPT5_T0_R2.mLb.mkD.sorted.MarkDuplicates.metrics.txt",
+                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/picard_metrics/SPT5_T0_R1.mLb.mkD.sorted.MarkDuplicates.metrics.txt",
+                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/picard_metrics/SPT5_T15_R2.mLb.mkD.sorted.MarkDuplicates.metrics.txt",
+                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/picard_metrics/SPT5_T15_R1.mLb.mkD.sorted.MarkDuplicates.metrics.txt",
+                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/picard_metrics/SPT5_INPUT_R1.mLb.mkD.sorted.MarkDuplicates.metrics.txt",
+                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/unfiltered/picard_metrics/SPT5_INPUT_R2.mLb.mkD.sorted.MarkDuplicates.metrics.txt"
             }
         },
         "MERGED LIB: SAMTools (filtered)": {
             "stats": {
-                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_T0_R1.mLb.clN.sorted.bam.stats",
-                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_T0_R2.mLb.clN.sorted.bam.stats",
-                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_INPUT_R1.mLb.clN.sorted.bam.stats",
-                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_INPUT_R2.mLb.clN.sorted.bam.stats",
-                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_T15_R1.mLb.clN.sorted.bam.stats",
-                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_T15_R2.mLb.clN.sorted.bam.stats"
+                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_T0_R1.mLb.clN.sorted.bam.stats",
+                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_T0_R2.mLb.clN.sorted.bam.stats",
+                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_INPUT_R1.mLb.clN.sorted.bam.stats",
+                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_INPUT_R2.mLb.clN.sorted.bam.stats",
+                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_T15_R1.mLb.clN.sorted.bam.stats",
+                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_T15_R2.mLb.clN.sorted.bam.stats"
             },
             "flagstat": {
-                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_INPUT_R1.mLb.clN.sorted.bam.flagstat",
-                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_T15_R1.mLb.clN.sorted.bam.flagstat",
-                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_INPUT_R2.mLb.clN.sorted.bam.flagstat",
-                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_T0_R1.mLb.clN.sorted.bam.flagstat",
-                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_T0_R2.mLb.clN.sorted.bam.flagstat",
-                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_T15_R2.mLb.clN.sorted.bam.flagstat"
+                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_INPUT_R1.mLb.clN.sorted.bam.flagstat",
+                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_T15_R1.mLb.clN.sorted.bam.flagstat",
+                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_INPUT_R2.mLb.clN.sorted.bam.flagstat",
+                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_T0_R1.mLb.clN.sorted.bam.flagstat",
+                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_T0_R2.mLb.clN.sorted.bam.flagstat",
+                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_T15_R2.mLb.clN.sorted.bam.flagstat"
             },
             "idxstats": {
-                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_T0_R2.mLb.clN.sorted.bam.idxstats",
-                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_T15_R1.mLb.clN.sorted.bam.idxstats",
-                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_T15_R2.mLb.clN.sorted.bam.idxstats",
-                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_T0_R1.mLb.clN.sorted.bam.idxstats",
-                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_INPUT_R1.mLb.clN.sorted.bam.idxstats",
-                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/SPT5_INPUT_R2.mLb.clN.sorted.bam.idxstats"
+                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_T0_R2.mLb.clN.sorted.bam.idxstats",
+                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_T15_R1.mLb.clN.sorted.bam.idxstats",
+                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_T15_R2.mLb.clN.sorted.bam.idxstats",
+                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_T0_R1.mLb.clN.sorted.bam.idxstats",
+                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_INPUT_R1.mLb.clN.sorted.bam.idxstats",
+                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/SPT5_INPUT_R2.mLb.clN.sorted.bam.idxstats"
             }
         },
         "MERGED LIB: Picard (filtered)": {
             "AlignmentSummaryMetrics": {
-                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R1.mLb.clN.sorted.CollectMultipleMetrics.alignment_summary_metrics",
-                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R2.mLb.clN.sorted.CollectMultipleMetrics.alignment_summary_metrics",
-                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R1.mLb.clN.sorted.CollectMultipleMetrics.alignment_summary_metrics",
-                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R1.mLb.clN.sorted.CollectMultipleMetrics.alignment_summary_metrics",
-                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R2.mLb.clN.sorted.CollectMultipleMetrics.alignment_summary_metrics",
-                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R2.mLb.clN.sorted.CollectMultipleMetrics.alignment_summary_metrics"
+                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R1.mLb.clN.sorted.CollectMultipleMetrics.alignment_summary_metrics",
+                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R2.mLb.clN.sorted.CollectMultipleMetrics.alignment_summary_metrics",
+                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R1.mLb.clN.sorted.CollectMultipleMetrics.alignment_summary_metrics",
+                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R1.mLb.clN.sorted.CollectMultipleMetrics.alignment_summary_metrics",
+                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R2.mLb.clN.sorted.CollectMultipleMetrics.alignment_summary_metrics",
+                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R2.mLb.clN.sorted.CollectMultipleMetrics.alignment_summary_metrics"
             },
             "BaseDistributionByCycle": {
-                "SPT5_T15_R2_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R2.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
-                "SPT5_T15_R2_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R2.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
-                "SPT5_T15_R1_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R1.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
-                "SPT5_T15_R1_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R1.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
-                "SPT5_T0_R1_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R1.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
-                "SPT5_T0_R1_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R1.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
-                "SPT5_INPUT_R1_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R1.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
-                "SPT5_INPUT_R1_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R1.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
-                "SPT5_T0_R2_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R2.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
-                "SPT5_T0_R2_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R2.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
-                "SPT5_INPUT_R2_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R2.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
-                "SPT5_INPUT_R2_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R2.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics"
+                "SPT5_T15_R2_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R2.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
+                "SPT5_T15_R2_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R2.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
+                "SPT5_T15_R1_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R1.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
+                "SPT5_T15_R1_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R1.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
+                "SPT5_T0_R1_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R1.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
+                "SPT5_T0_R1_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R1.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
+                "SPT5_INPUT_R1_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R1.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
+                "SPT5_INPUT_R1_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R1.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
+                "SPT5_T0_R2_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R2.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
+                "SPT5_T0_R2_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R2.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
+                "SPT5_INPUT_R2_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R2.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics",
+                "SPT5_INPUT_R2_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R2.mLb.clN.sorted.CollectMultipleMetrics.base_distribution_by_cycle_metrics"
             },
             "InsertSizeMetrics": {
-                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R1.mLb.clN.sorted.CollectMultipleMetrics.insert_size_metrics",
-                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R2.mLb.clN.sorted.CollectMultipleMetrics.insert_size_metrics",
-                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R1.mLb.clN.sorted.CollectMultipleMetrics.insert_size_metrics",
-                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R1.mLb.clN.sorted.CollectMultipleMetrics.insert_size_metrics",
-                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R2.mLb.clN.sorted.CollectMultipleMetrics.insert_size_metrics",
-                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R2.mLb.clN.sorted.CollectMultipleMetrics.insert_size_metrics"
+                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R1.mLb.clN.sorted.CollectMultipleMetrics.insert_size_metrics",
+                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R2.mLb.clN.sorted.CollectMultipleMetrics.insert_size_metrics",
+                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T0_R1.mLb.clN.sorted.CollectMultipleMetrics.insert_size_metrics",
+                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R1.mLb.clN.sorted.CollectMultipleMetrics.insert_size_metrics",
+                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_T15_R2.mLb.clN.sorted.CollectMultipleMetrics.insert_size_metrics",
+                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/alignment/mergedLibrary/filtered/picard_metrics/SPT5_INPUT_R2.mLb.clN.sorted.CollectMultipleMetrics.insert_size_metrics"
             }
         },
         "MERGED LIB: deepTools": {
             "plotFingerprint": {
-                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/deeptools/SPT5_T15_R1.mLb.clN.plotFingerprint.raw.txt",
-                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/deeptools/SPT5_T15_R2.mLb.clN.plotFingerprint.raw.txt",
-                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/deeptools/SPT5_T0_R1.mLb.clN.plotFingerprint.raw.txt",
-                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/deeptools/SPT5_T0_R2.mLb.clN.plotFingerprint.raw.txt"
+                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/deeptools/SPT5_T15_R1.mLb.clN.plotFingerprint.raw.txt",
+                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/deeptools/SPT5_T15_R2.mLb.clN.plotFingerprint.raw.txt",
+                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/deeptools/SPT5_T0_R1.mLb.clN.plotFingerprint.raw.txt",
+                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/deeptools/SPT5_T0_R2.mLb.clN.plotFingerprint.raw.txt"
             },
             "plotProfile": {
-                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/deeptools/SPT5_T15_R1.mLb.clN.plotProfile.tab",
-                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/deeptools/SPT5_INPUT_R1.mLb.clN.plotProfile.tab",
-                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/deeptools/SPT5_T0_R2.mLb.clN.plotProfile.tab",
-                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/deeptools/SPT5_INPUT_R2.mLb.clN.plotProfile.tab",
-                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/deeptools/SPT5_T0_R1.mLb.clN.plotProfile.tab",
-                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027/deeptools/SPT5_T15_R2.mLb.clN.plotProfile.tab"
+                "SPT5_T15_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/deeptools/SPT5_T15_R1.mLb.clN.plotProfile.tab",
+                "SPT5_INPUT_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/deeptools/SPT5_INPUT_R1.mLb.clN.plotProfile.tab",
+                "SPT5_T0_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/deeptools/SPT5_T0_R2.mLb.clN.plotProfile.tab",
+                "SPT5_INPUT_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/deeptools/SPT5_INPUT_R2.mLb.clN.plotProfile.tab",
+                "SPT5_T0_R1": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/deeptools/SPT5_T0_R1.mLb.clN.plotProfile.tab",
+                "SPT5_T15_R2": "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474/deeptools/SPT5_T15_R2.mLb.clN.plotProfile.tab"
             }
         }
     },
@@ -3146,7 +3146,7 @@
     ],
     "report_multiqc_command": "/usr/bin/multiqc -p -f .",
     "report_plot_data": {
-        "mqc_mplplot_jauhqnsvgb-1": {
+        "mqc_mplplot_apqneilbkv-1": {
             "plot_type": "bar_graph",
             "samples": [
                 [
@@ -3199,10 +3199,10 @@
             "config": {
                 "title": "Total peak count",
                 "ylab": "Peak count",
-                "id": "mqc_mplplot_jauhqnsvgb-1"
+                "id": "mqc_mplplot_apqneilbkv-1"
             }
         },
-        "mqc_mplplot_jkrsyqwhni-1": {
+        "mqc_mplplot_fvcwrdbnxi-1": {
             "plot_type": "bar_graph",
             "samples": [
                 [
@@ -3258,10 +3258,10 @@
                 "ymax": 1,
                 "ymin": 0,
                 "tt_decimals": 2,
-                "id": "mqc_mplplot_jkrsyqwhni-1"
+                "id": "mqc_mplplot_fvcwrdbnxi-1"
             }
         },
-        "mqc_mplplot_kcxrwojaef-1": {
+        "mqc_mplplot_fyaszpjbux-1": {
             "plot_type": "bar_graph",
             "samples": [
                 [
@@ -3314,7 +3314,7 @@
             "config": {
                 "title": "Peak to feature proportion",
                 "ylab": "Peak count",
-                "id": "mqc_mplplot_kcxrwojaef-1"
+                "id": "mqc_mplplot_fyaszpjbux-1"
             }
         },
         "fastqc_sequence_counts_plot-1": {
@@ -102218,7 +102218,7 @@
                             ],
                             [
                                 190,
-                                23.40923394305488
+                                23.409233943054883
                             ],
                             [
                                 260,
@@ -111387,12 +111387,12 @@
         }
     },
     "config_analysis_dir_abs": [
-        "/home/runner/work/chipseq/chipseq/work/b4/fd5b1e64d66e5032232a9e6f510027"
+        "/home/runner/work/chipseq/chipseq/work/67/8514ff43b18e63ccb1e02613dbf474"
     ],
     "config_analysis_dir": [
         "."
     ],
-    "config_creation_date": "2021-02-15, 10:58",
+    "config_creation_date": "2021-02-16, 10:18",
     "config_git_hash": null,
     "config_intro_text": null,
     "config_report_comment": "This report has been generated by the <a href=\"https://github.com/nf-core/chipseq\" target=\"_blank\">nf-core/chipseq</a> analysis pipeline. For information about how to interpret these results, please see the <a href=\"https://github.com/nf-core/chipseq/blob/master/docs/output.md\" target=\"_blank\">documentation</a>.\n",

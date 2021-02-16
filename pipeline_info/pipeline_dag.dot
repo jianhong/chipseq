@@ -527,13 +527,13 @@ p122 [label="CHIPSEQ:BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_INDEX"];
 p123 [shape=point];
 p122 -> p123;
 
-p125 [shape=point,label="",fixedsize=true,width=0.1];
-p126 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
-p125 -> p126;
-
 p119 [label="CHIPSEQ:BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
 p126 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p119 -> p126 [label="ch_clean_bam"];
+
+p125 [shape=point,label="",fixedsize=true,width=0.1];
+p126 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p125 -> p126;
 
 p126 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p128 [label="CHIPSEQ:BAM_CLEAN:BAM_SORT_SAMTOOLS:BAM_STATS_SAMTOOLS:SAMTOOLS_STATS"];
@@ -843,13 +843,13 @@ p184 [label="CHIPSEQ:DEEPTOOLS_PLOTHEATMAP"];
 p185 [shape=point];
 p184 -> p185;
 
-p188 [shape=point,label="",fixedsize=true,width=0.1];
-p189 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
-p188 -> p189;
-
 p119 [label="CHIPSEQ:BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
 p189 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p119 -> p189 [label="ch_clean_bam"];
+
+p188 [shape=point,label="",fixedsize=true,width=0.1];
+p189 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p188 -> p189;
 
 p189 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p190 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
@@ -1055,13 +1055,13 @@ p230 [label="CHIPSEQ:MACS2_CALLPEAK_WITHOUT_CONTROL"];
 p231 [shape=point];
 p230 -> p231;
 
-p237 [shape=point,label="",fixedsize=true,width=0.1];
-p238 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
-p237 -> p238;
-
 p119 [label="CHIPSEQ:BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
 p238 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p119 -> p238 [label="ch_clean_bam"];
+
+p237 [shape=point,label="",fixedsize=true,width=0.1];
+p238 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p237 -> p238;
 
 p238 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p239 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
@@ -1203,13 +1203,13 @@ p270 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
 p295 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="mix"];
 p270 -> p295 [label="ch_software_versions"];
 
-p260 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
-p272 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
-p260 -> p272 [label="ch_ip_control_bam"];
-
 p271 [shape=point,label="",fixedsize=true,width=0.1];
 p272 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p271 -> p272;
+
+p260 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
+p272 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p260 -> p272 [label="ch_ip_control_bam"];
 
 p272 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p273 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
@@ -1227,13 +1227,13 @@ p275 [label="CHIPSEQ:FRIP_SCORE"];
 p276 [shape=point];
 p275 -> p276;
 
-p277 [shape=point,label="",fixedsize=true,width=0.1];
-p278 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
-p277 -> p278;
-
 p273 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
 p278 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p273 -> p278 [label="ch_ip_peak"];
+
+p277 [shape=point,label="",fixedsize=true,width=0.1];
+p278 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p277 -> p278;
 
 p278 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p279 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
@@ -1699,13 +1699,13 @@ p378 [label="CHIPSEQ:HOMER_CALLPEAK_WITHOUT_CONTROL:HOMER_ANNOTATEPEAKS"];
 p379 [shape=point];
 p378 -> p379;
 
-p119 [label="CHIPSEQ:BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
-p382 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
-p119 -> p382 [label="ch_clean_bam"];
-
 p381 [shape=point,label="",fixedsize=true,width=0.1];
 p382 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p381 -> p382;
+
+p119 [label="CHIPSEQ:BAM_CLEAN:BAM_SORT_SAMTOOLS:SAMTOOLS_SORT"];
+p382 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
+p119 -> p382 [label="ch_clean_bam"];
 
 p382 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="join"];
 p383 [shape=circle,label="",fixedsize=true,width=0.1,xlabel="map"];
