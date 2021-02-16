@@ -144,7 +144,6 @@ def get_sra_run_info(runTableFile, runJSONFile, outfile, designfile, libraryFilt
         gp_id[value] = 1
       replicate[key] = gp_id[value]
   
-  print condition
   with open(outfile, mode='w') as f:
     writer = csv.writer(f, delimiter=',', quotechar='"', quoting=csv.QUOTE_MINIMAL)
     
