@@ -4,15 +4,15 @@
   |  |  .      |__| .  __  __ |\ | |__    }  {
   |__|_ | |__| |__| | |__|    | \| |     \`-._,-`-,
                                           `._,._,'
-  jianhong/chipseq v1.1.10
+  jianhong/chipseq v1.1.11
 ----------------------------------------------------
 
-Run Name: desperate_einstein
+Run Name: boring_dalembert
 
 ## jianhong/chipseq execution completed successfully! ##
 
 
-The workflow was completed at 2021-02-16T15:27:48.277Z (duration: 37m 36s)
+The workflow was completed at 2021-02-17T15:22:13.716Z (duration: 33m 20s)
 
 The command used to launch the workflow was as follows:
 
@@ -22,14 +22,14 @@ The command used to launch the workflow was as follows:
 
 Pipeline Configuration:
 -----------------------
- - Core Nextflow options: [runName:desperate_einstein, containerEngine:docker, container:jianhong/chipseq:latest, launchDir:/home/runner/work/chipseq/chipseq, workDir:/home/runner/work/chipseq/chipseq/work, projectDir:/home/runner/work/chipseq/chipseq, userName:runner, profile:test,docker, input:https://raw.githubusercontent.com/jianhong/chipseq/master/assets/design.csv, configFiles:/home/runner/work/chipseq/chipseq/nextflow.config]
- - Date Started: 2021-02-16T14:50:11.907Z
- - Date Completed: 2021-02-16T15:27:48.277Z
+ - Core Nextflow options: [runName:boring_dalembert, containerEngine:docker, container:jianhong/chipseq:latest, launchDir:/home/runner/work/chipseq/chipseq, workDir:/home/runner/work/chipseq/chipseq/work, projectDir:/home/runner/work/chipseq/chipseq, userName:runner, profile:test,docker, input:https://raw.githubusercontent.com/jianhong/chipseq/master/assets/design.csv, configFiles:/home/runner/work/chipseq/chipseq/nextflow.config]
+ - Date Started: 2021-02-17T14:48:53.393Z
+ - Date Completed: 2021-02-17T15:22:13.716Z
  - Pipeline script file path: /home/runner/work/chipseq/chipseq/main.nf
  - Pipeline script hash ID: 6771b189006da81d9e1d341a5b5620ee
- - Nextflow Version: 20.07.1
- - Nextflow Build: 5412
- - Nextflow Compile Timestamp: 24-07-2020 15:18 UTC
+ - Nextflow Version: 20.10.0
+ - Nextflow Build: 5430
+ - Nextflow Compile Timestamp: 01-11-2020 15:14 UTC
 
 --
 jianhong/chipseq
