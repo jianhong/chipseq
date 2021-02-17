@@ -4,15 +4,15 @@
   |  |  .      |__| .  __  __ |\ | |__    }  {
   |__|_ | |__| |__| | |__|    | \| |     \`-._,-`-,
                                           `._,._,'
-  jianhong/chipseq v1.1.11
+  jianhong/chipseq v1.0.3
 ----------------------------------------------------
 
-Run Name: modest_lichterman
+Run Name: elegant_euler
 
 ## jianhong/chipseq execution completed successfully! ##
 
 
-The workflow was completed at 2021-02-17T15:26:58.209Z (duration: 38m 9s)
+The workflow was completed at 2021-02-17T17:36:35.552Z (duration: 33m 26s)
 
 The command used to launch the workflow was as follows:
 
@@ -22,9 +22,9 @@ The command used to launch the workflow was as follows:
 
 Pipeline Configuration:
 -----------------------
- - Core Nextflow options: [runName:modest_lichterman, containerEngine:docker, container:jianhong/chipseq:latest, launchDir:/home/runner/work/chipseq/chipseq, workDir:/home/runner/work/chipseq/chipseq/work, projectDir:/home/runner/work/chipseq/chipseq, userName:runner, profile:test,docker, input:https://raw.githubusercontent.com/jianhong/chipseq/master/assets/design.csv, configFiles:/home/runner/work/chipseq/chipseq/nextflow.config]
- - Date Started: 2021-02-17T14:48:49.663Z
- - Date Completed: 2021-02-17T15:26:58.209Z
+ - Core Nextflow options: [runName:elegant_euler, containerEngine:docker, container:jianhong/chipseq:latest, launchDir:/home/runner/work/chipseq/chipseq, workDir:/home/runner/work/chipseq/chipseq/work, projectDir:/home/runner/work/chipseq/chipseq, userName:runner, profile:test,docker, input:https://raw.githubusercontent.com/jianhong/chipseq/master/assets/design.csv, configFiles:/home/runner/work/chipseq/chipseq/nextflow.config]
+ - Date Started: 2021-02-17T17:03:09.434Z
+ - Date Completed: 2021-02-17T17:36:35.552Z
  - Pipeline script file path: /home/runner/work/chipseq/chipseq/main.nf
  - Pipeline script hash ID: 6771b189006da81d9e1d341a5b5620ee
  - Nextflow Version: 20.07.1
