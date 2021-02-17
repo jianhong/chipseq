@@ -26,6 +26,11 @@ process JO_FASTQDUMP {
     def control  = meta.input?:meta.control?:''
     """
     mkdir -p raw
+    if [ ! -f \$HOME/.ncbi/user-settings.mkfg ]; then
+      mkdir -p \$HOME/.ncbi
+      printf '/LIBS/GUID = "%s"\n' `uuidgen` > \$HOME/.ncbi/user-settings.mkfg
+    fi
+    
     echo "group,replicate,fastq_1,fastq_2,antibody,control,ScientificName"> designTab.csv
 
     if [[ "${meta.LibraryLayout.toLowerCase()}" =~ "paired" ]]; then
