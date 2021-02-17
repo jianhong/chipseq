@@ -3,6 +3,13 @@
 The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## [1.0.3] add sra_downloader. - 2021-02-17
+
+* make modules reuseable
+* add sra_downloader
+* remake Dockerfile
+* update documentation
+
 ## [1.0.1] Release the dev version. - 2021-01-23
 
 * add homer to call peaks.

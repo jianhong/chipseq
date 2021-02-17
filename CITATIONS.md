@@ -58,6 +58,16 @@
 
 * [R](https://www.R-project.org/)
   > R Core Team (2017). R: A language and environment for statistical computing. R Foundation for Statistical Computing, Vienna, Austria.
+  
+* [ChIPpeakAnno](https://doi.org/10.1186/1471-2105-11-237)
+  > Zhu L, Gazin C, Lawson N, Pagès H, Lin S, Lapointe D, Green M (2010). ChIPpeakAnno: a Bioconductor package to annotate ChIP-seq and ChIP-chip data. BMC Bioinformatics, 11(1), 237. ISSN 1471-2105, doi: 10.1186/1471-2105-11-237.
+  > Zhu L (2013). Integrative analysis of ChIP-chip and ChIP-seq dataset. In Lee T, Luk ACS (eds.), Tilling Arrays, volume 1067, chapter 4, -19. Humana Press. doi: 10.1007/978-1-62703-607-8_8.
+
+* [clusterProfiler](https://doi.org/10.1089/omi.2011.0118)
+  > Yu G, Wang L, Han Y, He Q (2012). clusterProfiler: an R package for comparing biological themes among gene clusters. OMICS: A Journal of Integrative Biology, 16(5), 284-287. doi: 10.1089/omi.2011.0118.
+
+* [DiffBind](http://www.nature.com/nature/journal/v481/n7381/full/nature10730.html)
+  > Ross-Innes CS, Stark R, Teschendorff AE, Holmes KA, Ali HR, Dunning MJ, Brown GD, Gojis O, Ellis IO, Green AR, Ali S, Chin S, Palmieri C, Caldas C, Carroll JS (2012). Differential oestrogen receptor binding is associated with clinical outcome in breast cancer. Nature, 481, -4.
 
 * [DESeq2](https://www.ncbi.nlm.nih.gov/pubmed/25516281/)
   > Love MI, Huber W, Anders S. Moderated estimation of fold change and dispersion for RNA-seq data with DESeq2. Genome Biol. 2014;15(12):550. PubMed PMID: 25516281; PubMed Central PMCID: PMC4302049.

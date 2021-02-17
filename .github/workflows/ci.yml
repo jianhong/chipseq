@@ -1,9 +1,11 @@
-name: nf-core CI
+name: docker test
 # This workflow runs the pipeline with the minimal test dataset to check that it completes without any syntax errors
 on:
   push:
     branches:
-      - master
+      - dev
+    paths:
+      - 'VERSION.config'
   pull_request:
   release:
     types: [published]
@@ -11,7 +13,7 @@ on:
 jobs:
   test:
     name: Run workflow tests
-    # Only run on push if this is the master branch (merged PRs)
+    # Only run on push if this is the dev branch (merged PRs)
     if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'jianhong/chipseq') }}
     runs-on: ubuntu-latest
     env:
@@ -33,12 +35,12 @@ jobs:
 
       - name: Build new docker image
         if: env.MATCHED_FILES
-        run: docker build --no-cache . -t jianhong/chipseq:master
+        run: docker build --no-cache . -t jianhong/chipseq:dev
 
       - name: Pull docker image
         if: ${{ !env.MATCHED_FILES }}
         run: |
-          docker pull jianhong/chipseq:master
+          docker pull jianhong/chipseq:dev
 
       - name: Install Nextflow
         env:
@@ -50,10 +52,13 @@ jobs:
       - name: Run pipeline with test data
         run: |
           nextflow run ${GITHUB_WORKSPACE} -profile test,docker
-          
-      - name: Run pipeline with no control data
-        run: |
-          nextflow run ${GITHUB_WORKSPACE} -profile test_no_input,docker
+      
+      - name: Deploy 🚀
+        uses: JamesIves/github-pages-deploy-action@releases/v3
+        with:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          BRANCH: gh-pages # The branch the action should deploy to.
+          FOLDER: results # The folder the action should deploy.
 
   parameters:
     name: Test workflow parameters
@@ -77,12 +82,12 @@ jobs:
 
       - name: Build new docker image
         if: env.GIT_DIFF
-        run: docker build --no-cache . -t jianhong/chipseq:master
+        run: docker build --no-cache . -t jianhong/chipseq:dev
 
       - name: Pull docker image
         if: ${{ !env.GIT_DIFF }}
         run: |
-          docker pull nfcore/chipseq:master
+          docker pull nfcore/chipseq:dev
 
       - name: Install Nextflow
         run: |

@@ -166,10 +166,10 @@ class Schema {
 
     static String params_mqc_summary(summary) {
         String yaml_file_text  = """
-        id: 'nf-core-chipseq-summary'
+        id: 'qiubio-chipseq-summary'
         description: " - this information is collected when the pipeline is started."
-        section_name: 'nf-core/chipseq Workflow Summary'
-        section_href: 'https://github.com/nf-core/chipseq'
+        section_name: 'QiuBio nf-core/chipseq Workflow Summary'
+        section_href: 'https://github.com/jianhong/chipseq'
         plot_type: 'html'
         data: |
             <dl class=\"dl-horizontal\">
@@ -178,5 +178,102 @@ class Schema {
         """.stripIndent()
 
         return yaml_file_text
+    }
+    
+    /*
+     * Groovy Map summarising parameters/workflow options used by the pipeline
+     */
+    private static LinkedHashMap params_summary_map(workflow, params, json_schema) {
+        // Get a selection of core Nextflow workflow options
+        def Map workflow_summary = [:]        
+        if (workflow.revision) {
+            workflow_summary['revision'] = workflow.revision
+        }
+        workflow_summary['runName']      = workflow.runName
+        if (workflow.containerEngine) {
+            workflow_summary['containerEngine'] = "$workflow.containerEngine"
+        }
+        if (workflow.container) {
+            workflow_summary['container']       = "$workflow.container"
+        }
+        workflow_summary['launchDir']    = workflow.launchDir
+        workflow_summary['workDir']      = workflow.workDir
+        workflow_summary['projectDir']   = workflow.projectDir
+        workflow_summary['userName']     = workflow.userName
+        workflow_summary['profile']      = workflow.profile
+        workflow_summary['input']        = params.input
+        workflow_summary['configFiles']  = workflow.configFiles.join(', ')
+        
+        // Get pipeline parameters defined in JSON Schema
+        def Map params_summary = [:]
+        def blacklist  = ['hostnames']
+        def params_map = params_get(json_schema)
+        for (group in params_map.keySet()) {
+            def sub_params = new LinkedHashMap()
+            def group_params = params_map.get(group)  // This gets the parameters of that particular group
+            for (param in group_params.keySet()) {
+                if (params.containsKey(param) && !blacklist.contains(param)) {
+                    def params_value = params.get(param)
+                    def schema_value = group_params.get(param).default
+                    def param_type   = group_params.get(param).type
+                    if (schema_value == null) {
+                        if (param_type == 'boolean') {
+                            schema_value = false
+                        }
+                        if (param_type == 'string') {
+                            schema_value = ''
+                        }
+                        if (param_type == 'integer') {
+                            schema_value = 0
+                        }
+                    } else {
+                        if (param_type == 'string') {
+                            if (schema_value.contains('$projectDir') || schema_value.contains('${projectDir}')) {
+                                def sub_string = schema_value.replace('\$projectDir','')
+                                sub_string     = sub_string.replace('\${projectDir}','')
+                                if (params_value.contains(sub_string)) {
+                                    schema_value = params_value
+                                }
+                            }
+                            if (schema_value.contains('$params.outdir') || schema_value.contains('${params.outdir}')) {
+                                def sub_string = schema_value.replace('\$params.outdir','')
+                                sub_string     = sub_string.replace('\${params.outdir}','')
+                                if ("${params.outdir}${sub_string}" == params_value) {
+                                    schema_value = params_value
+                                }
+                            }
+                        }
+                    }
+
+                    if (params_value != schema_value) {
+                        sub_params.put("$param", params_value)
+                    }
+                }
+            }
+            params_summary.put(group, sub_params)
+            
+        }
+        return [ 'Core Nextflow options' : workflow_summary ] << params_summary
+    }
+    
+    /*
+     * Beautify parameters for summary and return as string
+     */
+    private static String params_summary_log(workflow, params, json_schema) {
+        String output  = Headers.nf_core(workflow, params.monochrome_logs) + "\n"
+        def params_map = params_summary_map(workflow, params, json_schema)
+        def max_chars  = params_max_chars(params_map)
+        for (group in params_map.keySet()) {
+            def group_params = params_map.get(group)  // This gets the parameters of that particular group
+            if (group_params) {
+                output += group + "\n"
+                for (param in group_params.keySet()) {
+                    output += "    \u001B[1m" +  param.padRight(max_chars) + ": \u001B[1m" + group_params.get(param) + "\n"
+                }
+                output += "\n"
+            }
+        }
+        output += Headers.dashed_line(params.monochrome_logs)
+        return output
     }
 }

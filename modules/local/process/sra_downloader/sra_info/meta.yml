@@ -1,0 +1,17 @@
+name: sra_info
+description: Download infomation from GEO database
+keywords:
+    - SRA GEO GSE
+input:
+    -
+        - id:
+            type: string
+            description: sra project id or geo project id
+output:
+    -
+        - info:
+            type: files
+            description: table files
+            pattern: "*.txt"
+authors:
+    - "@jianhong"

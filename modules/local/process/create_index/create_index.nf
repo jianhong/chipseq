@@ -1,5 +1,5 @@
 // Import generic module functions
-include { initOptions; saveFiles } from '../functions'
+include { initOptions; saveFiles; getRealPath } from '../functions'
 
 /*
  * Create index.html
@@ -18,7 +18,21 @@ process JO_INDEX {
     path workflow_summary
     path images
     path doc_img
+    
+    path nsc
+    path rsc
+    path frip
+    
+    path preseq_log
+    path flagstat
     path checksum
+    
+    val id
+    val peaktype
+    
+    path ('macs2DiffBind/*')
+    path ('homerDiffBind/*')
+    
     path software_version
     val options
 
@@ -26,9 +40,15 @@ process JO_INDEX {
     path "index.html"
     
     script:
+    def sampleLabel = id.join(' ')
+    def pts         = peaktype.join(' ')
+    def curr_path   = getRealPath()
     """
+    n=($sampleLabel)
+    s=($pts)
+    paste <(printf '%s\n' "\${n[@]}") <(printf '%s\n' "\${s[@]}") > peaktype_files.txt
     cp ${index_docs} new.rmd
-    install_packages.r rmarkdown DT
-    Rscript -e "rmarkdown::render('new.rmd', output_file='index.html', params = list(design='${designtab}', genome='${params.genome}', summary='${workflow_summary}'))"
+    ${curr_path}/utilities/install_packages.r rmarkdown DT ggplot2 reshape2
+    Rscript -e "rmarkdown::render('new.rmd', output_file='index.html', params = list(design='${designtab}', genome='${params.genome}', species='${params.species}', summary='${workflow_summary}', exec_info='${params.tracedir}', launchdir='${workflow.launchDir}', conda='${params.conda}'))"
     """
 }

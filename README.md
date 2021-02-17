@@ -62,35 +62,32 @@ BiocManager to avoid the dependece issues.
         1. Call Peaks
         2. Differential binding analysis by [`DiffBind`](https://bioconductor.org/packages/DiffBind/)
         3. Annotate peaks relative to gene features ([`ChIPpeakAnno`](https://bioconductor.org/packages/ChIPpeakAnno/))
+        4. Enrichment analysis. If [gsea-cli.sh](https://www.gsea-msigdb.org/gsea/index.jsp) and c2.all.v7.2 molecular signatures database are available, GSEA enrichment analysis will also be done.
 7. Visualisation the tracks.
     1. Create IGV session file containing bigWig tracks, peaks and differential sites for data visualisation ([`IGV`](https://software.broadinstitute.org/software/igv/)).
     2. Create UCSC genome browser track hub for bigWig tracks [trackhub](https://daler.github.io/trackhub/quickstart.html).
 8. Present QC for raw read, alignment, peak-calling and differential binding results ([`MultiQC`](http://multiqc.info/), [`R`](https://www.r-project.org/))
 9. Create index.html ([`R`](https://www.r-project.org/))
 
-## Installation by conda
+## Installation
 
 ```bash
-conda update conda
+# install nextflow
+wget -qO- https://get.nextflow.io | bash
 nextflow pull jianhong/chipseq
-srun --mem 60G -c 2 nextflow run jianhong/chipseq -profile test,conda
+nextflow run jianhong/chipseq -profile test,conda
 ```
 
 ## Update
 
 ```bash
-conda activate chipflow
 nextflow pull jianhong/chipseq
 ```
 
 ## Remove
 
 ```bash
-conda activate chipflow
 nextflow drop jianhong/chipseq
-conda deactivate
-conda remove --name chipflow --all
-conda info --envs
 ```
 
 ## design table
@@ -145,6 +142,74 @@ Or by docker:
 nextflow run jianhong/chipseq -c sample.config --docker
 ```
 
+## Analysis data from GEO database
+
+Here is the example to download data from GEO database and run analysis.
+The downloader will filter the seqtype by ChIP-Seq. You can reset the
+seqtype by --seqtype parameter.
+
+```bash
+nextflow run jianhong/chipseq --input GSE36107 --genome dm6
+```
+
+To breakdown the limitation, you may want to add [E-utilities api_key](https://ncbiinsights.ncbi.nlm.nih.gov/2017/11/02/new-api-keys-for-the-e-utilities/).
+Let’s say that you create a key and its value is “ABCD123”.
+NOTE: docker version not support this.
+
+```bash
+nextflow run jianhong/chipseq --input GSE90661 --genome R64-1-1 --api_key ABCD123
+```
+
+## Change parameters for module setting and rerun the pipeline
+
+First create a config file following this format:
+
+```bash
+params {
+    // change conda software version.
+    conda_softwares {
+        samtools = "bioconda::samtools=1.09"
+        trimgalore = "bioconda::cutadapt=1.18 bioconda::trim-galore=0.6.6"
+    }
+    // change module parameters, for example for homer findpeaks and macs2
+    modules {
+        'homer_findpeaks' {
+            args       = ['h3k4me1': "-region -size 1000 -minDist 2500 -C 0",
+                          'h3k4me3': "-region -nfr",
+                          'h3k9me1': "-region -size 1000 -minDist 2500 -C 0",
+                          'h3k9me2': "-region -size 1000 -minDist 2500 -C 0",
+                          'h3k9me3': "-region -size 1000 -minDist 2500 -C 0",
+                          'h3k14ac': "-region -size 1000 -minDist 2500 -C 0",
+                          'h4k20me1': "-region -size 1000 -minDist 2500 -C 0",
+                          'h3k27me3': "-region -size 1000 -minDist 2500 -C 0",
+                          'h3k27ac': "-region -nfr",
+                          'h3k36me3': "-region -size 1000 -minDist 2500 -C 0",
+                          'h3k79me2': "-region -size 1000 -minDist 2500 -C 0",
+                          'h3k79me3': "-region -size 1000 -minDist 2500 -C 0",
+                          'others': ""]
+            publish_dir   = "homer"
+        }
+        'macs2_callpeak' {
+            args          = "--keep-dup all"
+            publish_dir   = "macs2"
+        }
+    }
+}
+```
+
+To get more modules setting, please refer to
+[modules.config file](https://raw.githubusercontent.com/jianhong/chipseq/master/conf/modules.config)
+
+And then run the pipeline as following command:
+
+```bash
+nextflow run jianhong/chipseq -c sample.config -c path/to/your/module/config/file --conda -resume
+```
+
 ## Get help
 
 Please create an issue to submit your questions.
+
+## Citation
+
+See [citation](CITATIONS.md)

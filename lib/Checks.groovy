@@ -1,9 +1,39 @@
+import org.yaml.snakeyaml.Yaml
+
 /*
  * This file holds several functions used to perform standard checks for the nf-core pipeline template.
  */
 
 class Checks {
+    static void check_conda_channels(log) {
+        Yaml parser = new Yaml()
+        def channels = []
+        try {
+            def config = parser.load("conda config --show channels".execute().text)
+            channels = config.channels
+        } catch(NullPointerException | IOException e) {
+            log.warn "Could not verify conda channel configuration."
+            return
+        }
 
+        // Check that all channels are present
+        def required_channels = ['conda-forge', 'bioconda', 'defaults']
+        def conda_check_failed = !required_channels.every { ch -> ch in channels }
+
+        // Check that they are in the right order
+        conda_check_failed |= !(channels.indexOf('conda-forge') < channels.indexOf('bioconda'))
+        conda_check_failed |= !(channels.indexOf('bioconda') < channels.indexOf('defaults'))
+
+        if (conda_check_failed) {
+            log.warn "=============================================================================\n" +
+                     "  There is a problem with your Conda configuration!\n\n" + 
+                     "  You will need to set-up the conda-forge and bioconda channels correctly.\n" +
+                     "  Please refer to https://bioconda.github.io/user/install.html#set-up-channels\n" +
+                     "  NB: The order of the channels matters!\n" +
+                     "==================================================================================="
+        }
+    }
+    
     static void aws_batch(workflow, params) {
         if (workflow.profile.contains('awsbatch')) {
             assert !params.awsqueue || !params.awsregion : "Specify correct --awsqueue and --awsregion parameters on AWSBatch!"
@@ -43,5 +73,32 @@ class Checks {
                      "  Please specify value for '--macs_gsize' to run these steps.\n" +
                      "======================================================================="
         }
+    }
+    
+    // Exit pipeline if incorrect --genome key provided
+    static void genome_exists(params, log) {
+        if (params.genomes && params.genome && !params.genomes.containsKey(params.genome)) {
+            log.error "=============================================================================\n" +
+                      "  Genome '${params.genome}' not found in any config files provided to the pipeline.\n" +
+                      "  Currently, the available genome keys are:\n" +
+                      "  ${params.genomes.keySet().join(", ")}\n" +
+                      "============================================================================="
+            System.exit(0)
+        }
+    }
+    
+     // Get attribute from genome config file e.g. fasta
+    static String get_genome_attribute(params, attribute) {
+        def val = ''
+        if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
+            if (params.genomes[ params.genome ].containsKey(attribute)) {
+                val = params.genomes[ params.genome ][ attribute ]
+            }
+        }else{
+            if(params.containsKey(attribute)){
+                val = params[attribute]
+            }
+        }
+        return val
     }
 }

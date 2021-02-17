@@ -1,0 +1,50 @@
+name: sra_downloader test
+# This workflow runs the pipeline with the minimal test dataset to check that it completes without any syntax errors
+on:
+  push:
+    branches:
+      - dev
+    paths:
+      - 'VERSION.config'
+  pull_request:
+  release:
+    types: [published]
+
+jobs:
+  test:
+    name: Run workflow tests
+    # Only run on push if this is the dev branch (merged PRs)
+    if: ${{ github.event_name != 'push' || (github.event_name == 'push' && github.repository == 'jianhong/chipseq') }}
+    runs-on: ubuntu-latest
+    env:
+      NXF_VER: ${{ matrix.nxf_ver }}
+      NXF_ANSI_LOG: false
+    strategy:
+      matrix:
+        # Nextflow versions: check pipeline minimum and current latest
+        nxf_ver: ['20.07.1', '']
+    steps:
+      - name: Check out pipeline code
+        uses: actions/checkout@v2
+
+      - name: Check if Dockerfile or Conda environment changed
+        uses: technote-space/get-diff-action@v4
+        with:
+          FILES: |
+            Dockerfile
+
+      - name: Pull docker image
+        if: ${{ !env.MATCHED_FILES }}
+        run: |
+          docker pull jianhong/chipseq:latest
+
+      - name: Install Nextflow
+        env:
+          CAPSULE_LOG: none
+        run: |
+          wget -qO- get.nextflow.io | bash
+          sudo mv nextflow /usr/local/bin/
+
+      - name: Run pipeline with test data
+        run: |
+          nextflow run ${GITHUB_WORKSPACE} -profile docker --input GSE36107 --genome dm6 --max_cpus 2 --max_memory 6.GB

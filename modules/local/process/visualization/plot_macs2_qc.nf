@@ -1,5 +1,5 @@
 // Import generic module functions
-include { initOptions; saveFiles } from './functions'
+include { initOptions; saveFiles; getRealPath } from '../functions'
 
 /*
  * Aggregated QC plots for peaks
@@ -22,9 +22,10 @@ process PLOT_MACS2_QC {
 
     script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
     def ioptions  = initOptions(options)
+    def curr_path = getRealPath()
     """
-    install_packages.r optparse ggplot2 reshape2 scales
-    plot_macs2_qc.r \\
+    ${curr_path}/utilities/install_packages.r optparse ggplot2 reshape2 scales
+    ${curr_path}/visualization/plot_macs2_qc.r \\
         -i ${peaks.join(',')} \\
         $ioptions.args
     """

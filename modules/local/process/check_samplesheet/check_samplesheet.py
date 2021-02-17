@@ -59,6 +59,9 @@ def check_samplesheet(file_in, file_out):
         n_header = len(header)
         if n_header > 8:
             n_header = 8
+        if n_header > 4:
+            if "ScientificName" in header:
+                n_header = header.index("ScientificName")
         if header[0:n_header] != HEADER[0:n_header]:
             print("ERROR: Please check samplesheet header -> {} != {}".format(",".join(header), ",".join(HEADER)))
             sys.exit(1)
@@ -87,6 +90,10 @@ def check_samplesheet(file_in, file_out):
             if not peaktype in ['narrowPeak', 'broadPeak']:
                 print("ERROR: Please check the peaktype. The peaktype must by narrowPeak or broadPeak")
                 sys.exit(1)
+            if "ScientificName" in header:
+                scientificName = lspl[header.index('ScientificName')]
+            else:
+                scientificName = ''
 
             lspl = lspl[0:6]
             num_cols = len([x for x in lspl if x])
@@ -132,9 +139,9 @@ def check_samplesheet(file_in, file_out):
             ## Auto-detect paired-end/single-end
             sample_info = []  ## [single_end, fastq_1, fastq_2]
             if sample and fastq_1 and fastq_2:  ## Paired-end short reads
-                sample_info = ["0", fastq_1, fastq_2, md5_1, md5_2, peaktype]
+                sample_info = ["0", fastq_1, fastq_2, md5_1, md5_2, peaktype, scientificName]
             elif sample and fastq_1 and not fastq_2:  ## Single-end short reads
-                sample_info = ["1", fastq_1, fastq_2, md5_1, md5_2, peaktype]
+                sample_info = ["1", fastq_1, fastq_2, md5_1, md5_2, peaktype, scientificName]
             else:
                 print_error("Invalid combination of columns provided!", 'Line', line)
 
@@ -160,7 +167,7 @@ def check_samplesheet(file_in, file_out):
         make_dir(out_dir)
         with open(file_out, "w") as fout:
 
-            fout.write(",".join(["sample", "single_end", "fastq_1", "fastq_2", "md5_1", "md5_2", "peaktype", "antibody", "control"]) + "\n")
+            fout.write(",".join(["sample", "single_end", "fastq_1", "fastq_2", "md5_1", "md5_2", "peaktype", "ScientificName", "antibody", "control"]) + "\n")
             for sample in sorted(sample_run_dict.keys()):
 
                 ## Check that replicate ids are in format 1..<NUM_REPS>

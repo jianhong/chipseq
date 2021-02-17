@@ -1,5 +1,5 @@
 // Import generic module functions
-include { initOptions; saveFiles; getSoftwareName } from '../functions'
+include { initOptions; saveFiles; getSoftwareName; getRealPath } from '../functions'
 
 /*
  * Differential analysis by DiffBind and annotation by ChIPpeakAnno
@@ -21,16 +21,17 @@ process JO_DIFFBIND {
     val options
 
     output:
-    path 'DiffBind/*', emit: res
+    tuple val(meta), path('DiffBind/*'), emit: res
 
     script: // This script is bundled with the pipeline, in nf-core/chipseq/bin/
     def ioptions  = initOptions(options)
     blacklist_params = params.blacklist ? "-b ${blacklist}" : '-b FALSE'
     def metadata = new groovy.json.JsonBuilder(meta).toPrettyString()
+    def curr_path = getRealPath()
     """
-    install_packages.r rjson DiffBind ChIPpeakAnno rtracklayer ggplot2 GenomicFeatures optparse
     echo '${metadata}' > designtab.txt
-    diffbind.r -d 'designtab.txt' \\
+    ${curr_path}/utilities/install_packages.r rjson DiffBind ChIPpeakAnno rtracklayer ggplot2 GenomicFeatures optparse
+    ${curr_path}/diffbind/diffbind.r -d 'designtab.txt' \\
         -f ${bams.join(',')} \\
         -p ${peaks.join(',')} \\
         -g ${gtf} \\

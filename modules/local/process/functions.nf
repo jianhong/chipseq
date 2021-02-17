@@ -3,6 +3,16 @@
  *  Utility functions used in nf-core DSL2 module files
  * -----------------------------------------------------
  */
+/*
+ * get real project dir
+ */
+
+def getRealPath(){
+    if(params.singularity | params.docker){ // ask params.docker and singularity in nextflow.config file
+        return "/pipeline/modules/local/process"
+    }
+     return "${workflow.projectDir}/modules/local/process"
+}
 
 /*
  * Extract name of software tool from process name using $task.process
@@ -19,6 +29,7 @@ def initOptions(Map args) {
     options.args          = args.args ?: ''
     options.args2         = args.args2 ?: ''
     options.publish_by_id = args.publish_by_id ?: false
+    options.publish_base  = args.publish_base ?: false
     options.publish_dir   = args.publish_dir ?: ''
     options.publish_files = args.publish_files ?: null
     options.suffix        = args.suffix ?: ''
@@ -40,7 +51,11 @@ def getPathFromList(path_list) {
 def saveFiles(Map args) {
     if (!args.filename.endsWith('.version.txt')) {
         def ioptions = initOptions(args.options)
-        def path_list = [ ioptions.publish_dir ?: args.publish_dir ]
+        def path_list = []
+        if(ioptions.publish_base){
+            path_list.add(ioptions.publish_base)
+        }
+        path_list.add( ioptions.publish_dir ?: args.publish_dir )
         if (ioptions.publish_by_id) {
             path_list.add(args.publish_id)
         }

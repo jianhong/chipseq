@@ -1,5 +1,5 @@
 // Import generic module functions
-include { initOptions; saveFiles } from '../functions'
+include { initOptions; saveFiles; getRealPath } from '../functions'
 
 /*
  * Create trackhub
@@ -29,12 +29,13 @@ process JO_TRACKHUB {
     script:
     def sampleLabel = name.join(' ')
     def bws         = bw.join(' ')
+    def curr_path   = getRealPath()
     """
     n=($sampleLabel)
     s=($bws)
     paste <(printf '%s\n' "\${n[@]}") <(printf '%s\n' "\${s[@]}") > track_files.txt
     
-    create_trackhub.py track_files.txt $params.species $size $params.email $designtab
+    ${curr_path}/ucsc_track/create_trackhub.py track_files.txt $params.species $size $params.email $designtab
     
     rsync trackhub/${params.species} tmp -a --copy-links -v
     rm -r trackhub/${params.species}

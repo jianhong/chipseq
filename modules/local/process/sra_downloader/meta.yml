@@ -1,0 +1,21 @@
+name: sra_downloader
+description: Download fastq from GEO database
+keywords:
+    - SRA GEO GSE
+input:
+    -
+        - id:
+            type: string
+            description: sra project id or geo project id
+output:
+    -
+        - design:
+            type: files
+            description: table file
+            pattern: "designTab.txt"
+        - fastq:
+            type: files
+            description: fastq files
+            pattern: "fastq.gz"
+authors:
+    - "@jianhong"

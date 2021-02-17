@@ -3,7 +3,7 @@
  */
 
 include { SAMPLESHEET_CHECK;
-          get_samplesheet_paths } from '../process/samplesheet_check'
+          get_samplesheet_paths } from '../process/check_samplesheet/samplesheet_check'
 
 workflow INPUT_CHECK {
     take:
@@ -15,8 +15,9 @@ workflow INPUT_CHECK {
     SAMPLESHEET_CHECK (ch_input, samplesheet_check_options)
         .splitCsv(header:true, sep:',')
         .map { get_samplesheet_paths(it, seq_center) }
+        .filter {meta, fastqs -> meta.genome == params.genome | meta.genome == params.species } // check meta.genome == params.genome
         .set { ch_reads }
 
     emit:
-    reads = ch_reads // channel: [ val(meta), [ reads ] ]
+    reads  = ch_reads // channel: [ val(meta), [ reads ] ]
 }

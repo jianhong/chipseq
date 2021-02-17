@@ -25,7 +25,7 @@ ENV DEBIAN_FRONTEND="noninteractive" TZ="America/New_York"
 # Install software from source
 RUN cd ~ && \
     apt-get update --fix-missing && \
-    apt-get install --yes rsync wget bzip2 gcc libssl-dev libxml2-dev libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev librsvg2-dev libv8-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools subread && \
+    apt-get install --yes rsync wget bzip2 gcc libssl-dev libxml2-dev libncurses5-dev libbz2-dev liblzma-dev libcurl4-openssl-dev librsvg2-dev libv8-dev make cmake build-essential bedtools picard-tools python3 python3-pip pandoc fastqc multiqc bwa samtools bamtools subread pigz curl libxml-simple-perl uuid-runtime && \
     apt-get clean && \
     rm -rf /var/lib/apt/lists/*
 RUN ln -s python3 /usr/bin/python
@@ -53,7 +53,7 @@ RUN wget https://raw.githubusercontent.com/jianhong/chipseq/master/assets/picard
 #    make && make install && \
 #    cd ../.. && rm -rf v2.5.1.tar.gz && rm -rf bamtools-2.5.1
 
-RUN pip install pysam deeptools MACS2 cutadapt pymdown-extensions trackhub
+RUN pip install pysam deeptools MACS2 cutadapt pymdown-extensions trackhub 
 
 RUN mkdir /homer && cd /homer && \
     wget http://homer.ucsd.edu/homer/configureHomer.pl && \
@@ -71,7 +71,14 @@ RUN wget https://github.com/FelixKrueger/TrimGalore/archive/0.6.6.tar.gz && \
     rm 0.6.6.tar.gz && rm -rf TrimGalore-0.6.6
 
 RUN wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bedGraphToBigWig && \
-    chmod +x bedGraphToBigWig && mv bedGraphToBigWig /usr/local/sbin/
+    chmod +x bedGraphToBigWig && mv bedGraphToBigWig /usr/local/sbin/ && \
+    wget http://hgdownload.soe.ucsc.edu/admin/exe/linux.x86_64/bedToBigBed && \
+    chmod +x bedToBigBed && mv bedToBigBed /usr/local/sbin/
+
+RUN yes | sh -c "$(wget -q ftp://ftp.ncbi.nlm.nih.gov/entrez/entrezdirect/install-edirect.sh -O -)" && \
+    wget --output-document sratoolkit.tar.gz http://ftp-trace.ncbi.nlm.nih.gov/sra/sdk/current/sratoolkit.current-ubuntu64.tar.gz && \
+    tar -xf sratoolkit.tar.gz && mv sratoolkit.2.10.9-ubuntu64/bin/* /usr/local/sbin/ && \
+    rm -rf sratoolkit* && mkdir $HOME/.ncbi && printf '/LIBS/GUID = "%s"\n' `uuidgen` > $HOME/.ncbi/user-settings.mkfg
 
 ## Install Bioconductor packages
 RUN Rscript -e "install.packages('BiocManager')"
@@ -79,11 +86,22 @@ RUN Rscript -e 'BiocManager::install(c("optparse", "rjson", "DiffBind", "ChIPpea
                 "rtracklayer", "ggplot2", "GenomicFeatures", "DESeq2", "vsn", \
                 "RColorBrewer", "pheatmap", "lattice", "BiocParallel", \
                 "reshape2", "scales", "UpSetR", "caTools", \
+                "clusterProfiler", "pathview", "biomaRt", \     
                 "rmarkdown", "DT"))'
 
 # Instruct R processes to use these empty files instead of clashing with a local version
 RUN touch .Rprofile
 RUN touch .Renviron
 
+## Make a copy of the pipeline
+RUN wget https://github.com/jianhong/chipseq/archive/master.zip -O master.zip && \
+    unzip master.zip && mv chipseq-master /pipeline && rm master.zip && echo 4
+
+## update numpy
+RUN pip install numpy --upgrade
+
 WORKDIR /work
 ENV JAVA_HOME="/usr"
+RUN mv $HOME/edirect /edirect
+ENV PATH $PATH:/edirect
+

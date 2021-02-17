@@ -11,20 +11,35 @@ output:
 params:
   design: ""
   genome: ""
+  species: ""
   summary: ""
+  exec_info: ""
+  launchdir: ""
+  conda: "false"
 ---
 
 ```{r setup, include=FALSE, message=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE)
 library(DT)
 library(yaml)
+library(ggplot2)
+library(reshape2)
 ```
 
 # ![QiuBio nf-core/chipseq](images/chipseqlogo.png)
 
 This document describes the output produced by the chipseq analysis pipeline. Most of the plots are taken from the [MultiQC report](multiqc/multiqc_report.html), which summaries results at the end of the pipeline.
 
-## Experiment design
+## Pipeline overview
+
+The pipeline is built based on [nf-core/chipseq](https://github.com/nf-core/chipseq) using [Nextflow](https://www.nextflow.io/). See [`main README.md`](https://github.com/jianhong/chipseq) for a condensed overview of the steps in the pipeline, and the bioinformatics tools used at each step.
+
+See [Illumina website](https://emea.illumina.com/techniques/sequencing/dna-sequencing/chip-seq.html) for more information regarding the ChIP-seq protocol, and for an extensive list of publications.
+
+This index file will be created in the output directory after the pipeline has finished. 
+See [`results description`](pipeline_info/results_description.html) for full description of the output files for the pipeline.
+
+### Pipeline parameters
 
 ```{r, results = 'asis', echo=FALSE}
 data <- yaml::yaml.load_file(params$summary)
@@ -43,14 +58,191 @@ datatable(data)
 ```
 
 
-## Pipeline overview
+### Experiment quality overview
 
-The pipeline is built based on [nf-core/chipseq](https://github.com/nf-core/chipseq) using [Nextflow](https://www.nextflow.io/). See [`main README.md`](https://github.com/jianhong/chipseq) for a condensed overview of the steps in the pipeline, and the bioinformatics tools used at each step.
+The quality control is following 
+[ENCODE standards](https://www.encodeproject.org/chip-seq/histone/#standards).
 
-See [Illumina website](https://emea.illumina.com/techniques/sequencing/dna-sequencing/chip-seq.html) for more information regarding the ChIP-seq protocol, and for an extensive list of publications.
+```{r, echo=FALSE}
+peaktypes <- read.delim("peaktype_files.txt", header=FALSE)
+broadPeaks <- 
+  peaktypes[grepl("broadPeak", peaktypes[, 2], ignore.case = TRUE), 1]
 
-This index file will be created in the output directory after the pipeline has finished. 
-See [`results description`](pipeline_info/results_description.html) for full description of the output files for the pipeline.
+readTab <- function(files, cn){
+  if(length(files)>0){
+    x <- do.call(rbind, lapply(files, read.delim, comment.char="#", header=FALSE))
+    colnames(x) <- cn
+  }else{
+    x <- matrix(ncol = 2, dimnames = list(rownames="a", colnames=cn))
+    x <- x[!is.na(x[1]), , drop=FALSE]
+    mode(x) <- "numeric"
+  }
+  x
+}
+rsc_files <- dir(".", "spp_rsc_mqc.tsv", recursive = TRUE, full.names = TRUE)
+rsc <- readTab(rsc_files, c("ID", "RSC"))
+
+nsc_files <- dir(".", "spp_nsc_mqc.tsv", recursive = TRUE, full.names = TRUE)
+nsc <- readTab(nsc_files, c("ID", "NSC"))
+
+preseq_logs <- dir(".", "\\.command.log", recursive = TRUE, full.names = TRUE)
+if(length(preseq_logs)>0){
+  qc <- do.call(rbind, lapply(preseq_logs, read.delim, comment.char="#", header=FALSE))
+  rownames(qc) <- gsub("\\.command.log", "", basename(names(preseq_logs)))
+  NRF <- qc[, 5]
+  PBC1 <- qc[, 6]
+  PBC2 <- qc[, 7]
+}else{
+  qc <- data.frame()
+  NRF <- c()
+  PBC1 <- c()
+  PBC2 <- c()
+}
+
+flagstat <- dir(".", "flagstat", recursive = TRUE, full.names = TRUE)
+if(length(flagstat)>0){
+  totalReads <- sapply(flagstat, function(.ele) {
+    .ele <- readLines(.ele)
+    .ele <- .ele[grepl("total", .ele)][1]
+    .ele <- sub("\\s+\\+.*total.*$", "", .ele)
+    as.numeric(.ele)
+  })
+  names(totalReads) <- sub("\\.mLb.*.flagstat", "", basename(names(totalReads)))
+}else{
+  totalReads <- c()
+}
+FRiP_files <-dir(".", "FRiP", recursive = TRUE, full.names = TRUE)
+FRiP <- readTab(FRiP_files, c("ID", "FRiP"))
+
+rn <- sort(unique(c(rsc[, "ID"], nsc[, "ID"], 
+                    rownames(qc), names(totalReads), 
+                    FRiP[, "ID"])))
+qc_table <- list(usableFragments=totalReads[match(rn, names(totalReads))],
+                       NRF=NRF[match(rn, rownames(qc))],
+                       PBC1=PBC1[match(rn, rownames(qc))],
+                       PBC2=PBC2[match(rn, rownames(qc))],
+                       FRiP=FRiP[match(rn, FRiP[, "ID"]), "FRiP"],
+                       NSC=nsc[match(rn, nsc[, "ID"]), "NSC"],
+                       RSC=rsc[match(rn, rsc[, "ID"]), "RSC"])
+breaks <- list("narrowPeak"=c(0, 10000000, 20000000, Inf),
+               "broadPeak"=c(0, 10000000, 20000000, Inf),
+               NRF=c(0, .5, .9, Inf),
+               PBC1=c(0, .5, .9, Inf),
+               PBC2=c(0, 1, 10, Inf),
+               FRiP=c(0, 0.01, 0.05, Inf),
+               NSC=c(0, 1.05, 1.1, Inf),
+               RSC=c(0, .8, 1, Inf))
+colors <- c("PASS"="green", "Margin"="yellow", "Failed"="red", "NA"="gray")
+col_tab <- mapply(function(dat, n){
+  if(length(dat)>0){
+    if(all(is.na(dat))){
+      NULL
+    }else{
+      mode(dat) <- "numeric"
+      if(n=="usableFragments"){
+        n <- rep("narrowPeak", length(dat))
+        n[rn %in% broadPeaks] <- "broadPeak"
+        mapply(dat, breaks[n], FUN = function(.ele, .bks){
+          cut(.ele, .bks, labels=c("Failed", "Margin", "PASS"))
+        })
+      }else{
+        cut(dat, breaks[[n]], labels=c("Failed", "Margin", "PASS"))
+      }
+    }
+  }else dat
+}, qc_table, names(qc_table), SIMPLIFY=FALSE)
+col_tab <- lapply(col_tab, as.character)
+col_tab <- do.call(cbind, col_tab)
+rownames(col_tab) <- rn
+col_tab <- melt(col_tab)
+col_tab[is.na(col_tab)] <- "NA"
+ggplot(col_tab, aes(x=Var2, y=Var1, color=value)) + geom_point(size=10) + 
+  scale_color_manual(values = colors) + theme_bw() + xlab("") + ylab("")
+```
+
+
+Code for QC:
+
+|  Controls                | PASS     | Margin  | Failed  | N/A |
+|--------------------------|--------- |---------|---------|-----|
+|usableFragments           |          |         |         |     |
+| narrowPeak               | &gt;20M  | &gt;10M | &lt;10M |     |
+| broadPeak                | &gt;45M  | &gt;20M | &lt;20M |     |
+|libraryComplexity         |          |         |         |     |
+| NRF                      | &gt;0.9  | &gt;0.5 | &lt;0.5 |     |
+| PBC1                     | &gt;0.9  | &gt;0.5 | &lt;0.5 |     |
+| PBC2                     | &gt;10   | &gt;1   | &lt;1   |     |
+|Signals vs Noise          |          |         |         |     |
+| FRiP                     | &gt;5%   | &gt;1%  | &lt;1%  |     |
+| NSC                      | &gt;1.1  | &gt;1.05| &lt;1.05|     |
+| RSC                      | &gt;1    | &gt;0.8 | &lt;0.8 |     |
+| Color code               | Green    | Yellow  | Red     | Gray|
+
+### Plots for peaks
+
+```{r, echo=FALSE, eval=FALSE}
+outdir <- dirname(params$exec_info)
+if(!grepl("^\\/", outdir)){
+  ## if outdir is absolute path, it will not work
+  files <- dir(".", "bigwig|bed|broadPeak|narrowPeak", 
+              recursive = TRUE, full.names = TRUE)
+  files <- sub("\\.\\/", "", files)
+  names(files) <- sub("\\..*?$", "", basename(files))
+  ids <- which(grepl("^(homer|macs2)", files))
+  if(length(broadPeaks)>0){
+    pts <- rep("narrowPeaks", length(ids))
+    idNames <- files[ids]
+    dist <- adist(idNames, peaktypes[, 1])
+    pts <- apply(dist, 1, function(.ele) peattypes[which.min(.ele)[1], 2])
+  }else{
+    pts <- "narrowPeaks"
+  }
+  files[ids] <- mapply(file.path, pts, files[ids])
+  browseTracks(tracks = files, genome=params$species)
+}
+
+```
+
+
+The sample correlation is shown, if available, by sample similarity plots of peaks
+called by MACS2 and Homer by DiffBind for the samples without control setting.
+
+`r if(file.exists("macs2DiffBind/DiffBind.sample.correlation.png")){"![MACS2 peaks for samples without control](macs2DiffBind/DiffBind.sample.correlation.png)"}`
+
+
+`r if(file.exists("homerDiffBind/DiffBind.sample.correlation.png")){"![Homer peaks for samples without control](homerDiffBind/DiffBind.sample.correlation.png)"}`
+
+The genomic element distribution is shown, if available, for peaks
+called MACS2 and Homer for the samples without control setting.
+
+`r if(file.exists("macs2DiffBind/genomicElementDistribuitonOfEachPeakList.png")){"![Genomic Element Distribuiton for MACS2 peaks for samples without control](macs2DiffBind/genomicElementDistribuitonOfEachPeakList.png)"}`
+
+`r if(file.exists("homerDiffBind/genomicElementDistribuitonOfEachPeakList.png")){"![Genomic Element Distribuiton for Homer peaks for samples without control](homerDiffBind/genomicElementDistribuitonOfEachPeakList.png)"}`
+
+### Pipeline status report table
+
+This table show the summary of the running status of pipeline.
+
+```{r, echo=FALSE}
+loadExecInfo <- function(exec_info, launchdir){
+  if(!grepl("^\\/", exec_info)) exec_info <- file.path(launchdir, exec_info)
+  data <- read.delim(file.path(exec_info, "execution_trace.txt"))
+  data <- data[, c("name", "status", "exit")]
+  datatable(data, options=list(order=list(list(2, 'desc')))) %>% formatStyle(
+    'status',
+    backgroundColor = styleEqual(c("CACHED", "COMPLETED", "FAILED"), c('darkgreen', 'green', 'red'))
+  )
+}
+tryCatch({
+  loadExecInfo(params$exec_info, params$launchdir)
+}, error=function(e){
+  message("No data available in ", 
+          file.path(params$launchdir, params$exec_info))
+  message(e)
+})
+
+```
+
 
 ## QC metrics
 
@@ -58,20 +250,20 @@ See [`results description`](pipeline_info/results_description.html) for full des
 
 [Picard MergeSamFiles and MarkDuplicates](https://broadinstitute.github.io/picard/command-line-overview.html) are used in combination to merge the alignments, and for the marking of duplicates, respectively. If you only have one library for any given replicate then the merging step isn't carried out because the library-level and merged library-level BAM files will be exactly the same.
 
-![MultiQC - Picard deduplication stats plot](`r ifelse(file.exists("multiqc_plots/png/mqc_picard_deduplication_1.png"), "multiqc_plots/png/mqc_picard_deduplication_1.png", "images/mqc_picard_deduplication_plot.png")`)
+`r if(file.exists("multiqc_plots/png/mqc_picard_deduplication_1.png")) "![MultiQC - Picard deduplication stats plot](multiqc_plots/png/mqc_picard_deduplication_1.png)"`
 
 Read duplicate marking is carried out using the Picard MarkDuplicates command. Duplicate reads are generally removed from the aligned reads to mitigate for fragments in the library that may have been sequenced more than once due to PCR biases. A selection of alignment-based QC metrics generated by Picard CollectMultipleMetrics and MarkDuplicates will be included in the MultiQC report.
 
-![MultiQC - Picard insert size plot](`r ifelse(file.exists("multiqc_plots/png/mqc_picard_insert_size_Counts.png"), "multiqc_plots/png/mqc_picard_insert_size_Counts.png", "images/mqc_picard_insert_size_plot.png")`)
+`r if(file.exists("multiqc_plots/png/mqc_picard_insert_size_Counts.png")) "![MultiQC - Picard insert size plot](multiqc_plots/png/mqc_picard_insert_size_Counts.png)"`
 
 The [Preseq](http://smithlabresearch.org/software/preseq/) package is aimed at predicting and estimating the complexity of a genomic sequencing library, equivalent to predicting and estimating the number of redundant reads from a given sequencing depth and how many will be expected from additional sequencing using an initial sequencing experiment. The estimates can then be used to examine the utility of further sequencing, optimize the sequencing depth, or to screen multiple libraries to avoid low complexity samples. The dashed line shows a perfectly complex library where total reads = unique reads. Note that these are predictive numbers only, not absolute. The MultiQC plot can sometimes give extreme sequencing depth on the X axis - click and drag from the left side of the plot to zoom in on more realistic numbers.
 
-![MultiQC - Preseq library complexity plot](`r ifelse(file.exists("multiqc_plots/png/mqc_preseq_plot_1.png"), "multiqc_plots/png/mqc_preseq_plot_1.png", "images/mqc_preseq_plot.png")`)
+`r if(file.exists("multiqc_plots/png/mqc_preseq_plot_1.png")) "![MultiQC - Preseq library complexity plot](multiqc_plots/png/mqc_preseq_plot_1.png)"`
 
 
 [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) gives general quality metrics about your reads. It provides information about the quality score distribution across your reads, the per base sequence content (%A/C/G/T). You get information about adapter contamination and other over-represented sequences.
 
-![MultiQC - FastQC per base sequence quality plot](`r ifelse(file.exists("multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png"), "multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png", "https://www.bioinformatics.babraham.ac.uk/projects/fastqc/fastqc.png")`)
+`r if(file.exists("multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png")) "![MultiQC - FastQC per base sequence quality plot](multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png)"`) 
 
 For further reading and documentation see the [FastQC help](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
 
@@ -114,31 +306,26 @@ filename <- sapply(files, function(.ele) {
 filename <- gsub("svg", "png", filename)
 ```
 
-## Signals vs Noises
+## Signals vs noises
 
 Normalized strand coefficient (NSC) is the normalized ratio between the fragment-length cross-correlation peak and the background cross-correlation. NSC values range from a minimum of 1 to larger positive numbers. 1.1 is the critical threshold. Dataset with NSC values much less than 1.1 (< 1.05) tend to have low signal to noise or few peaks (this could be biological e.g. a factor that truly binds only a few sites in a particular tissue type OR it could be due to poor quality). ENCODE cut-off: **NSC > 1.05**.
 
-![MultiQC - spp NSC plot](`r ifelse(file.exists(filename["NSC"]), filename["NSC"], "images/mqc_spp_nsc_plot.png")`)
+`r if(file.exists(filename["NSC"])) paste0("![MultiQC - spp NSC plot](", filename["NSC"], ")")`
 
 Relative strand correlation (RSC) is the ratio between the fragment-length peak and the read-length peak. RSC values range from 0 to larger positive values. 1 is the critical threshold. RSC values significantly lower than 1 (< 0.8) tend to have low signal to noise. The low scores can be due to failed and poor quality ChIP, low read sequence quality and hence lots of mis-mappings, shallow sequencing depth (significantly below saturation) or a combination of these. Like the NSC, dataset with few binding sites (< 200), which is biologically justifiable, also show low RSC scores. ENCODE cut-off: **RSC > 0.8**.
 
-![MultiQC - spp RSC plot](`r ifelse(file.exists(filename["RSC"]), filename["RSC"], "images/mqc_spp_rsc_plot.png")`)
+`r if(file.exists(filename["RSC"])) paste0("![MultiQC - spp RSC plot](", filename["RSC"], ")")`
 
 [deepTools](https://deeptools.readthedocs.io/en/develop/content/list_of_tools.html) plotFingerprint is a useful QC for ChIP-seq data in order to see the relative enrichment of the IP samples with respect to the controls on a genome-wide basis. The results, however, are expected to look different for example when comparing narrow marks such as transcription factors and broader marks such as histone modifications (see [plotFingerprint docs](https://deeptools.readthedocs.io/en/develop/content/tools/plotFingerprint.html)).
 
-![MultiQC - deepTools plotFingerprint plot](`r ifelse(file.exists("multiqc_plots/png/mqc_deeptools_fingerprint_plot_1.png"), "multiqc_plots/png/mqc_deeptools_fingerprint_plot_1.png", "images/mqc_deeptools_plotFingerprint_plot.png")`)
+`r if(file.exists(filename["FRiP"])) "![MultiQC - deepTools plotFingerprint plot](multiqc_plots/png/mqc_deeptools_fingerprint_plot_1.png)"`
 
 Various QC plots per sample including number of peaks, fold-change distribution, [FRiP score](https://genome.cshlp.org/content/22/9/1813.full.pdf+html) and peak-to-gene feature annotation are also generated by the pipeline. Where possible these have been integrated into the MultiQC report.
 
-![MultiQC - MACS2 peaks FRiP score plot](`r ifelse(file.exists(filename["FRiP"]), filename["FRiP"], "images/mqc_frip_score_plot.png")`)
+`r if(file.exists(filename["FRiP"])) paste0("![MultiQC - MACS2 peaks FRiP score plot](", filename["FRiP"], ")")`
 
 
 ## Signals
-
-### Mapping summary
-
-The mapping rate and stats are listed as following table:
-
 
 ### Alignment
 
@@ -231,24 +418,25 @@ and a UCSC Genome Browser is pointed to the served URL for viewing.
 </details>
 
 [MACS2](https://github.com/taoliu/MACS) is one of the most popular peak-calling algorithms for ChIP-seq data.  See [MACS2 outputs](https://github.com/taoliu/MACS#output-files) for a description of the output files generated by MACS2.
+
 > **NB:** If the sample name is not listed in the MACS2 total peak count plot or Homer annotatePeaks peak-to-gene feature ratio plot, the peak calling is failed in that sample.
 
-![MultiQC - MACS2 total peak count plot](`r ifelse(file.exists("multiqc_plots/png/mqc_macs2_peak_count_plot.png"), "multiqc_plots/png/mqc_macs2_peak_count_plot.png", "images/mqc_macs2_peak_count_plot.png")`)
+`r  if(file.exists("multiqc_plots/png/mqc_macs2_peak_count_plot.png")) "![MultiQC - MACS2 total peak count plot](multiqc_plots/png/mqc_macs2_peak_count_plot.png)"`
 
 
-## Annotation
+### Annotation
 
 The results from [deepTools](https://deeptools.readthedocs.io/en/develop/content/list_of_tools.html) plotProfile gives you a quick visualization for the genome-wide enrichment of your samples at the TSS, and across the gene body. During the downstream analysis, you may want to refine the features/genes used to generate these plots in order to see a more specific condition-related effect.
 
-![MultiQC - deepTools plotProfile plot](`r ifelse(file.exists("multiqc_plots/png/mqc_read_distribution_profile_1.png"), "multiqc_plots/png/mqc_read_distribution_profile_1.png", "images/mqc_deeptools_plotProfile_plot.png")`)
+`r if(file.exists("multiqc_plots/png/mqc_read_distribution_profile_1.png")) "![MultiQC - deepTools plotProfile plot](multiqc_plots/png/mqc_read_distribution_profile_1.png)"`
 
 
 [HOMER annotatePeaks.pl](http://homer.ucsd.edu/homer/ngs/annotation.html) is used to annotate the peaks relative to known genomic features. Please note that some of the output columns will be blank because the annotation is not provided using HOMER's in-built database format. However, the more important fields required for downstream analysis will be populated i.e. *Annotation*, *Distance to TSS* and *Nearest Promoter ID*.
 For differential analysis, the peaks will be also annotated with [ChIPpeakAnno package](	https://bioconductor.org/packages/ChIPpeakAnno/), see details in section [differential by DiffBind](#methods-2-differential-by-diffbind).
 
-![MultiQC - HOMER annotatePeaks peak-to-gene feature ratio plot](`r ifelse(file.exists(filename["Peak"]),filename["Peak"], "images/mqc_annotatePeaks_feature_percentage_plot.png")`)
+`r if(file.exists(filename["Peak"])) paste0("![MultiQC - HOMER annotatePeaks peak-to-gene feature ratio plot](", filename["Peak"], ")")`
 
-## Differential analysis
+### Differential analysis
 
 Differential analysis were done by three steps:
 
@@ -270,7 +458,7 @@ do differential binding analysis by DESeq2.
 
 2. Merge peaks, count reads and do differential binding analysis by DiffBind.
 
-### Methods 1: differential by DESeq2 for consensus
+#### Methods 1: differential by DESeq2 for consensus
 
 <details markdown="1">
     <summary>Output files</summary>
@@ -296,13 +484,13 @@ In order to perform the differential binding analysis we need to be able to carr
 
 Using the consensus peaks it is possible to assess the degree of overlap between the peaks from a set of samples e.g. *[Which consensus peaks contain peaks that are common/unique to a given set of samples?](https://www.bioconductor.org/packages/release/bioc/vignettes/ChIPpeakAnno/inst/doc/pipeline.html#determine-if-there-is-a-significant-overlap-among-multiple-sets-of-peaks)*. This may be useful for downstream filtering of peaks based on whether they are called in multiple replicates/conditions. Please note that it is possible for a consensus peak to contain multiple peaks from the same sample. Unfortunately, this is sample-dependent but the files generated by the pipeline do have columns that report such instances and allow you to factor them into any further analysis.
 
-![R - Peak intersection plot](`r f<-dir("DiffBind", "vennDiagram.*.png", full.names=TRUE);ifelse(length(f), f[1], "images/r_upsetr_intersect_plot.png")`)
+`r f<-dir("DiffBind", "vennDiagram.*.png", full.names=TRUE);if(length(f)) paste0("![R - Peak intersection plot](", f[1], ")")`
 
 By default, the peak-sets are not filtered, therefore, the consensus peaks will be generated across the union set of peaks from all samples. In future iterations of the pipeline more formal analyses such as [IDR](https://projecteuclid.org/euclid.aoas/1318514284) may be implemented to obtain reproducible and high confidence peak-sets with which to perform this sort of analysis.
 
 The [featureCounts](http://bioinf.wehi.edu.au/featureCounts/) tool is used to count the number of reads relative to the consensus peak-set across all of the samples. This essentially generates a file containing a matrix where the rows represent the consensus intervals, the columns represent all of the samples in the experiment, and the values represent the raw read counts.
 
-![MultiQC - featureCounts consensus peak read assignment plot](`r f<-dir("multiqc_plots/png", "mqc_featureCounts_assignment_plot", full.names=TRUE);ifelse(length(f), f[1], "images/mqc_featureCounts_assignment_plot.png")`)
+`r f<-dir("multiqc_plots/png", "mqc_featureCounts_assignment_plot", full.names=TRUE);if(length(f)) paste0("![MultiQC - featureCounts consensus peak read assignment plot](", f[1], ")")`
 
 [DESeq2](https://bioconductor.org/packages/release/bioc/vignettes/DESeq2/inst/doc/DESeq2.html) is more commonly used to perform differential expression analysis for RNA-seq datasets. However, it can also be used for ChIP-seq differential binding analysis, in which case you can imagine that instead of counts per gene for RNA-seq data we now have counts per bound region.
 
@@ -333,15 +521,14 @@ By default, all possible pairwise comparisons across the groups from a particula
 In this pipeline, [ChIPpeakAnno](https://bioconductor.org/packages/ChIPpeakAnno/) is used for
 peak annotation and quality control. And in downstream, DiffBind is used. [DiffBind](https://bioconductor.org/packages/DiffBind/) is a Bioconductor package to do differential binding analysis of ChIP-seq peak data.
 
-![MultiQC - DiffBind PCA plot](`r ifelse(file.exists("DiffBind/DiffBind.PCA.plot.png"), "DiffBind/DiffBind.PCA.plot.png", "images/mqc_deseq2_pca_plot.png")`)
+Here will show several figures if the DiffBind results for MACS2 peaks without 
+control are available. Otherwise, the sample figure will be listed here.
 
-![MultiQC - DiffBind sample similarity plot](`r ifelse(file.exists("DiffBind/DiffBind.sample.correlation.png"), "DiffBind/DiffBind.sample.correlation.png", "images/mqc_deseq2_sample_similarity_plot.png")`)
+`r if(file.exists("macs2DiffBind/DiffBind.PCA.plot.png")) "![DiffBind - PCA plot](macs2DiffBind/DiffBind.PCA.plot.png)"`
 
-![MultiQC - Genomic Element Distribuiton of DiffBind peaks](`r ifelse(file.exists("DiffBind/genomicElementDistribuitonOfDiffBind.png"), "DiffBind/genomicElementDistribuitonOfDiffBind.png", "images/mqc_deseq2_sample_similarity_plot.png")`)
+`r if(file.exists("macs2DiffBind/genomicElementDistribuitonOfDiffBind.png")) "![ChIPpeakAnno - Genomic Element Distribuiton of DiffBind peaks](macs2DiffBind/genomicElementDistribuitonOfDiffBind.png)"`
 
-![MultiQC - genomic Element Distribuiton Of all input peaks](`r ifelse(file.exists("DiffBind/genomicElementDistribuitonOfEachPeakList.png"), "DiffBind/genomicElementDistribuitonOfEachPeakList.png", "images/mqc_deseq2_sample_similarity_plot.png")`)
-
-![MultiQC - Diffbind volcano plot](`r f<-dir("DiffBind", "*Volcano.plot.png", full.names=TRUE);ifelse(length(f), f[1], "images/r_deseq2_volcano_plot.png")`)
+`r f<-dir("macs2DiffBind", "*Volcano.plot.png", full.names=TRUE);if(length(f)) paste0("![DiffBind - Volcano plot](", f[1], ")")`
 
 
 ## Call peaks by Homer
@@ -379,6 +566,18 @@ peak annotation and quality control. And in downstream, DiffBind is used. [DiffB
 
 </details>
 
+[ChIPpeakAnno](https://bioconductor.org/packages/ChIPpeakAnno/) is used for
+peak annotation and quality control for the output of peak calling results of Homer. And in downstream, DiffBind is used. [DiffBind](https://bioconductor.org/packages/DiffBind/) is a Bioconductor package to do differential binding analysis of ChIP-seq peak data.
+
+Here will show several figures if the DiffBind results for Homer peaks without 
+control are available. Otherwise, the sample figure will be listed here.
+
+`r if(file.exists("homerDiffBind/DiffBind.PCA.plot.png")) "![DiffBind - PCA plot](homerDiffBind/DiffBind.PCA.plot.png)"`
+
+
+`r if(file.exists("homerDiffBind/genomicElementDistribuitonOfDiffBind.png")) "![ChIPpeakAnno - Genomic Element Distribuiton of DiffBind peaks](homerDiffBind/genomicElementDistribuitonOfDiffBind.png)"`
+
+`r f<-dir("homerDiffBind", "*Volcano.plot.png", full.names=TRUE);if(length(f)) paste0("![DiffBind - Volcano plot](", f[1], ")")`
 
 ## Pipeline information
 
@@ -395,17 +594,24 @@ peak annotation and quality control. And in downstream, DiffBind is used. [DiffB
 
 [Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to trouble-shoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
 
-### Package information
+### R package information
 
 ```{r, echo=FALSE}
-pkgs <- installed.packages()
-datatable(pkgs)
+if(params$conda=="true"){
+  wd <- file.path(params$launchdir, "work", "conda")
+  libPath <- dir(wd, "^DESCRIPTION$", full.names = TRUE, recursive = TRUE)
+  libPath <- libPath[grepl("R\\/library", libPath)]
+  libPath <- unique(sub("(\\/R\\/library)\\/.*$", "\\1", libPath))
+  .libPaths(c(libPath, .libPaths()))
+}
+  pkgs <- installed.packages()
+  datatable(pkgs)
 ```
 
 ### software_versions
 
 ```{r, results = 'asis', echo=FALSE}
-files <- dir("software_versions", "yaml", full.names = TRUE)
+files <- dir(".", "software_versions.*yaml", full.names = TRUE)
 for(i in files){
   data <- yaml::yaml.load_file(i)
   data <- strsplit(data$data, "\n")[[1]]
@@ -424,8 +630,24 @@ The checksums listed here is the checksum for un-compresed fastq files.
 f <- dir(".", "md5.*.txt")
 d <- unlist(lapply(f, readLines, warn = FALSE))
 data <- do.call(rbind, strsplit(d, "\\s+"))
+colnames(data) <- c("MD5 checksum", "filename")
 datatable(data)
 ```
 
+## Links to html files
+
+```{r, echo=FALSE, results="asis"}
+exec_info <- dirname(params$exec_info)
+if(!grepl("^\\/", exec_info)) exec_info <- file.path(params$launchdir, exec_info)
+for(folder in c("pipeline_info", "multiqc")){
+  files <- dir(file.path(exec_info, folder), "\\.html$", full.names = TRUE)
+  files <- sub(exec_info, "", files, fixed = TRUE)
+  files <- sub("^\\/", "", files)
+  for(f in files) cat(paste0('[', sub(".html", "", basename(f)), '](', f, ')\n\n'))
+}
+for(folder in c("igv", "trackhub")){
+  cat(paste0("[", folder, " files](", folder, ")\n\n"))
+}
+```
 
 
