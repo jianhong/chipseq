@@ -131,11 +131,9 @@ This version number will be logged in reports when you run the pipeline, so that
 
 Use this parameter to choose a configuration profile. Profiles can give configuration presets for different compute environments.
 
-Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Podman, Conda) - see below.
+Several generic profiles are bundled with the pipeline which instruct the pipeline to use software packaged using different methods (Docker, Singularity, Conda) - see below.
 
 > We highly recommend the use of Docker or Singularity containers for full pipeline reproducibility, however when this is not possible, Conda is also supported.
-
-The pipeline also dynamically loads configurations from [https://github.com/nf-core/configs](https://github.com/nf-core/configs) when it runs, making multiple config profiles for various institutional clusters available at run time. For more information and to see if your system is available in these configs please see the [nf-core/configs documentation](https://github.com/nf-core/configs#documentation).
 
 Note that multiple profiles can be loaded, for example: `-profile test,docker` - the order of arguments is important!
 They are loaded in sequence, so later profiles can overwrite earlier profiles.
@@ -147,9 +145,6 @@ If `-profile` is not specified, the pipeline will run locally and expect all sof
     * Pulls software from Docker Hub: [`jianhong/chipseq`](https://hub.docker.com/r/jianhong/chipseq/)
 * `singularity`
     * A generic configuration profile to be used with [Singularity](https://sylabs.io/docs/)
-    * Pulls software from Docker Hub: [`jianhong/chipseq`](https://hub.docker.com/r/jianhong/chipseq/)
-* `podman`
-    * A generic configuration profile to be used with [Podman](https://podman.io/)
     * Pulls software from Docker Hub: [`jianhong/chipseq`](https://hub.docker.com/r/jianhong/chipseq/)
 * `conda`
     * Please only use Conda as a last resort i.e. when it's not possible to run the pipeline with Docker, Singularity or Podman.
