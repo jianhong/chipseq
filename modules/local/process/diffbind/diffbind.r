@@ -148,6 +148,7 @@ if(nrow(samples)>3){
   dev.off()
   
   chip <- dba.count(chip, bLog=TRUE)
+  chip <- dba.normalize(chip) ## add for DiffBind 3.0
 
   chip <- dba.blacklist(chip, blacklist=BLACKLIST, greylist=FALSE)
 
