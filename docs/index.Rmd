@@ -2,7 +2,7 @@
 title: "ChIP-seq Results Report"
 author: "Jianhong Ou"
 date: "`r date()`"
-output: 
+output:
   html_document:
     theme: simplex
     toc: true
@@ -36,7 +36,7 @@ The pipeline is built based on [nf-core/chipseq](https://github.com/nf-core/chip
 
 See [Illumina website](https://emea.illumina.com/techniques/sequencing/dna-sequencing/chip-seq.html) for more information regarding the ChIP-seq protocol, and for an extensive list of publications.
 
-This index file will be created in the output directory after the pipeline has finished. 
+This index file will be created in the output directory after the pipeline has finished.
 See [`results description`](pipeline_info/results_description.html) for full description of the output files for the pipeline.
 
 ### Pipeline parameters
@@ -60,12 +60,12 @@ datatable(data)
 
 ### Experiment quality overview
 
-The quality control is following 
+The quality control is following
 [ENCODE standards](https://www.encodeproject.org/chip-seq/histone/#standards).
 
 ```{r, echo=FALSE}
 peaktypes <- read.delim("peaktype_files.txt", header=FALSE)
-broadPeaks <- 
+broadPeaks <-
   peaktypes[grepl("broadPeak", peaktypes[, 2], ignore.case = TRUE), 1]
 
 readTab <- function(files, cn){
@@ -88,10 +88,17 @@ nsc <- readTab(nsc_files, c("ID", "NSC"))
 preseq_logs <- dir(".", "\\.command.log", recursive = TRUE, full.names = TRUE)
 if(length(preseq_logs)>0){
   qc <- do.call(rbind, lapply(preseq_logs, read.delim, comment.char="#", header=FALSE))
-  rownames(qc) <- gsub("\\.command.log", "", basename(names(preseq_logs)))
-  NRF <- qc[, 5]
-  PBC1 <- qc[, 6]
-  PBC2 <- qc[, 7]
+  if(ncol(qc)>=7 && nrow(qc)==length(preseq_logs) ){
+    rownames(qc) <- gsub("\\.command.log", "", basename(preseq_logs))
+    NRF <- qc[, 5]
+    PBC1 <- qc[, 6]
+    PBC2 <- qc[, 7]
+  }else{
+    qc <- data.frame()
+    NRF <- c()
+    PBC1 <- c()
+    PBC2 <- c()
+  }
 }else{
   qc <- data.frame()
   NRF <- c()
@@ -114,8 +121,8 @@ if(length(flagstat)>0){
 FRiP_files <-dir(".", "FRiP", recursive = TRUE, full.names = TRUE)
 FRiP <- readTab(FRiP_files, c("ID", "FRiP"))
 
-rn <- sort(unique(c(rsc[, "ID"], nsc[, "ID"], 
-                    rownames(qc), names(totalReads), 
+rn <- sort(unique(c(rsc[, "ID"], nsc[, "ID"],
+                    rownames(qc), names(totalReads),
                     FRiP[, "ID"])))
 qc_table <- list(usableFragments=totalReads[match(rn, names(totalReads))],
                        NRF=NRF[match(rn, rownames(qc))],
@@ -156,7 +163,7 @@ col_tab <- do.call(cbind, col_tab)
 rownames(col_tab) <- rn
 col_tab <- melt(col_tab)
 col_tab[is.na(col_tab)] <- "NA"
-ggplot(col_tab, aes(x=Var2, y=Var1, color=value)) + geom_point(size=10) + 
+ggplot(col_tab, aes(x=Var2, y=Var1, color=value)) + geom_point(size=10) +
   scale_color_manual(values = colors) + theme_bw() + xlab("") + ylab("")
 ```
 
@@ -184,7 +191,7 @@ Code for QC:
 outdir <- dirname(params$exec_info)
 if(!grepl("^\\/", outdir)){
   ## if outdir is absolute path, it will not work
-  files <- dir(".", "bigwig|bed|broadPeak|narrowPeak", 
+  files <- dir(".", "bigwig|bed|broadPeak|narrowPeak",
               recursive = TRUE, full.names = TRUE)
   files <- sub("\\.\\/", "", files)
   names(files) <- sub("\\..*?$", "", basename(files))
@@ -236,7 +243,7 @@ loadExecInfo <- function(exec_info, launchdir){
 tryCatch({
   loadExecInfo(params$exec_info, params$launchdir)
 }, error=function(e){
-  message("No data available in ", 
+  message("No data available in ",
           file.path(params$launchdir, params$exec_info))
   message(e)
 })
@@ -263,7 +270,7 @@ The [Preseq](http://smithlabresearch.org/software/preseq/) package is aimed at p
 
 [FastQC](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/) gives general quality metrics about your reads. It provides information about the quality score distribution across your reads, the per base sequence content (%A/C/G/T). You get information about adapter contamination and other over-represented sequences.
 
-`r if(file.exists("multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png")) "![MultiQC - FastQC per base sequence quality plot](multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png)"`) 
+`r if(file.exists("multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png")) "![MultiQC - FastQC per base sequence quality plot](multiqc_plots/png/mqc_fastqc_per_base_sequence_quality_plot_1.png)"`)
 
 For further reading and documentation see the [FastQC help](http://www.bioinformatics.babraham.ac.uk/projects/fastqc/Help/).
 
@@ -348,9 +355,9 @@ Various QC plots per sample including number of peaks, fold-change distribution,
 
 </details>
 
-Adapter-trimmed reads are mapped to the reference assembly using [BWA](http://bio-bwa.sourceforge.net/bwa.shtml). 
+Adapter-trimmed reads are mapped to the reference assembly using [BWA](http://bio-bwa.sourceforge.net/bwa.shtml).
 BWA is a software package for mapping low-divergent sequences against a large reference genome, such as the human genome.
-BWA-MEM is recommended for high-quality queries and over 70bp reads. 
+BWA-MEM is recommended for high-quality queries and over 70bp reads.
 If the reads is smaller than 50bp, this pipeline may be **NOT** accurate.
 
 
@@ -363,7 +370,7 @@ If the reads is smaller than 50bp, this pipeline may be **NOT** accurate.
     * `*.bigWig`: Normalised bigWig files scaled to 1 million mapped reads.
 * `bwa/mergedLibrary/bigwig/deepTools`
     * `*.bw`: Normalised bigWig files scaled to 1 million mapped reads or per genome size.
-    
+
 </details>
 
 The [bigWig](https://genome.ucsc.edu/goldenpath/help/bigWig.html) format is in an indexed binary format useful for displaying dense, continuous data in Genome Browsers such as the [UCSC](https://genome.ucsc.edu/cgi-bin/hgTracks) and [IGV](http://software.broadinstitute.org/software/igv/). This mitigates the need to load the much larger BAM files for data visualisation purposes which will be slower and result in memory issues. The coverage values represented in the bigWig file can also be normalized in order to be able to compare the coverage across multiple samples - this is not possible with BAM files. The bigWig format is also supported by various bioinformatics software for downstream processing such as meta-profile plotting. The normalized bigWig files are also available in [deepTools](https://deeptools.readthedocs.io/en/develop/content/list_of_tools.html) subfolder.
@@ -396,8 +403,8 @@ Once installed, open IGV, go to `File > Open Session` and select the `igv_sessio
 The [UCSC genome track hub](https://genome.ucsc.edu/goldenPath/help/hgTrackHubHelp.html) files are generated by [trackhub](https://daler.github.io/trackhub/).
 The "composite track", such as group and colors, can be set in the design table by setting the prefix of column name with "track_".
 
-The files comprising a track hub need to be uploaded to a server, 
-and a UCSC Genome Browser is pointed to the served URL for viewing. 
+The files comprising a track hub need to be uploaded to a server,
+and a UCSC Genome Browser is pointed to the served URL for viewing.
 
 
 ## Call peaks by MACS2
@@ -446,14 +453,14 @@ Differential analysis were done by three steps:
 
 3. Differential binding analysis by raw counts
 
-This pipeline will use two methods to do differential analysis. 
+This pipeline will use two methods to do differential analysis.
 The major difference between the two methods are in the peak pooling and read counting step.
-The differential analysis are both use a standardized DESeq2 analysis script to get 
-an idea of the reproducibility within the experiment, and to assess the overall differential binding. 
+The differential analysis are both use a standardized DESeq2 analysis script to get
+an idea of the reproducibility within the experiment, and to assess the overall differential binding.
 
 The two methods are:
 
-1. Merge peaks by BEDtools::mergeBed, count reads by featureCounts, and 
+1. Merge peaks by BEDtools::mergeBed, count reads by featureCounts, and
 do differential binding analysis by DESeq2.
 
 2. Merge peaks, count reads and do differential binding analysis by DiffBind.
@@ -521,7 +528,7 @@ By default, all possible pairwise comparisons across the groups from a particula
 In this pipeline, [ChIPpeakAnno](https://bioconductor.org/packages/ChIPpeakAnno/) is used for
 peak annotation and quality control. And in downstream, DiffBind is used. [DiffBind](https://bioconductor.org/packages/DiffBind/) is a Bioconductor package to do differential binding analysis of ChIP-seq peak data.
 
-Here will show several figures if the DiffBind results for MACS2 peaks without 
+Here will show several figures if the DiffBind results for MACS2 peaks without
 control are available. Otherwise, the sample figure will be listed here.
 
 `r if(file.exists("macs2DiffBind/DiffBind.PCA.plot.png")) "![DiffBind - PCA plot](macs2DiffBind/DiffBind.PCA.plot.png)"`
@@ -569,7 +576,7 @@ control are available. Otherwise, the sample figure will be listed here.
 [ChIPpeakAnno](https://bioconductor.org/packages/ChIPpeakAnno/) is used for
 peak annotation and quality control for the output of peak calling results of Homer. And in downstream, DiffBind is used. [DiffBind](https://bioconductor.org/packages/DiffBind/) is a Bioconductor package to do differential binding analysis of ChIP-seq peak data.
 
-Here will show several figures if the DiffBind results for Homer peaks without 
+Here will show several figures if the DiffBind results for Homer peaks without
 control are available. Otherwise, the sample figure will be listed here.
 
 `r if(file.exists("homerDiffBind/DiffBind.PCA.plot.png")) "![DiffBind - PCA plot](homerDiffBind/DiffBind.PCA.plot.png)"`
@@ -623,7 +630,7 @@ for(i in files){
 
 ### MD5 checksum
 
-MD5 checksum is required for [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/info/submission.html) submission. 
+MD5 checksum is required for [Gene Expression Omnibus (GEO)](https://www.ncbi.nlm.nih.gov/geo/info/submission.html) submission.
 The checksums listed here is the checksum for un-compresed fastq files.
 
 ```{r, echo=FALSE}
@@ -649,5 +656,3 @@ for(folder in c("igv", "trackhub")){
   cat(paste0("[", folder, " files](", folder, ")\n\n"))
 }
 ```
-
-
