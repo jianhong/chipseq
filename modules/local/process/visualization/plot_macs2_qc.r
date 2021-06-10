@@ -48,8 +48,8 @@ if (length(PeakFiles) != length(SampleIDs)) {
 
 plot.dat <- data.frame()
 summary.dat <- data.frame()
-for (idx in 1:length(PeakFiles)) {
-    
+for (idx in seq_along(PeakFiles)) {
+
     sampleid = SampleIDs[idx]
     isNarrow <- FALSE
     header <- c("chrom","start","end","name","pileup", "strand", "fold", "-log10(pvalue)","-log10(qvalue)")
@@ -58,9 +58,16 @@ for (idx in 1:length(PeakFiles)) {
         isNarrow <- TRUE
         header <- c(header,"summit")
     }
-    peaks <- read.table(PeakFiles[idx], sep="\t", header=FALSE)
+    peaks <- tryCatch({
+      read.table(PeakFiles[idx], sep="\t", header=FALSE)},
+      error = function(e){
+        message(e)
+        NULL})
+    if(length(peaks)<1){
+      next
+    }
     colnames(peaks) <- header
-    
+
     ## GET SUMMARY STATISTICS
     peaks.dat <- peaks[,c('fold','-log10(qvalue)','-log10(pvalue)')]
     peaks.dat$length <- (peaks$end - peaks$start)
@@ -89,7 +96,7 @@ write.table(summary.dat,file=SummaryFile,quote=FALSE,sep="\t",row.names=FALSE,co
 
 ## RETURNS VIOLIN PLOT OBJECT
 violin.plot <- function(plot.dat,x,y,ylab,title,log) {
-    
+
     plot  <- ggplot(plot.dat, aes_string(x=x, y=y)) +
         geom_violin(aes_string(colour=x,fill=x), alpha = 0.3) +
         geom_boxplot(width=0.1) +
