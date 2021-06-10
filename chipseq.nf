@@ -158,7 +158,7 @@ include { HOMER_CALLPEAK as HOMER_CALLPEAK_WITHOUT_CONTROL
 workflow CHIPSEQ {
     take:
     ch_input // input channel
-    
+
     main:
     /*
      * Read in samplesheet, validate and stage input files
@@ -168,7 +168,7 @@ workflow CHIPSEQ {
         params.seq_center,
         [:]
     )
-    
+
     JO_CHECKSUMS (
         INPUT_CHECK.out.reads,
         [:]
@@ -178,7 +178,7 @@ workflow CHIPSEQ {
      * Prepare genome files
      */
     PREPARE_GENOME()
-    
+
     ch_software_versions = Channel.empty()
     ch_software_versions = ch_software_versions.mix(PREPARE_GENOME.out.filter_version.first().ifEmpty(null))
 
@@ -196,7 +196,7 @@ workflow CHIPSEQ {
     )
     ch_software_versions = ch_software_versions.mix(FASTQC_TRIMGALORE.out.fastqc_version.first().ifEmpty(null))
     ch_software_versions = ch_software_versions.mix(FASTQC_TRIMGALORE.out.trimgalore_version.first().ifEmpty(null))
-    
+
     //PREPARE_GENOME.out.data.view()
     /*
      * Map reads & BAM QC
@@ -330,7 +330,7 @@ workflow CHIPSEQ {
         .join ( BAM_CLEAN.out.bai, by: [0] )
         .map { meta, bam, bai -> meta.control ? null : [ meta.id, [ bam ] , [ bai ] ] }
         .set { ch_control_bam_bai }
-        
+
     BAM_CLEAN
         .out
         .bam
@@ -349,7 +349,7 @@ workflow CHIPSEQ {
         params.modules['deeptools_plotfingerprint']
     )
 
-    
+
     /*
      * do metagene analysis for given bed files
      */
@@ -361,7 +361,7 @@ workflow CHIPSEQ {
         params.modules['jo_metagene']
     )
 
-    
+
     if (params.macs_gsize) {
 
         /*
@@ -381,7 +381,7 @@ workflow CHIPSEQ {
             params.macs_gsize,
             params.modules['macs2_callpeak_without_control']
         )
-        
+
         BAM_CLEAN.out.bam
             .join(MACS2_CALLPEAK_WITHOUT_CONTROL.out.peak, by: [0])
             .set { ch_ip_peak_no_control }
@@ -398,7 +398,7 @@ workflow CHIPSEQ {
             PREPARE_GENOME.out.blacklist.ifEmpty([]),
             params.modules['jo_diffbind_macs2_without_control']
         )
-        
+
         // Create channel: [ val(meta), ip_bam, control_bam ]
         ch_ip_control_bam_bai
             .map { meta, bams, bais -> [ meta , bams[0], bams[1] ] }
@@ -424,8 +424,8 @@ workflow CHIPSEQ {
             .join(FRIP_SCORE.out.txt, by: [0])
             .map { it -> [ it[0], it[2], it[3] ] }
             .set { ch_ip_peak_frip }
-            
-        params.modules['multiqc_custom_peaks'].publish_dir += "/$run_name/multiqc_data" 
+
+        params.modules['multiqc_custom_peaks'].publish_dir += "/$run_name/multiqc_data"
         MULTIQC_CUSTOM_PEAKS (
             ch_ip_peak_frip,
             ch_peak_count_header,
@@ -518,7 +518,7 @@ workflow CHIPSEQ {
                     fmeta['multiple_groups'] = it[4]['multiple_groups']
                     [ fmeta, it[2], it[5] ] }
             .set { ch_ip_bam }
-        
+
         //ch_ip_bam.view()
 
         params.modules['subread_featurecounts'].publish_dir += "/consensus"
@@ -549,7 +549,7 @@ workflow CHIPSEQ {
                     .join(ch_ip_peak.map{[it[0].antibody, it[2]]}.groupTuple()))
             .map{[it[1], it[2], it[3]]}
             .set{ch_diffbind}
-        
+
         JO_DIFFBIND_ENRICHMENT (
             ch_diffbind,
             PREPARE_GENOME.out.gtf,
@@ -592,12 +592,12 @@ workflow CHIPSEQ {
             PREPARE_GENOME.out.blacklist.ifEmpty([]),
             params.modules['jo_diffbind_homer_without_control']
         )
-        
+
         // Create channel: [ val(meta), ip_bam, control_bam ]
         ch_ip_control_bam_bai
             .map { meta, bams, bais -> [ meta , bams[0], bams[1] ] }
             .set { ch_ip_control_bam_homer }
-            
+
         HOMER_CALLPEAK (
             ch_ip_control_bam_homer,
             PREPARE_GENOME.out.fasta,
@@ -608,7 +608,7 @@ workflow CHIPSEQ {
             params.modules['homer_pos2bed'],
             [publish_dir:"peaks_with_control"]
         )
-        
+
         ch_ip_control_bam_homer
             .map { it -> [it[0].id, it[0], it[1]]}
             .join(HOMER_CALLPEAK.out.bed.map{[it[0].id, it[0], it[1]]}, by: [0])
@@ -622,14 +622,14 @@ workflow CHIPSEQ {
                     .join(ch_ip_peak_homer.map{[it[0].antibody, it[2]]}.groupTuple()))
             .map{[it[1], it[2], it[3]]}
             .set{ch_diffbind_homer}
-        
+
         JO_DIFFBIND_ENRICHMENT_HOMER (
             ch_diffbind_homer,
             PREPARE_GENOME.out.gtf,
             PREPARE_GENOME.out.blacklist.ifEmpty([]),
             params.modules['jo_diffbind_homer']
         )
-    
+
     }
     /*
      * Create IGV session
@@ -644,12 +644,12 @@ workflow CHIPSEQ {
         params.modules['macs2_consensus'],
         [:]
     )
-    
+
     /*
      * Create ucsc trackhub
      */
    JO_METAGENE_ANALYSIS.out.bw.collect()
-        .concat(UCSC_BEDRAPHTOBIGWIG.out.bigwig.collect(), 
+        .concat(UCSC_BEDRAPHTOBIGWIG.out.bigwig.collect(),
                 MACS2_CALLPEAK.out.peak.collect(),
                 MACS2_CONSENSUS.out.bed.collect(),
                 HOMER_CALLPEAK.out.bed.collect())
@@ -724,34 +724,34 @@ workflow CHIPSEQ {
 
         MULTIQC_CUSTOM_PEAKS.out.count.collect{it[1]}.ifEmpty([]),
         MULTIQC_CUSTOM_PEAKS.out.frip.collect{it[1]}.ifEmpty([]),
-        PLOT_HOMER_ANNOTATEPEAKS.out.tsv.collect().ifEmpty([]),
+        PLOT_HOMER_ANNOTATEPEAKS.out.tsv.flatten().map{[it.getSimpleName(), it]}.groupTuple().map{it[1][0]}.collect().ifEmpty([]),
         SUBREAD_FEATURECOUNTS.out.summary.collect{it[1]}.ifEmpty([]),
         DESEQ2_FEATURECOUNTS.out.tsv.collect().ifEmpty([]),
 
         params.modules['multiqc']
     )
-    
+
     JO_INDEX (
         ch_index_docs,
         ch_input,
         ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'),
         MULTIQC.out.plots,
         ch_output_docs_images,
-        
+
         MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS.out.nsc.collect{it[1]}.ifEmpty([]),
         MULTIQC_CUSTOM_PHANTOMPEAKQUALTOOLS.out.rsc.collect{it[1]}.ifEmpty([]),
         MULTIQC_CUSTOM_PEAKS.out.frip.collect{it[1]}.ifEmpty([]),
-        
+
         PRESEQ_LCEXTRAP.out.log.collect{it[1]}.ifEmpty([]),
         BAM_CLEAN.out.flagstat.collect{it[1]}.ifEmpty([]),
         JO_CHECKSUMS.out.md5.collect(),
-        
+
         MARK_DUPLICATES_PICARD.out.bam.collect{it[0].id},
         MARK_DUPLICATES_PICARD.out.bam.collect{it[0].peaktype},
-        
+
         JO_DIFFBIND_ENRICHMENT_WITHOUT_CONTROL.out.res.collect{it[1]}.ifEmpty([]),
         JO_DIFFBIND_ENRICHMENT_HOMER_WITHOUT_CONTROL.out.res.collect{it[1]}.ifEmpty([]),
-        
+
         GET_SOFTWARE_VERSIONS.out.yaml.collect(),
         [:]
     )
