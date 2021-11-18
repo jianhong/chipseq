@@ -1,10 +1,10 @@
 #################################################################
-# Dockerfile to build bwa, MACS2, samtools, 
+# Dockerfile to build bwa, MACS2, samtools,
 # picard-tools, fastQC, bedtools, cutadapt, R, multiqc
 # images
 # Based on Ubuntu
 #  $ cd chipseq
-#  $ VERSION=dev
+#  $ VERSION=master
 #  $ docker build -t jianhong/chipseq:$VERSION .  ## --no-cache
 #  $ docker images jianhong/chipseq:$VERSION
 #  $ docker push jianhong/chipseq:$VERSION
@@ -53,7 +53,7 @@ RUN wget https://raw.githubusercontent.com/jianhong/chipseq/master/assets/picard
 #    make && make install && \
 #    cd ../.. && rm -rf v2.5.1.tar.gz && rm -rf bamtools-2.5.1
 
-RUN pip install pysam deeptools MACS2 cutadapt pymdown-extensions trackhub 
+RUN pip install pysam deeptools MACS2 cutadapt pymdown-extensions trackhub
 
 RUN mkdir /homer && cd /homer && \
     wget http://homer.ucsd.edu/homer/configureHomer.pl && \
@@ -86,7 +86,7 @@ RUN Rscript -e 'BiocManager::install(c("optparse", "rjson", "DiffBind", "ChIPpea
                 "rtracklayer", "ggplot2", "GenomicFeatures", "DESeq2", "vsn", \
                 "RColorBrewer", "pheatmap", "lattice", "BiocParallel", \
                 "reshape2", "scales", "UpSetR", "caTools", \
-                "clusterProfiler", "pathview", "biomaRt", \     
+                "clusterProfiler", "pathview", "biomaRt", \
                 "rmarkdown", "DT"))'
 
 # Instruct R processes to use these empty files instead of clashing with a local version
@@ -104,4 +104,3 @@ WORKDIR /work
 ENV JAVA_HOME="/usr"
 RUN mv $HOME/edirect /edirect
 ENV PATH $PATH:/edirect
-
