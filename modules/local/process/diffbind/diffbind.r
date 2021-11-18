@@ -73,10 +73,10 @@ if(!grepl(".bed$", Peaks[1])){
 block <- FALSE
 if(any(grepl("treatment", colnames(sampleDesign), ignore.case = TRUE))){
   Treatment <- sampleDesign[SampleID, which(grepl("treatment",
-                                                  colnames(sampleDesign), 
+                                                  colnames(sampleDesign),
                                                   ignore.case = TRUE))[1]]
   tt <- paste0(Condition, Treatment)
-  if(length(unique(Treatment))>1 && 
+  if(length(unique(Treatment))>1 &&
      length(unique(tt))!=length(unique(Condition))){
     samples <- data.frame(SampleID=SampleID,
                           Condition=Condition,
@@ -132,7 +132,7 @@ if(exists(BLACKLIST)){
 
 if(nrow(samples)>3){
   write.csv(samples, file.path(pf, out))
-  
+
   chip <- dba(sampleSheet = file.path(pf, out))
   pdf(file.path(pf, "DiffBind.sample.correlation.pdf"), width = 9, height = 9)
   plot(chip)
@@ -146,7 +146,7 @@ if(nrow(samples)>3){
   png(file.path(pf, "DiffBind.PCA.plot.png"))
   dba.plotPCA(chip, DBA_CONDITION, label=DBA_ID)
   dev.off()
-  
+
   chip <- dba.count(chip, bLog=TRUE)
   chip <- dba.normalize(chip) ## add for DiffBind 3.0
 
@@ -154,7 +154,7 @@ if(nrow(samples)>3){
 
   saveRDS(chip, file.path(pf, "chip.rds"))
   chip.bk <- chip
-  
+
   txdb <- makeTxDbFromGFF(opt$gtf)
   gtf <- import(opt$gtf)
   id2symbol <- function(gtf){
@@ -199,7 +199,7 @@ if(nrow(samples)>3){
       }
       chip <- dba.analyze(chip, bBlacklist = FALSE, bGreylist = FALSE)
       chip.DB <- dba.report(chip, th=1)
-      
+
       # Annotation
       chip.anno <- annotatePeakInBatch(chip.DB, AnnotationData = anno,
                                        output = "nearestLocation",
@@ -220,79 +220,85 @@ if(nrow(samples)>3){
       pdf(file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".MA.plot.pdf")))
       dba.plotMA(chip)
       dev.off()
-      
+
       pdf(file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".Volcano.plot.pdf")))
       dba.plotVolcano(chip, bUsePval = TRUE)
       dev.off()
-      
+
       png(file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".MA.plot.png")))
       dba.plotMA(chip)
       dev.off()
-      
+
       png(file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".Volcano.plot.png")))
       dba.plotVolcano(chip, bUsePval = TRUE)
       dev.off()
-      
+
       # export counts table
       counts <- dba.peakset(chip, bRetrieve=TRUE, DataType=DBA_DATA_FRAME)
       write.csv(counts, file.path(pf, paste0("DiffBind.", names(contrasts)[i], ".counts.csv")))
     }
   }
   resList <- if(length(resList)>1) GRangesList(resList) else if(length(resList)>0) resList[[1]]
-  
+
   if(packageVersion("ChIPpeakAnno")>="3.23.12"){
     if(length(resList)>0){
-      out <- genomicElementDistribution(resList, 
+      try_err <- try({
+      out <- genomicElementDistribution(resList,
                                         TxDb = txdb,
                                         promoterRegion=c(upstream=2000, downstream=500),
                                         geneDownstream=c(upstream=0, downstream=2000),
                                         promoterLevel=list(
                                           # from 5' -> 3', fixed precedence 3' -> 5'
                                           breaks = c(-2000, -1000, -500, 0, 500),
-                                          labels = c("upstream 1-2Kb", "upstream 0.5-1Kb", 
+                                          labels = c("upstream 1-2Kb", "upstream 0.5-1Kb",
                                                      "upstream <500b", "TSS - 500b"),
-                                          colors = c("#FFE5CC", "#FFCA99", 
+                                          colors = c("#FFE5CC", "#FFCA99",
                                                      "#FFAD65", "#FF8E32")),
                                         plot = FALSE)
-      
+
       ggsave(file.path(pf, "genomicElementDistribuitonOfDiffBind.pdf"), plot=out$plot, width=9, height=9)
       ggsave(file.path(pf, "genomicElementDistribuitonOfDiffBind.png"), plot=out$plot)
       out <- metagenePlot(resList, txdb)
       ggsave(file.path(pf, "metagenePlotToTSSofDiffBind.pdf"), plot=out, width=9, height=9)
       ggsave(file.path(pf, "metagenePlotToTSSofDiffBind.png"), plot=out)
+      })
+      if(inherits(try_err, "try-error")){
+          message(try_err)
+      }
     }
     if(length(samples$Peaks)>0){
-      peaks <- mapply(samples$Peaks, samples$PeakFormat, 
+      try_err <- try({
+      peaks <- mapply(samples$Peaks, samples$PeakFormat,
                       FUN=function(.ele, .format) {
                         if(.format %in% c("BED", "GFF", "GTF", "MACS", "MACS2", "MACS2.broad", "narrowPeak", "broadPeak")){
                           toGRanges(.ele, format=.format)
                         }else{
                           import(.ele)
                         }
-                      }, 
+                      },
                       SIMPLIFY = FALSE)
       names(peaks) <- samples$SampleID
       peaks <- GRangesList(peaks)
-      out <- genomicElementDistribution(peaks, 
+      out <- genomicElementDistribution(peaks,
                                         TxDb = txdb,
                                         promoterRegion=c(upstream=2000, downstream=500),
                                         geneDownstream=c(upstream=0, downstream=2000),
                                         promoterLevel=list(
                                           # from 5' -> 3', fixed precedence 3' -> 5'
                                           breaks = c(-2000, -1000, -500, 0, 500),
-                                          labels = c("upstream 1-2Kb", "upstream 0.5-1Kb", 
+                                          labels = c("upstream 1-2Kb", "upstream 0.5-1Kb",
                                                      "upstream <500b", "TSS - 500b"),
-                                          colors = c("#FFE5CC", "#FFCA99", 
+                                          colors = c("#FFE5CC", "#FFCA99",
                                                      "#FFAD65", "#FF8E32")),
                                         plot = FALSE)
-      
+
       ggsave(file.path(pf, "genomicElementDistribuitonOfEachPeakList.pdf"), plot=out$plot, width=9, height=9)
       ggsave(file.path(pf, "genomicElementDistribuitonOfEachPeakList.png"), plot=out$plot)
-      
+
       out <- metagenePlot(peaks, txdb)
       ggsave(file.path(pf, "metagenePlotToTSSOfEachPeakList.pdf"), plot=out, width=9, height=9)
       ggsave(file.path(pf, "metagenePlotToTSSOfEachPeakList.png"), plot=out)
-      
+
       if(length(peaks)<=5){
         ol <- findOverlapsOfPeaks(peaks)
         png(file.path(pf, "vennDiagram.all.png"))
@@ -310,9 +316,7 @@ if(nrow(samples)>3){
           }
         })
       }
+      })
     }
   }
 }
-
-
-
