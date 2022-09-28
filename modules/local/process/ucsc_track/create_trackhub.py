@@ -25,14 +25,14 @@ def parse_args(args=None):
     Epilog = """Example usage: python create_trackhub.py <OUTPUT_FOLDER> <LIST_FILE> <GENOME>"""
 
     argParser = argparse.ArgumentParser(description=Description, epilog=Epilog)
-    
+
     ## REQUIRED PARAMETERS
     argParser.add_argument('LIST_FILE', help="Tab-delimited file containing two columns i.e. samplename\tsignalfile. Header isnt required.")
     argParser.add_argument('GENOME', help="Full path to genome fasta file or shorthand for genome available in UCSC e.g. hg19.")
     argParser.add_argument('CHROM_SIZE', help="Full path to chrom size")
     argParser.add_argument('EMAIL', help="email address")
     argParser.add_argument('DESIGN_FILE', help="design file")
-    
+
     return argParser.parse_args(args)
 
 
@@ -58,10 +58,10 @@ def makedir(path):
 tracktypes = ['bigWig', 'bam', 'bigBed', 'bigInteract', 'vcfTabix', 'bigNarrowPeak',
               'bigBarChart', 'bigChain', 'bigGenePred', 'bigBroadPeak',
               'bigMaf', 'bigPsl', 'halSnake']
-TrackType = {'bw':'bigWig', 'bb':'bigBed', 'bed':'bigBed', 
+TrackType = {'bw':'bigWig', 'bb':'bigBed', 'bed':'bigBed',
              'narrowpeak':'bigBed 6+4', 'broadpeak':'bigBed 6+3',
              'bedpe':'bigBed 5+13'}
-Visibility = {'bw':'full', 'bb':'dense', 'bed':'dense', 'bedpe':'dense'
+Visibility = {'bw':'full', 'bb':'dense', 'bed':'dense', 'bedpe':'dense',
              'narrowpeak':'dense', 'broadpeak':'dense', 'bigInteract':'dense'}
 
 bigNarrowPeak=open("narrowPeak.as", "w")
@@ -138,7 +138,7 @@ def create_trackhub(OutFolder,ListFile,Genome,ChrSize, EMAIL,DesignFile):
     HEADER = ['group', 'replicate', 'fastq_1', 'fastq_2']
 
     makedir(OutFolder)
-    
+
     dIn = open(DesignFile, 'r')
     header = dIn.readline().strip().split(',')
     if header[:4] != HEADER:
@@ -170,10 +170,10 @@ def create_trackhub(OutFolder,ListFile,Genome,ChrSize, EMAIL,DesignFile):
               designDict[k] = {lspl[paramColn[k]]:lspl[paramColn[k]]}
         else:
           break
-    
-    
+
+
     dIn.close()
-    
+
     fileList = []
     fin = open(ListFile,'r')
     while True:
@@ -195,7 +195,7 @@ def create_trackhub(OutFolder,ListFile,Genome,ChrSize, EMAIL,DesignFile):
             fin.close()
 
     fileList = sorted(fileList, key=lambda x: x[2])
-    
+
     # Initialize the components of a track hub, already connected together
     hub, genomes_file, genome, trackdb = trackhub.default_hub(
         hub_name="RNISRS_hub",
@@ -203,7 +203,7 @@ def create_trackhub(OutFolder,ListFile,Genome,ChrSize, EMAIL,DesignFile):
         long_label='Regeneration Next Initiative Regeneromics Shared Resource hub',
         genome=Genome,
         email=EMAIL)
-    
+
     # create compositeTracks
     if sampleDesignDict:
       composite = trackhub.CompositeTrack(
@@ -220,9 +220,9 @@ def create_trackhub(OutFolder,ListFile,Genome,ChrSize, EMAIL,DesignFile):
             mapping=designDict[k]
           )
           subgroups.append(subg)
-      
+
       composite.add_subgroups(subgroups)
-      
+
       # Add the composite track to the trackDb
       trackdb.add_tracks(composite)
       signal_view = trackhub.ViewTrack(
@@ -235,7 +235,7 @@ def create_trackhub(OutFolder,ListFile,Genome,ChrSize, EMAIL,DesignFile):
           view='regions',
           short_label='Regions')
       composite.add_view(regions_view)
-    
+
     for ifile,color,id in fileList:
         extension = os.path.splitext(ifile)[1].replace(".", "").lower()
         filename = trackhub.helpers.sanitize(os.path.splitext(os.path.basename(ifile))[0].replace(".", "_"), strict=False)
@@ -287,7 +287,7 @@ def create_trackhub(OutFolder,ListFile,Genome,ChrSize, EMAIL,DesignFile):
           os.symlink("../../"+ifile, linkname)
         else:
           pass
-    
+
     hub.render(staging=OutFolder)
 
 ############################################
@@ -307,5 +307,3 @@ def main(args=None):
 
 if __name__ == "__main__":
     sys.exit(main())
-
-
