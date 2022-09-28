@@ -55,13 +55,14 @@ def makedir(path):
 ## MAIN FUNCTION
 ############################################
 ############################################
-tracktypes = ['bigWig', 'bam', 'bigBed', 'vcfTabix', 'bigNarrowPeak',
+tracktypes = ['bigWig', 'bam', 'bigBed', 'bigInteract', 'vcfTabix', 'bigNarrowPeak',
               'bigBarChart', 'bigChain', 'bigGenePred', 'bigBroadPeak',
               'bigMaf', 'bigPsl', 'halSnake']
 TrackType = {'bw':'bigWig', 'bb':'bigBed', 'bed':'bigBed', 
-             'narrowpeak':'bigBed 6+4', 'broadpeak':'bigBed 6+3'}
-Visibility = {'bw':'full', 'bb':'dense', 'bed':'dense',
-             'narrowpeak':'dense', 'broadpeak':'dense'}
+             'narrowpeak':'bigBed 6+4', 'broadpeak':'bigBed 6+3',
+             'bedpe':'bigBed 5+13'}
+Visibility = {'bw':'full', 'bb':'dense', 'bed':'dense', 'bedpe':'dense'
+             'narrowpeak':'dense', 'broadpeak':'dense', 'bigInteract':'dense'}
 
 bigNarrowPeak=open("narrowPeak.as", "w")
 bigNarrowPeak.write('''table bigNarrowPeak
@@ -96,6 +97,32 @@ bigBroadPeak.write('''table bigBroadPeak
 )
 ''')
 bigBroadPeak.close()
+bigInteracion=open("interact.as", "w")
+bigInteracion.write('''table interact
+"interaction between two regions"
+    (
+    string chrom;        "Chromosome (or contig, scaffold, etc.). For interchromosomal, use 2 records"
+    uint chromStart;     "Start position of lower region. For interchromosomal, set to chromStart of this region"
+    uint chromEnd;       "End position of upper region. For interchromosomal, set to chromEnd of this region"
+    string name;         "Name of item, for display.  Usually 'sourceName/targetName/exp' or empty"
+    uint score;          "Score (0-1000)"
+    double value;        "Strength of interaction or other data value. Typically basis for score"
+    string exp;          "Experiment name (metadata for filtering). Use . if not applicable"
+    string color;        "Item color.  Specified as r,g,b or hexadecimal #RRGGBB or html color name, as in //www.w3.org/TR/css3-color/#html4. Use 0 and spectrum setting to shade by score"
+    string sourceChrom;  "Chromosome of source region (directional) or lower region. For non-directional interchromosomal, chrom of this region."
+    uint sourceStart;    "Start position in chromosome of source/lower/this region"
+    uint sourceEnd;      "End position in chromosome of source/lower/this region"
+    string sourceName;   "Identifier of source/lower/this region"
+    string sourceStrand; "Orientation of source/lower/this region: + or -.  Use . if not applicable"
+    string targetChrom;  "Chromosome of target region (directional) or upper region. For non-directional interchromosomal, chrom of other region"
+    uint targetStart;    "Start position in chromosome of target/upper/this region"
+    uint targetEnd;      "End position in chromosome of target/upper/this region"
+    string targetName;   "Identifier of target/upper/this region"
+    string targetStrand; "Orientation of target/upper/this region: + or -.  Use . if not applicable"
+
+    )
+''')
+bigInteracion.close()
 
 for tt in tracktypes:
     TrackType[tt.lower()] = tt
@@ -212,7 +239,7 @@ def create_trackhub(OutFolder,ListFile,Genome,ChrSize, EMAIL,DesignFile):
     for ifile,color,id in fileList:
         extension = os.path.splitext(ifile)[1].replace(".", "").lower()
         filename = trackhub.helpers.sanitize(os.path.splitext(os.path.basename(ifile))[0].replace(".", "_"), strict=False)
-        if extension in ['bed','broadpeak','narrowpeak']:
+        if extension in ['bed','broadpeak','narrowpeak','bedpe']:
           # convert bed to bigbed
           # sort bed file
           cmd = "sort -k1,1 -k2,2n " + ifile +" >" + ifile + "_sorted.bed"
@@ -226,6 +253,8 @@ def create_trackhub(OutFolder,ListFile,Genome,ChrSize, EMAIL,DesignFile):
             cmd = "bedToBigBed -type=bed6+3 -as=broadPeak.as "+ifile+"_srt.bed"+" "+ChrSize+" "+ifile+".bb"
           if extension == "narrowpeak":
             cmd = "bedToBigBed -type=bed6+4 -as=narrowPeak.as "+ifile+"_srt.bed"+" "+ChrSize+" "+ifile+".bb"
+          if extension == "bedpe":
+            cmd = "bedToBigBed -type=bed5+13 -as=interact.as "+ifile+"_srt.bed"+" "+ChrSize+" "+ifile+".bb"
           os.system(cmd)
           # change ifile to new bigbed file
           ifile = ifile+".bb"

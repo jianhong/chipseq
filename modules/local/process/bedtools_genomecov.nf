@@ -29,7 +29,7 @@ process BEDTOOLS_GENOMECOV {
     def pe       = meta.single_end ? '' : '-pc'
     def extend   = (meta.single_end && params.fragment_size > 0) ? "-fs ${params.fragment_size}" : ''
     """
-    SCALE_FACTOR=\$(grep 'mapped (' $flagstat | awk '{print 1000000/(\$1+1)}')
+    SCALE_FACTOR=\$(grep 'mapped (' $flagstat | head -1 | awk '{print 1000000/(\$1+1)}')
     echo \$SCALE_FACTOR > ${prefix}.scale_factor.txt
 
     bedtools \\
