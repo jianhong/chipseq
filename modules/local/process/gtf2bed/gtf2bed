@@ -42,9 +42,9 @@ while (<IN>) {
 	my @f = split /\t/;
 	if ($gff) {
         # most ver 2's stick gene names in the id field
-		($id) = $f[8]=~ /\bID="([^"]+)"/;
+		($id) = $f[8]=~ /\bID[= ]"([^"]+)"/;
         # most ver 3's stick unquoted names in the name field
-		($id) = $f[8]=~ /\bName=([^";]+)/ if !$id && $gff == 3;
+		($id) = $f[8]=~ /\bName[= ]([^";]+)/ if !$id && $gff == 3;
 	} else {
 		($id) = $f[8]=~ /transcript_id "([^"]+)"/;
 	}
